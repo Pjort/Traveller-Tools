@@ -1,6 +1,6 @@
 import { SkillDbRecord } from "#imports";
 
-export class SkillDb {
+export class SkillsDb {
 	private static _skills: SkillDbRecord[] = [];
 
 	public static GetSkills(): SkillDbRecord[] {
@@ -13,6 +13,15 @@ export class SkillDb {
 
 	public static GetSkillByName(name: string): SkillDbRecord | undefined {
 		return this._skills.find((s) => s.Name === name);
+	}
+
+	public static GetBackgroundSkills(): SkillDbRecord[] {
+		const backgroundSkills: SkillDbRecord[] = [];
+		backgroundSkills.push(this.GetSkillById(1)!);
+		backgroundSkills.push(this.GetSkillById(2)!);
+		backgroundSkills.push(this.GetSkillById(3)!);
+		backgroundSkills.push(this.GetSkillById(4)!);
+		return backgroundSkills;
 	}
 
 	static {

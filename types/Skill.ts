@@ -7,7 +7,7 @@ export class Skill {
 		this.Level = level;
 	}
 
-	toString(): string {
+	ToString(): string {
 		return `${this.Name}: ${this.Level}`;
 	}
 }

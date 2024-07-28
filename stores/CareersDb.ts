@@ -1,6 +1,6 @@
 import { Career, Assignment, DiceCheck, TrainingTable, Reward } from "#imports";
 
-export class CareerDb {
+export class CareersDb {
 	private static careers: Career[] = [];
 
 	public static get GetCareers(): Career[] {

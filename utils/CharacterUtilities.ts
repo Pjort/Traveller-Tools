@@ -10,7 +10,7 @@ import {
 	Race,
 	TrainingTable,
 } from "#imports";
-import { SkillDb, CareerDb } from "#imports";
+import { SkillsDb, CareersDb } from "#imports";
 
 export class CharacterUtilities {
 	public static ParseCharacter(input: CharacterInput): Character {
@@ -20,13 +20,15 @@ export class CharacterUtilities {
 		this.AddLifePath(character, "--- Term 0 (18 years) ---");
 		this.AddLifePath(character, "--------------------------");
 
+		character.currentStageId = 2;
+
 		let characteristics: Characteristics | null = null;
 		if (input.CharacteristicsString) {
 			characteristics = this.ParseCharacteristics(input.CharacteristicsString);
 			character.Characteristics = characteristics;
 			this.AddLifePath(
 				character,
-				"Initial characteristics rolls: " + (characteristics?.toString() ?? "No characteristics rolled")
+				"Initial characteristics rolls: " + (characteristics?.ToString() ?? "No characteristics rolled")
 			);
 
 			// Alter characteristics by race
@@ -47,19 +49,23 @@ export class CharacterUtilities {
 			return character;
 		}
 
+		character.currentStageId = 3;
+
 		if (input.BackgroundSkillsString) {
 			const backgroundSkills = this.ParseBackgroundSkills(input.BackgroundSkillsString);
 			this.AddSkillsToCharacter(character, backgroundSkills, false);
 
 			let backgroundLifePath = "Background skills: ";
 			for (const skill of character.Skills) {
-				backgroundLifePath += skill.toString() + ", ";
+				backgroundLifePath += skill.ToString() + ", ";
 			}
 			backgroundLifePath = backgroundLifePath.slice(0, -2);
 			this.AddLifePath(character, backgroundLifePath);
 		} else {
 			return character;
 		}
+
+		character.currentStageId = 4;
 
 		if (input.TermsString) {
 			this.ParseTerms(input.TermsString, character);
@@ -97,7 +103,7 @@ export class CharacterUtilities {
 		}
 
 		for (const skillId of skillIds) {
-			const skillDbRecord = SkillDb.GetSkillById(skillId);
+			const skillDbRecord = SkillsDb.GetSkillById(skillId);
 
 			if (!skillDbRecord) {
 				throw new Error("Invalid skill ID: " + skillId);
@@ -123,17 +129,17 @@ export class CharacterUtilities {
 			if (skill.Level > existingSkill.Level) {
 				existingSkill.Level = skill.Level;
 				if (addToLifePath) {
-					this.AddLifePath(character, "Gained: " + skill.toString());
+					this.AddLifePath(character, "Gained: " + skill.ToString());
 				}
 			} else {
 				if (addToLifePath) {
-					this.AddLifePath(character, "Gained: " + skill.toString() + " (already known)");
+					this.AddLifePath(character, "Gained: " + skill.ToString() + " (already known)");
 				}
 			}
 		} else {
 			character.Skills.push(skill);
 			if (addToLifePath) {
-				this.AddLifePath(character, "Gained: " + skill.toString());
+				this.AddLifePath(character, "Gained: " + skill.ToString());
 			}
 		}
 
@@ -173,7 +179,7 @@ export class CharacterUtilities {
 
 		const careerId = parseInt(careerString.slice(0, 2));
 		careerString = careerString.slice(2);
-		const career = CareerDb.GetCareerById(careerId);
+		const career = CareersDb.GetCareerById(careerId);
 
 		if (!career) {
 			throw new Error("Invalid career ID: " + careerId);
@@ -377,7 +383,7 @@ export class CharacterUtilities {
 					break;
 			}
 		} else {
-			const skillDbRecord = SkillDb.GetSkillByName(reward.Description);
+			const skillDbRecord = SkillsDb.GetSkillByName(reward.Description);
 
 			if (!skillDbRecord) {
 				throw new Error("Invalid skill name: " + reward.Description);

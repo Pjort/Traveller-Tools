@@ -7,6 +7,7 @@ export enum Race {
 }
 
 export class Character {
+	[key: string]: any; // Add this line for index signature
 	Name: string;
 	Race: Race = Race.Human;
 	HomeWorld?: string;
@@ -15,6 +16,7 @@ export class Character {
 	LifePath: string[] = [];
 	Skills: Skill[] = [];
 	Terms: Term[] = [];
+	currentStageId: number = 1;
 
 	constructor(
 		name: string,

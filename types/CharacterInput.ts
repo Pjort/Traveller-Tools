@@ -7,7 +7,7 @@ export class CharacterInput {
 	TermsString?: string;
 
 	constructor(
-		name: string = "name",
+		name: string = "",
 		race: number = 0,
 		homeWorld?: string,
 		characteristicsString?: string,
