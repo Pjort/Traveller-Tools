@@ -14,6 +14,7 @@ export const useCharacterStore = defineStore("character", {
 			Skills: new Array<Skill>(),
 			Terms: new Array<Term>(),
 			currentStageId: 1,
+			currentCareerId: 0,
 		} as Character,
 		characterInput: {
 			Name: "",
@@ -71,5 +72,9 @@ export const useCharacterStore = defineStore("character", {
 		getCharacter: (state) => state.character,
 		getCharacterInput: (state) => state.characterInput,
 		getCurrentStageId: (state) => state.character.currentStageId,
+		getCurrentCareer: (state) => {
+			const career = CareersDb.GetCareerById(state.character.currentCareerId);
+			return career;
+		},
 	},
 });

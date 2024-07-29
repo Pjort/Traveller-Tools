@@ -3,7 +3,7 @@ import { Career, Assignment, DiceCheck, TrainingTable, Reward } from "#imports";
 export class CareersDb {
 	private static careers: Career[] = [];
 
-	public static get GetCareers(): Career[] {
+	public static GetCareers(): Career[] {
 		return this.careers;
 	}
 

@@ -5,7 +5,9 @@
 			<CharacterStage v-if="currentStageId === 1" />
 			<CharacteristicsStage v-if="currentStageId === 2" />
 			<BackgroundSkillsStage v-if="currentStageId == 3" />
-
+			<SelectCareerStage v-if="currentStageId == 4" />
+			<QualificationRollStage v-if="currentStageId == 5" />
+			<SelectAssignment v-if="currentStageId == 6" />
 			
 		</div>
 		<br />

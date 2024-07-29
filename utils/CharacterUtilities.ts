@@ -186,7 +186,11 @@ export class CharacterUtilities {
 		}
 		this.AddLifePath(character, "Career: " + career.Name);
 
+		character.currentCareerId = careerId;
+		character.currentStageId = 5;
+
 		if (careerString.length >= 2) {
+			character.currentStageId = 6;
 			const qualificationCheckRoll = parseInt(careerString.slice(0, 2));
 			careerString = careerString.slice(2);
 			const diceModifier = this.GetDiceModifier(career.QualificationCheck, character);
@@ -210,6 +214,7 @@ export class CharacterUtilities {
 			return;
 		}
 
+		character.currentStageId = 7;
 		const assignmentId = parseInt(careerString.slice(0, 1));
 		careerString = careerString.slice(1);
 
