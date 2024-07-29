@@ -2,12 +2,11 @@
 	<div class="m-2">
 		<p class="font-semibold">Character generator</p>
 		<div>
-			<h1 class="p-2">{{ currentStage?.Title }}</h1>
 			<CharacterStage v-if="currentStageId === 1" />
 			<CharacteristicsStage v-if="currentStageId === 2" />
 			<BackgroundSkillsStage v-if="currentStageId == 3" />
 
-			<button class="p-2 bg-slate-400" @click="ApplyInput">Apply</button>
+			
 		</div>
 		<br />
 		<br />
@@ -25,13 +24,12 @@
 </template>
 
 <script lang="ts" setup>
-import { Character,  Race,  StagesDb } from "#imports";
+import { Race } from "#imports";
 
 
-const characterInputStore = useCharacterInputStore();
-const character = ref(new Character(""));
+const characterStore = useCharacterStore();
+const character =  computed(() => characterStore.character);
 const currentStageId = computed(() => character.value.currentStageId);
-const currentStage = computed(() => StagesDb.GetStageById(currentStageId.value));
 
 
 
@@ -41,8 +39,5 @@ const currentStage = computed(() => StagesDb.GetStageById(currentStageId.value))
 
 // character.value = CharacterUtilities.ParseCharacter(characterInput);
 
-const ApplyInput = () => {
-	
-	character.value = CharacterUtilities.ParseCharacter(characterInputStore.getCharacterInput);
-};
+
 </script>

@@ -7,7 +7,6 @@ export enum Race {
 }
 
 export class Character {
-	[key: string]: any; // Add this line for index signature
 	Name: string;
 	Race: Race = Race.Human;
 	HomeWorld?: string;

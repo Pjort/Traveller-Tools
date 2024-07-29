@@ -1,5 +1,6 @@
 <template>
 	<div>
+		<h1 class="p-2">Basic information</h1>
 		<div class="p-2">Name: <input class="bg-slate-200" type="text" v-model="name" placeholder="Name" /></div>
 		<div class="p-2">
 			Home world:
@@ -13,23 +14,28 @@
 				<option value="2">Vargr</option>
 			</select>
 		</div>
+		<button class="p-2 bg-slate-400" @click="ApplyInput">Apply</button>
 	</div>
 </template>
 
 <script lang="ts" setup>
-const characterInputStore = useCharacterInputStore();
+const characterStore = useCharacterStore();
 const name = computed({
-	get: () => characterInputStore.characterInput.Name,
-	set: (value) => characterInputStore.updateName(value),
+	get: () => characterStore.characterInput.Name,
+	set: (value) => characterStore.updateName(value),
 });
 
 const homeWorld = computed({
-	get: () => characterInputStore.characterInput.HomeWorld,
-	set: (value) => characterInputStore.updateHomeWorld(value ?? ""),
+	get: () => characterStore.characterInput.HomeWorld,
+	set: (value) => characterStore.updateHomeWorld(value ?? ""),
 });
 
 const race = computed({
-	get: () => characterInputStore.characterInput.Race,
-	set: (value) => characterInputStore.updateRace(value),
+	get: () => characterStore.characterInput.Race,
+	set: (value) => characterStore.updateRace(value),
 });
+
+const ApplyInput = () => {
+	characterStore.parseCharacter();
+};
 </script>

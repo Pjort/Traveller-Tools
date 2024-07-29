@@ -1,12 +1,23 @@
 // stores/characterInputStore.ts
 import { defineStore } from "pinia";
-import { CharacterInput } from "#imports";
+import { Character, CharacterInput, Skill, Term, Characteristics, Race } from "#imports";
 
-export const useCharacterInputStore = defineStore("characterInput", {
+export const useCharacterStore = defineStore("character", {
 	state: () => ({
+		character: {
+			Name: "",
+			Race: Race.Human,
+			HomeWorld: "",
+			Age: 0,
+			Characteristics: new Object() as Characteristics,
+			LifePath: new Array<string>(),
+			Skills: new Array<Skill>(),
+			Terms: new Array<Term>(),
+			currentStageId: 1,
+		} as Character,
 		characterInput: {
 			Name: "",
-			Race: 0,
+			Race: Race.Human,
 			HomeWorld: "",
 			CharacteristicsString: "",
 			BackgroundSkillsString: "",
@@ -14,10 +25,10 @@ export const useCharacterInputStore = defineStore("characterInput", {
 		} as CharacterInput,
 	}),
 	actions: {
-		setCharacter(characterInput: CharacterInput) {
+		setCharacterInput(characterInput: CharacterInput) {
 			this.characterInput = characterInput;
 		},
-		updateCharacter(
+		updateCharacterInput(
 			name: string,
 			race: number,
 			homeWorld: string,
@@ -52,8 +63,13 @@ export const useCharacterInputStore = defineStore("characterInput", {
 		updateTermsString(termsString: string) {
 			this.characterInput.TermsString = termsString;
 		},
+		parseCharacter() {
+			this.character = CharacterUtilities.ParseCharacter(this.characterInput);
+		},
 	},
 	getters: {
+		getCharacter: (state) => state.character,
 		getCharacterInput: (state) => state.characterInput,
+		getCurrentStageId: (state) => state.character.currentStageId,
 	},
 });

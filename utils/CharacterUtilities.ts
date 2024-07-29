@@ -32,13 +32,13 @@ export class CharacterUtilities {
 			);
 
 			// Alter characteristics by race
-			if (character.Race === Race.Aslan) {
+			if (character.Race == Race.Aslan) {
 				character.Characteristics.Strength += 2;
 				character.Characteristics.Dexterity -= 2;
 				this.AddLifePath(character, "Aslan racial characteristics: +2 Strength, -2 Dexterity");
 				this.AddLifePath(character, "Aslan traits: Dewclaws, Heightened Senses");
 			}
-			if (character.Race === Race.Vargr) {
+			if (character.Race == Race.Vargr) {
 				character.Characteristics.Strength -= 1;
 				character.Characteristics.Dexterity += 1;
 				character.Characteristics.Endurance -= 1;
