@@ -1,4 +1,4 @@
-import { Stage, Choice, Race } from "#imports";
+import { Stage } from "#imports";
 
 export class StagesDb {
 	private static Stages: Stage[] = [];
@@ -12,18 +12,9 @@ export class StagesDb {
 	}
 
 	static {
-		this.Stages.push(
-			new Stage(1, "Basic information", [
-				new Choice("Name", "Name", "input", "Enter your character's name"),
-				new Choice("HomeWorld", "Home world", "input", "Enter your character's home world"),
-				new Choice("Race", "Race", "select", "Select your character", [
-					{ label: Race[Race.Human], value: Race.Human },
-					{ label: Race[Race.Aslan], value: Race.Aslan },
-					{ label: Race[Race.Vargr], value: Race.Vargr },
-				]),
-			])
-		);
-		this.Stages.push(new Stage(2, "Characteristics", []));
-		this.Stages.push(new Stage(3, "Background skills", []));
+		this.Stages.push(new Stage(1, "Basic information"));
+		this.Stages.push(new Stage(2, "Characteristics"));
+		this.Stages.push(new Stage(3, "Background skills"));
+		this.Stages.push(new Stage(4, "Career"));
 	}
 }
