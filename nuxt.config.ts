@@ -7,6 +7,6 @@ export default defineNuxtConfig({
 		typeCheck: true,
 	},
 	imports: {
-		dirs: ["types/*.ts", "stores/*.ts"],
+		dirs: ["types/*.ts", "stores/*.ts", "stores/Careers/*.ts"],
 	},
 });
