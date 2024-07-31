@@ -2,6 +2,7 @@
 	<div>
 		<h1 class="p-2">Background Skill</h1>
 		<div class="p-2">
+			<!-- TODO: Add the education calculation for how many maximum backgroundSkills can be taken -->
 			<div v-for="skill in backgroundSkills" :key="skill.Id">
 				<input type="checkbox" v-model="selectedBackgroundSkills" :value="skill.Id" :id="skill.Name" />
 				<label :for="skill.Name">{{ " " + skill.Name }}</label>
