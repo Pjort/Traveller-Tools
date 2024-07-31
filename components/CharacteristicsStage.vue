@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts" setup>
-const characteristics = ref(new Characteristics());
+const characteristics = ref(new Characteristics(7,7,7,7,7,7,0));
 
 const characterStore = useCharacterStore();
 
