@@ -316,6 +316,11 @@ export class CharacterUtilities {
 			case "PSI":
 				characteristicValue = character.Characteristics.Psionics;
 				break;
+			case "Automatic":
+				return 0;
+			case "DEX or INT":
+				characteristicValue = Math.max(character.Characteristics.Dexterity, character.Characteristics.Intellect);
+				break;
 
 			default:
 				throw new Error("Invalid characteristic type: " + diceCheck.CharacteristicsType);
