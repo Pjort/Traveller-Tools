@@ -16,7 +16,6 @@ export class Character {
 	Skills: Skill[] = [];
 	Terms: Term[] = [];
 	currentStageId: number = 1;
-	currentCareerId: number = 0;
 
 	constructor(
 		name: string,

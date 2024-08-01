@@ -20,7 +20,7 @@ export class CharacterUtilities {
 		this.AddLifePath(character, "--- Term 0 (18 years) ---");
 		this.AddLifePath(character, "--------------------------");
 
-		character.currentStageId = 2;
+		character.currentStageId = 2; // Characteristics roll
 
 		let characteristics: Characteristics | null = null;
 		if (input.CharacteristicsString) {
@@ -49,7 +49,7 @@ export class CharacterUtilities {
 			return character;
 		}
 
-		character.currentStageId = 3;
+		character.currentStageId = 3; // Background skills
 
 		if (input.BackgroundSkillsString) {
 			const backgroundSkills = this.ParseBackgroundSkills(input.BackgroundSkillsString);
@@ -65,7 +65,7 @@ export class CharacterUtilities {
 			return character;
 		}
 
-		character.currentStageId = 4;
+		character.currentStageId = 4; // Select a career
 
 		if (input.TermsString) {
 			this.ParseTerms(input.TermsString, character);
@@ -186,11 +186,11 @@ export class CharacterUtilities {
 		}
 		this.AddLifePath(character, "Career: " + career.Name);
 
-		character.currentCareerId = careerId;
-		character.currentStageId = 5;
+		character.Terms.push(new Term(termNumber, age, career.Name));
+
+		character.currentStageId = 5; // Qualification roll
 
 		if (careerString.length >= 2) {
-			character.currentStageId = 6;
 			const qualificationCheckRoll = parseInt(careerString.slice(0, 2));
 			careerString = careerString.slice(2);
 			const diceModifier = this.GetDiceModifier(career.QualificationCheck, character);
@@ -204,8 +204,11 @@ export class CharacterUtilities {
 
 			if (qualificationCheckRoll + diceModifier >= career.QualificationCheck?.TargetValue) {
 				this.AddLifePath(character, "Qualification successful");
+				character.currentStageId = 6; // Select an assignment
+				character.Terms[character.Terms.length - 1].Qualified = true;
 			} else {
 				this.AddLifePath(character, "Qualification failed");
+				character.Terms[character.Terms.length - 1].Qualified = false;
 				return;
 			}
 		}
@@ -214,7 +217,6 @@ export class CharacterUtilities {
 			return;
 		}
 
-		character.currentStageId = 7;
 		const assignmentId = parseInt(careerString.slice(0, 1));
 		careerString = careerString.slice(1);
 
@@ -226,8 +228,7 @@ export class CharacterUtilities {
 
 		this.AddLifePath(character, "Assignment: " + assignment.Name);
 		this.AddLifePath(character, "Assignment description: " + assignment.Description);
-
-		character.Terms.push(new Term(termNumber, age, career.Name, true, assignment.Name));
+		character.Terms[character.Terms.length - 1].Assignment = assignment.Name;
 
 		if (termNumber === 1) {
 			this.AddLifePath(character, `First term learn all ${career.Name}'s service skills`);
@@ -237,18 +238,24 @@ export class CharacterUtilities {
 			}
 		}
 
-		if (careerString.length < 2) {
+		character.currentStageId = 7; // Select a training table
+
+		if (careerString.length < 1) {
 			return;
 		}
 
 		const trainingTableId = parseInt(careerString.slice(0, 1));
 		careerString = careerString.slice(1);
 		const trainingTable = career.TrainingTables.find((t: TrainingTable) => t.Id === trainingTableId);
+		this.AddLifePath(character, "Training table selected: " + trainingTable?.Name);
 
+		character.currentStageId = 8; // Roll on training table
+		if (careerString.length < 1) {
+			return;
+		}
 		const trainingRoll = parseInt(careerString.slice(0, 1));
 		careerString = careerString.slice(1);
 
-		this.AddLifePath(character, "Training table selected: " + trainingTable?.Name);
 		this.AddLifePath(character, "Training rolled: " + trainingRoll);
 
 		if (trainingTable) {
@@ -259,6 +266,7 @@ export class CharacterUtilities {
 			this.AddRewardToCharacter(character, reward);
 		}
 
+		character.currentStageId = 9; // Survival check
 		if (careerString.length < 2) {
 			return;
 		}
@@ -281,6 +289,19 @@ export class CharacterUtilities {
 			this.AddLifePath(character, "Survival failed");
 			character.Terms[character.Terms.length - 1].Survived = false;
 		}
+
+		character.currentStageId = 10; // Event roll
+		if (careerString.length < 2) {
+			return;
+		}
+
+		const eventsRoll = parseInt(careerString.slice(0, 2));
+		careerString = careerString.slice(2);
+
+		this.AddLifePath(character, "Events rolled: " + eventsRoll);
+
+		const event = career.Events.find((e) => e.Id == eventsRoll);
+		this.AddLifePath(character, "Event: " + event?.Description);
 	}
 
 	public static GetDiceModifier(diceCheck: DiceCheck | null, character: Character): number {
@@ -417,4 +438,6 @@ export class CharacterUtilities {
 			this.AddRewardToCharacter(character, reward, isLevelZeroOnly);
 		}
 	}
+
+	public static GetCurrentCareerId(character: Character) {}
 }

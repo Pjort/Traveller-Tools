@@ -14,7 +14,8 @@ export const useCharacterStore = defineStore("character", {
 			Skills: new Array<Skill>(),
 			Terms: new Array<Term>(),
 			currentStageId: 1,
-			currentCareerId: 0,
+			Events: new Array<Event>(),
+			Mishaps: new Array<Event>(),
 		} as Character,
 		characterInput: {
 			Name: "",
@@ -73,8 +74,20 @@ export const useCharacterStore = defineStore("character", {
 		getCharacterInput: (state) => state.characterInput,
 		getCurrentStageId: (state) => state.character.currentStageId,
 		getCurrentCareer: (state) => {
-			const career = CareersDb.GetCareerById(state.character.currentCareerId);
+			let careerName = state.character.Terms[state.character.Terms.length - 1].Career;
+			if (!careerName) return null;
+			const career = CareersDb.GetCareerByName(careerName);
 			return career;
+		},
+		getCurrentAssignment: (state) => {
+			let assignmentName = state.character.Terms[state.character.Terms.length - 1].Assignment;
+			if (!assignmentName) return null;
+			let careerName = state.character.Terms[state.character.Terms.length - 1].Career;
+			if (!careerName) return null;
+			const career = CareersDb.GetCareerByName(careerName);
+			if (!career) return null;
+			let assignment = career.Assignments.find((a) => a.Name == assignmentName);
+			return assignment;
 		},
 	},
 });

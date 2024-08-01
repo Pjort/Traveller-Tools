@@ -26,6 +26,10 @@ export class CareersDb {
 		return this.careers.find((c) => c.Id === id);
 	}
 
+	public static GetCareerByName(name: string): Career | undefined {
+		return this.careers.find((c) => c.Name === name);
+	}
+
 	static {
 		this.careers.push(Agent);
 		this.careers.push(Army);

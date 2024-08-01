@@ -6,8 +6,12 @@
 			<CharacteristicsStage v-if="currentStageId === 2" />
 			<BackgroundSkillsStage v-if="currentStageId == 3" />
 			<SelectCareerStage v-if="currentStageId == 4" />
-			<QualificationRollStage v-if="currentStageId == 5" />
-			<SelectAssignment v-if="currentStageId == 6" />
+			<RollQualificationStage v-if="currentStageId == 5" />
+			<SelectAssignmentStage v-if="currentStageId == 6" />
+			<SelectTrainingTableStage v-if="currentStageId == 7" />
+			<RollTrainingTableStage v-if="currentStageId == 8" />
+			<RollSurvivalStage v-if="currentStageId == 9" />
+			<RollEventStage v-if="currentStageId == 10" />
 			
 		</div>
 		<br />

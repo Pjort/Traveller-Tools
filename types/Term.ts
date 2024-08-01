@@ -4,6 +4,7 @@ export class Term {
 	Career?: string;
 	Qualified?: boolean;
 	Assignment?: string;
+	SelectedTrainingTable?: number;
 	Survived?: boolean;
 	Advanced?: boolean;
 
@@ -13,6 +14,7 @@ export class Term {
 		career?: string,
 		qualified?: boolean,
 		assignment?: string,
+		selectedTrainingTable?: number,
 		survived?: boolean,
 		advanced?: boolean
 	) {
@@ -21,6 +23,7 @@ export class Term {
 		this.Career = career;
 		this.Qualified = qualified;
 		this.Assignment = assignment;
+		this.SelectedTrainingTable = selectedTrainingTable;
 		this.Survived = survived;
 		this.Advanced = advanced;
 	}

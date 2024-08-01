@@ -15,18 +15,12 @@
 const characterStore = useCharacterStore();
 const assignments = computed(() => characterStore.getCurrentCareer?.Assignments);
 const currentTermString = computed(() => characterStore.getCharacterInput.TermsString);
-const selectedAssignment = ref<number>(0);
-
-const updateTermString = () => {
-	let termString = currentTermString.value + selectedAssignment.value.toString();
-	characterStore.updateTermsString(termString);
-};
-
-watch(selectedAssignment, () => {
-	updateTermString();
-});
+const selectedAssignment = ref<number | null>(null);
 
 const ApplyInput = () => {
+	if (!selectedAssignment.value) return;
+	let termString = currentTermString.value + selectedAssignment.value.toString();
+	characterStore.updateTermsString(termString);
 	characterStore.parseCharacter();
 };
 </script>

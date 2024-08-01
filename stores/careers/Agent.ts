@@ -1,4 +1,4 @@
-import { Career, Assignment, DiceCheck, TrainingTable, Reward } from "#imports";
+import { Career, Assignment, DiceCheck, TrainingTable, Reward, Event } from "#imports";
 
 export const Agent: Career = new Career(
 	1,
@@ -70,5 +70,34 @@ export const Agent: Career = new Career(
 			new Reward(5, "Deception"),
 			new Reward(6, "Streetwise"),
 		]),
-	]
+	],
+	[
+		new Event(2, "Disater! Roll on the Mishap Table but you are not ejected from this career."),
+		new Event(
+			3,
+			"An investigation takes on a dangerous turn. Make Investigate 8+ or Streetwise 8+. If you fail, roll on the Mishap Table. If you succeed, increase one of these skills by one level: Deception, Jack-of-all-Trades, Persuade or Tactics."
+		),
+		new Event(
+			4,
+			"You complete a mission for your superiors and are suitably rewarded. Gain DM+1 to any one Benefit rill from this career."
+		),
+		new Event(5, "You establish a network of contacts. Gain D3 Contacts."),
+		new Event(
+			6,
+			"You are given advanced training in a specialist field. Roll EDU 8+ to increase any one skill you already have by one level."
+		),
+		new Event(7, "Life Event. Roll on the Life Events Table."),
+		new Event(
+			8,
+			"You go undercover to investigate an enemy. Roll Deception 8+. If you succeed, roll immediately on the Rogue or Citizen Events table and make one roll on any Specialist skill table for that career. If you fail, roll immediately on the Rogue or Citizen Mishap table."
+		),
+		new Event(9, "You go above and beyond the call of duty. Gain DM+2 to your next advancement roll."),
+		new Event(10, "You are given specialist training in vehicles. Gain one of Drive 1, Flyer 1, Pilot 1 or Gunner 1."),
+		new Event(
+			11,
+			"You are befriended by a senior agent. Either increase Investigate by one level or DM+4 to an advancement roll thanks to their aid."
+		),
+		new Event(12, "Your efforts uncover a major conspiracy against your employers. You are automatically promoted."),
+	],
+	[new Event(1, ""), new Event(2, ""), new Event(3, ""), new Event(4, ""), new Event(5, ""), new Event(6, "")]
 );

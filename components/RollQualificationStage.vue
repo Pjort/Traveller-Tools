@@ -20,7 +20,7 @@
 const characterStore = useCharacterStore();
 const currentCareer = computed(() => characterStore.getCurrentCareer);
 const currentTermString = computed(() => characterStore.getCharacterInput.TermsString);
-const roll: Ref<Number> = ref(0);
+const roll: Ref<number> = ref(0);
 
 const updateTermString = () => {
 	let termString = currentTermString.value + roll.value.toString().padStart(2, "0");
@@ -28,6 +28,10 @@ const updateTermString = () => {
 };
 
 const ApplyInput = () => {
+	if (roll.value < 2 || roll.value > 12) {
+		alert("Roll must be between 2 and 12");
+		return;
+	}
 	updateTermString();
 	characterStore.parseCharacter();
 };
