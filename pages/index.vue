@@ -36,7 +36,25 @@ import { Race } from "#imports";
 
 const characterStore = useCharacterStore();
 const character = computed(() => characterStore.character);
+const characterInput = computed(() => characterStore.characterInput);
 const currentStageId = computed(() => character.value.currentStageId);
+
+const updateURL = () => {
+	const url = new URL(window.location.href);
+	if (characterInput.value.Name != "") url.searchParams.set("name", characterInput.value.Name);
+	if (characterInput.value.Race != 0) url.searchParams.set("Race", characterInput.value.Race.toString());
+	if (characterInput.value.HomeWorld != null && characterInput.value.HomeWorld != "")
+		url.searchParams.set("homeWorld", characterInput.value.HomeWorld);
+	if (characterInput.value.CharacteristicsString != null && characterInput.value.CharacteristicsString != "")
+		url.searchParams.set("characteristics", characterInput.value.CharacteristicsString);
+	if (characterInput.value.BackgroundSkillsString != null && characterInput.value.BackgroundSkillsString != "")
+		url.searchParams.set("backgroundSkills", characterInput.value.BackgroundSkillsString);
+	if (characterInput.value.TermsString != null && characterInput.value.TermsString != "")
+		url.searchParams.set("terms", characterInput.value.TermsString);
+	window.history.replaceState({}, "", url);
+};
+
+watch(characterInput, updateURL, { deep: true });
 
 onMounted(() => {
 	// Get Name, Race and Home World from params
