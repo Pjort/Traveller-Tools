@@ -73,3 +73,6 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+Example link:
+http://localhost:3000/?name=Pjort&race=0&homeWorld=Earth&characteristics=11111111111100&backgroundSkills=010203&terms=013412408NT011221112
