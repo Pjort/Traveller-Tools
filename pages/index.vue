@@ -12,6 +12,8 @@
 			<RollTrainingTableStage v-if="currentStageId == 8" />
 			<RollSurvivalStage v-if="currentStageId == 9" />
 			<RollEventStage v-if="currentStageId == 10" />
+			<SelectDraftOrDriftStage v-if="currentStageId == 60" />
+			<RollDraftStage v-if="currentStageId == 61" />
 			
 		</div>
 		<br />
@@ -22,6 +24,7 @@
 		<p>Home World: {{ character.HomeWorld }}</p>
 		<p>Characteristics: {{ character.Characteristics }}</p>
 		<p>Skills: {{ character.Skills }}</p>
+		<p>TermsString: {{ characterStore.getCharacterInput.TermsString }}</p>
 		<p>Terms: {{ character.Terms }}</p>
 		<br />
 		<br />

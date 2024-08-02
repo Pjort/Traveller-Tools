@@ -179,7 +179,7 @@ export class CharacterUtilities {
 
 		const careerId = parseInt(careerString.slice(0, 2));
 		careerString = careerString.slice(2);
-		const career = CareersDb.GetCareerById(careerId);
+		let career = CareersDb.GetCareerById(careerId);
 
 		if (!career) {
 			throw new Error("Invalid career ID: " + careerId);
@@ -209,7 +209,54 @@ export class CharacterUtilities {
 			} else {
 				this.AddLifePath(character, "Qualification failed");
 				character.Terms[character.Terms.length - 1].Qualified = false;
-				return;
+
+				character.currentStageId = 60; // Submit to draft or take Drifter
+				this.AddLifePath(character, "Submit to Draft or become a Drifter");
+
+				if (careerString.length < 1) {
+					return;
+				}
+
+				const draftOrDrifter = careerString.slice(0, 1);
+				careerString = careerString.slice(1);
+
+				if (draftOrDrifter == "1") {
+					this.AddLifePath(character, "Chose to submit to Draft");
+
+					character.currentStageId = 61; // Draft roll
+					if (careerString.length < 1) {
+						return;
+					}
+
+					const roolForDraft = careerString.slice(0, 1);
+					careerString = careerString.slice(1);
+
+					this.AddLifePath(character, "Draft roll: " + roolForDraft);
+					if (roolForDraft == "1") {
+						career = CareersDb.GetCareerByName("Navy");
+					} else if (roolForDraft == "2") {
+						career = CareersDb.GetCareerByName("Army");
+					} else if (roolForDraft == "3") {
+						career = CareersDb.GetCareerByName("Marine");
+					} else if (roolForDraft == "4") {
+						career = CareersDb.GetCareerByName("Merchant");
+					} else if (roolForDraft == "5") {
+						career = CareersDb.GetCareerByName("Scout");
+					} else if (roolForDraft == "6") {
+						career = CareersDb.GetCareerByName("Agent");
+					} else {
+						throw new Error("Invalid draft roll: " + roolForDraft);
+					}
+
+					this.AddLifePath(character, "Drafted into: " + career?.Name);
+					character.Terms[character.Terms.length - 1].Career = career?.Name;
+					character.currentStageId = 6; // Select an assignment
+				} else {
+					this.AddLifePath(character, "Chose to become a Drifter");
+					career = CareersDb.GetCareerByName("Drifter");
+					character.Terms[character.Terms.length - 1].Career = career?.Name;
+					character.currentStageId = 6; // Select an assignment
+				}
 			}
 		}
 
@@ -220,7 +267,7 @@ export class CharacterUtilities {
 		const assignmentId = parseInt(careerString.slice(0, 1));
 		careerString = careerString.slice(1);
 
-		const assignment = career.Assignments.find((a: Assignment) => a.Id === assignmentId);
+		const assignment = career?.Assignments.find((a: Assignment) => a.Id === assignmentId);
 
 		if (!assignment) {
 			throw new Error("Invalid assignment ID: " + assignmentId);
@@ -231,8 +278,8 @@ export class CharacterUtilities {
 		character.Terms[character.Terms.length - 1].Assignment = assignment.Name;
 
 		if (termNumber === 1) {
-			this.AddLifePath(character, `First term learn all ${career.Name}'s service skills`);
-			const serviceSkillsTrainingTable = career.TrainingTables.find((t: TrainingTable) => t.Id === 2);
+			this.AddLifePath(character, `First term learn all ${career?.Name}'s service skills`);
+			const serviceSkillsTrainingTable = career?.TrainingTables.find((t: TrainingTable) => t.Id === 2);
 			if (serviceSkillsTrainingTable) {
 				this.AddRewardsToCharacter(character, serviceSkillsTrainingTable.Rewards, true);
 			}
@@ -246,7 +293,7 @@ export class CharacterUtilities {
 
 		const trainingTableId = parseInt(careerString.slice(0, 1));
 		careerString = careerString.slice(1);
-		const trainingTable = career.TrainingTables.find((t: TrainingTable) => t.Id === trainingTableId);
+		const trainingTable = career?.TrainingTables.find((t: TrainingTable) => t.Id === trainingTableId);
 		this.AddLifePath(character, "Training table selected: " + trainingTable?.Name);
 
 		character.currentStageId = 8; // Roll on training table
@@ -300,8 +347,10 @@ export class CharacterUtilities {
 
 		this.AddLifePath(character, "Events rolled: " + eventsRoll);
 
-		const event = career.Events.find((e) => e.Id == eventsRoll);
+		const event = career?.Events.find((e) => e.Id == eventsRoll);
 		this.AddLifePath(character, "Event: " + event?.Description);
+
+		character.currentStageId = 11; // Advancement roll
 	}
 
 	public static GetDiceModifier(diceCheck: DiceCheck | null, character: Character): number {
