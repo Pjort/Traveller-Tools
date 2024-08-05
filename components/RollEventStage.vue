@@ -3,12 +3,9 @@
 		<h1 class="p-2">Roll Event</h1>
 
 		<div class="p-2">
-			<div class="p-2">
-				Roll:
-				<input class="bg-slate-200" type="number" v-model.number="roll" placeholder="2D" min="0" max="15" />
-			</div>
+			<DiceInput v-model="roll" :numDice="2" />
 		</div>
-		<button class="p-2 bg-slate-400" @click="ApplyInput">Apply</button>
+		<button @click="ApplyInput" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Apply</button>
 	</div>
 </template>
 

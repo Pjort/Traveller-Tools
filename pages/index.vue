@@ -39,16 +39,17 @@
 							<span class="font-semibold">Strength:</span> {{ character.Characteristics.Strength }}
 						</li>
 						<li class="text-gray-600">
-							<span class="font-semibold">Dexterity:</span> {{ character.Characteristics.Dexterity }}
-						</li>
-						<li class="text-gray-600">
-							<span class="font-semibold">Endurance:</span> {{ character.Characteristics.Endurance }}
-						</li>
-						<li class="text-gray-600">
 							<span class="font-semibold">Intellect:</span> {{ character.Characteristics.Intellect }}
 						</li>
 						<li class="text-gray-600">
+							<span class="font-semibold">Dexterity:</span> {{ character.Characteristics.Dexterity }}
+						</li>
+
+						<li class="text-gray-600">
 							<span class="font-semibold">Education:</span> {{ character.Characteristics.Education }}
+						</li>
+						<li class="text-gray-600">
+							<span class="font-semibold">Endurance:</span> {{ character.Characteristics.Endurance }}
 						</li>
 						<li class="text-gray-600">
 							<span class="font-semibold">Social Standing:</span> {{ character.Characteristics.SocialStanding }}

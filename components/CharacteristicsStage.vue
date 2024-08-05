@@ -4,77 +4,35 @@
 		<div>
 			<div class="p-2">
 				Strength:
-				<input
-					class="bg-slate-200"
-					type="number"
-					v-model.number="characteristics.Strength"
-					placeholder="Strength"
-					min="0"
-					max="15"
-				/>
+				<DiceInput v-model="characteristics.Strength" :numDice="2" />
 			</div>
 			<div class="p-2">
 				Dexterity:
-				<input
-					class="bg-slate-200"
-					type="number"
-					v-model.number="characteristics.Dexterity"
-					placeholder="Dexterity"
-					min="0"
-					max="15"
-				/>
+				<DiceInput v-model="characteristics.Dexterity" :numDice="2" />
 			</div>
 			<div class="p-2">
 				Endurance:
-				<input
-					class="bg-slate-200"
-					type="number"
-					v-model.number="characteristics.Endurance"
-					placeholder="Endurance"
-					min="0"
-					max="15"
-				/>
+				<DiceInput v-model="characteristics.Endurance" :numDice="2" />
 			</div>
 			<div class="p-2">
 				Intellect:
-				<input
-					class="bg-slate-200"
-					type="number"
-					v-model.number="characteristics.Intellect"
-					placeholder="Intelligence"
-					min="0"
-					max="15"
-				/>
+				<DiceInput v-model="characteristics.Intellect" :numDice="2" />
 			</div>
 			<div class="p-2">
 				Education:
-				<input
-					class="bg-slate-200"
-					type="number"
-					v-model.number="characteristics.Education"
-					placeholder="Education"
-					min="0"
-					max="15"
-				/>
+				<DiceInput v-model="characteristics.Education" :numDice="2" />
 			</div>
 			<div class="p-2">
 				Social Standing:
-				<input
-					class="bg-slate-200"
-					type="number"
-					v-model.number="characteristics.SocialStanding"
-					placeholder="Social Standing"
-					min="0"
-					max="15"
-				/>
+				<DiceInput v-model="characteristics.SocialStanding" :numDice="2" />
 			</div>
 		</div>
-		<button class="p-2 bg-slate-400" @click="ApplyInput">Apply</button>
+		<button @click="ApplyInput" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Apply</button>
 	</div>
 </template>
 
 <script lang="ts" setup>
-const characteristics = ref(new Characteristics(7,7,7,7,7,7,0));
+const characteristics = ref(new Characteristics(0, 0, 0, 0, 0, 0, 0));
 
 const characterStore = useCharacterStore();
 

@@ -1,20 +1,31 @@
 <template>
 	<div>
-		<h1 class="p-2">Basic information</h1>
-		<div class="p-2">Name: <input class="bg-slate-200" type="text" v-model="name" placeholder="Name" /></div>
-		<div class="p-2">
-			Home world:
-			<input class="bg-slate-200" type="text" v-model="homeWorld" placeholder="Home World" />
+		<h1 class="text-xl font-bold mb-4">Basic Information</h1>
+		<div class="space-y-4">
+			<div class="flex items-center">
+				<label for="name" class="w-24">Name:</label>
+				<input id="name" class="bg-slate-200 px-2 py-1 rounded" type="text" v-model="name" placeholder="Name" />
+			</div>
+			<div class="flex items-center">
+				<label for="homeWorld" class="w-24">Home World:</label>
+				<input
+					id="homeWorld"
+					class="bg-slate-200 px-2 py-1 rounded"
+					type="text"
+					v-model="homeWorld"
+					placeholder="Home World"
+				/>
+			</div>
+			<div class="flex items-center">
+				<label for="race" class="w-24">Race:</label>
+				<select id="race" v-model="race" class="bg-slate-200 px-2 py-1 rounded">
+					<option value="0">Human</option>
+					<option value="1">Aslan</option>
+					<option value="2">Vargr</option>
+				</select>
+			</div>
 		</div>
-		<div class="p-2">
-			Race:
-			<select name="race" v-model="race">
-				<option value="0">Human</option>
-				<option value="1">Aslan</option>
-				<option value="2">Vargr</option>
-			</select>
-		</div>
-		<button class="p-2 bg-slate-400" @click="ApplyInput">Apply</button>
+		<button @click="ApplyInput" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Apply</button>
 	</div>
 </template>
 
@@ -36,6 +47,7 @@ const race = computed({
 });
 
 const ApplyInput = () => {
+	if (!name.value) return;
 	characterStore.parseCharacter();
 };
 </script>

@@ -8,7 +8,7 @@
 				<label :for="skill.Name">{{ " " + skill.Name }}</label>
 			</div>
 		</div>
-		<button class="p-2 bg-slate-400" @click="ApplyInput">Apply</button>
+		<button @click="ApplyInput" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Apply</button>
 	</div>
 </template>
 
