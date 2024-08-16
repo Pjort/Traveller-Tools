@@ -5,9 +5,7 @@ export class CharacterUtilities {
 	public static ParseCharacter(input: CharacterInput): Character {
 		const character = new Character(input.Name, input.Race, input.HomeWorld, 18);
 
-		this.AddLifePath(character, "--------------------------");
-		this.AddLifePath(character, "--- Term 0 (18 years) ---");
-		this.AddLifePath(character, "--------------------------");
+		this.AddLifePath(character, "## Term 0 (18 years)");
 
 		character.currentStageId = 2; // Characteristics roll
 
@@ -15,7 +13,7 @@ export class CharacterUtilities {
 		if (input.CharacteristicsString) {
 			characteristics = this.ParseCharacteristics(input.CharacteristicsString);
 			character.Characteristics = characteristics;
-			this.AddLifePath(character, "Initial characteristics rolls: " + (characteristics?.ToString() ?? "No characteristics rolled"));
+			this.AddLifePath(character, "**Initial characteristics rolls:** " + (characteristics?.ToString() ?? "No characteristics rolled"));
 
 			// Alter characteristics by race
 			if (character.Race == Race.Aslan) {
@@ -41,7 +39,7 @@ export class CharacterUtilities {
 			const backgroundSkills = this.ParseBackgroundSkills(input.BackgroundSkillsString);
 			this.AddSkillsToCharacter(character, backgroundSkills, false);
 
-			let backgroundLifePath = "Background skills: ";
+			let backgroundLifePath = "**Background skills:** ";
 			for (const skill of character.Skills) {
 				backgroundLifePath += skill.ToString() + ", ";
 			}
@@ -115,17 +113,17 @@ export class CharacterUtilities {
 			if (skill.Level > existingSkill.Level) {
 				existingSkill.Level = skill.Level;
 				if (addToLifePath) {
-					this.AddLifePath(character, "Gained: " + skill.ToString());
+					this.AddLifePath(character, "**Gained:** " + skill.ToString());
 				}
 			} else {
 				if (addToLifePath) {
-					this.AddLifePath(character, "Gained: " + skill.ToString() + " (already known)");
+					this.AddLifePath(character, "**Gained:** " + skill.ToString() + " (already known)");
 				}
 			}
 		} else {
 			character.Skills.push(skill);
 			if (addToLifePath) {
-				this.AddLifePath(character, "Gained: " + skill.ToString());
+				this.AddLifePath(character, "**Gained:** " + skill.ToString());
 			}
 		}
 
@@ -150,16 +148,18 @@ export class CharacterUtilities {
 			const termNumber = i + 1;
 			const age = termNumber * 4 + 18;
 			character.Age = age;
+			character.currentStageId = 4; // Select a career
 			this.ParseCareer(character, careerString, termNumber, age);
 		}
 	}
 
 	private static ParseCareer(character: Character, careerString: CareerString, termNumber: number, age: number) {
-		this.AddLifePath(character, "--------------------------");
-		this.AddLifePath(character, "--- Term " + termNumber + " (" + age + " years) ---");
-		this.AddLifePath(character, "--------------------------");
+		this.AddLifePath(character, "## Term " + termNumber + " (" + age + " years)");
 
 		let career = this.ParseCareerSelection(character, termNumber, age, careerString);
+		if (!career) {
+			return;
+		}
 
 		// Qualification roll
 		if (!this.ParseQualificationRoll(character, career, careerString)) return;
@@ -189,7 +189,7 @@ export class CharacterUtilities {
 
 	private static ParseCareerSelection(character: Character, termNumber: number, age: number, careerString: CareerString): Career | undefined {
 		if (careerString.value.length < 2) {
-			throw new Error("Career string must be at least 2 characters long");
+			return;
 		}
 
 		const careerId = parseInt(careerString.value.slice(0, 2));
@@ -199,7 +199,7 @@ export class CharacterUtilities {
 		if (!career) {
 			throw new Error("Invalid career ID: " + careerId);
 		}
-		this.AddLifePath(character, "Career: " + career.Name);
+		this.AddLifePath(character, "**Career:** " + career.Name);
 
 		character.Terms.push(new Term(termNumber, age, career.Name));
 
@@ -297,7 +297,7 @@ export class CharacterUtilities {
 			throw new Error("Invalid assignment ID: " + assignmentId);
 		}
 
-		this.AddLifePath(character, "Assignment: " + assignment.Name);
+		this.AddLifePath(character, "**Assignment:** " + assignment.Name);
 		this.AddLifePath(character, "Assignment description: " + assignment.Description);
 		character.Terms[character.Terms.length - 1].Assignment = assignment.Name;
 
@@ -389,7 +389,7 @@ export class CharacterUtilities {
 		this.AddLifePath(character, "Events rolled: " + eventsRoll);
 
 		const event = career?.Events.find((e) => e.Id == eventsRoll);
-		this.AddLifePath(character, "Event: " + event?.Description);
+		this.AddLifePath(character, "**Event:** " + event?.Description);
 
 		character.currentStageId = 11; // Advancement roll
 		return true;
@@ -479,7 +479,7 @@ export class CharacterUtilities {
 				throw new Error("Characteristics must be rolled before adding rewards");
 			}
 
-			this.AddLifePath(character, "Gained: " + reward.Description);
+			this.AddLifePath(character, "**Gained:** " + reward.Description);
 
 			switch (characteristicName) {
 				case "STR":

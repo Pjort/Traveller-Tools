@@ -15,17 +15,13 @@
 const characterStore = useCharacterStore();
 const careers = computed(() => CareersDb.GetCareers());
 const selectedCareer = ref<string | null>(null);
-
-const updateTermString = () => {
-	let termString = selectedCareer.value ? selectedCareer.value.toString().padStart(2, "0") : "";
-	characterStore.updateTermsString(termString);
-};
-
-watch(selectedCareer, () => {
-	updateTermString();
-});
+const currentTermString = computed(() => characterStore.getCharacterInput.TermsString);
 
 const ApplyInput = () => {
+	let termString = selectedCareer.value?.toString().padStart(2, "0");
+	if (!termString) return;
+	termString = currentTermString.value + termString;
+	characterStore.updateTermsString(termString);
 	characterStore.parseCharacter();
 };
 </script>

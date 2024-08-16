@@ -1,8 +1,8 @@
 <template>
 	<div class="m-2">
 		<p class="font-semibold">Character generator</p>
-		<div class="flex">
-			<div>
+		<div class="md:flex">
+			<div class="m-2">
 				<CharacterStage v-if="currentStageId === 1" />
 				<CharacteristicsStage v-if="currentStageId === 2" />
 				<BackgroundSkillsStage v-if="currentStageId == 3" />
@@ -16,47 +16,29 @@
 				<SelectDraftOrDriftStage v-if="currentStageId == 60" />
 				<RollDraftStage v-if="currentStageId == 61" />
 
-				<br />
-				<br />
-				<div v-if="character.LifePath.length > 0">
-					<p>Lifepath:</p>
-					<p v-for="path in character.LifePath" class="max-w-lg">{{ path }}</p>
+				<div class="hidden md:block pt-5" v-if="character.LifePath.length > 0">
+					<div v-for="path in character.LifePath" :key="path" class="prose max-w-lg mx-auto mt-1" v-html="renderMarkdown(path)"></div>
 				</div>
 			</div>
-			<div class="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md" v-if="character.Name">
+			<div class="w-full max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md" v-if="character.Name">
 				<h2 class="text-2xl font-bold mb-4">{{ character.Name }}</h2>
 				<div class="mb-4">
 					<p class="text-gray-700"><span class="font-semibold">Age:</span> {{ character.Age }}</p>
 					<p class="text-gray-700"><span class="font-semibold">Race:</span> {{ Race[character.Race] }}</p>
-					<p class="text-gray-700" v-if="character.HomeWorld">
-						<span class="font-semibold">Home World:</span> {{ character.HomeWorld }}
-					</p>
+					<p class="text-gray-700" v-if="character.HomeWorld"><span class="font-semibold">Home World:</span> {{ character.HomeWorld }}</p>
 				</div>
 				<div class="mb-4" v-if="character.Characteristics">
 					<h3 class="text-xl font-semibold mb-2">Characteristics</h3>
 					<ul class="grid grid-cols-2 gap-4">
-						<li class="text-gray-600">
-							<span class="font-semibold">Strength:</span> {{ character.Characteristics.Strength }}
-						</li>
-						<li class="text-gray-600">
-							<span class="font-semibold">Intellect:</span> {{ character.Characteristics.Intellect }}
-						</li>
-						<li class="text-gray-600">
-							<span class="font-semibold">Dexterity:</span> {{ character.Characteristics.Dexterity }}
-						</li>
-
-						<li class="text-gray-600">
-							<span class="font-semibold">Education:</span> {{ character.Characteristics.Education }}
-						</li>
-						<li class="text-gray-600">
-							<span class="font-semibold">Endurance:</span> {{ character.Characteristics.Endurance }}
-						</li>
+						<li class="text-gray-600"><span class="font-semibold">Strength:</span> {{ character.Characteristics.Strength }}</li>
+						<li class="text-gray-600"><span class="font-semibold">Intellect:</span> {{ character.Characteristics.Intellect }}</li>
+						<li class="text-gray-600"><span class="font-semibold">Dexterity:</span> {{ character.Characteristics.Dexterity }}</li>
+						<li class="text-gray-600"><span class="font-semibold">Education:</span> {{ character.Characteristics.Education }}</li>
+						<li class="text-gray-600"><span class="font-semibold">Endurance:</span> {{ character.Characteristics.Endurance }}</li>
 						<li class="text-gray-600">
 							<span class="font-semibold">Social Standing:</span> {{ character.Characteristics.SocialStanding }}
 						</li>
-						<li class="text-gray-600">
-							<span class="font-semibold">Psionics:</span> {{ character.Characteristics.Psionics }}
-						</li>
+						<li class="text-gray-600"><span class="font-semibold">Psionics:</span> {{ character.Characteristics.Psionics }}</li>
 					</ul>
 				</div>
 				<div class="mb-4" v-if="character.Skills.length > 0">
@@ -78,9 +60,7 @@
 						<p v-if="term.Qualified !== undefined" class="ml-4">
 							<span class="font-semibold">Qualified:</span> {{ term.Qualified ? "Yes" : "No" }}
 						</p>
-						<p v-if="term.Assignment" class="ml-4">
-							<span class="font-semibold">Assignment:</span> {{ term.Assignment }}
-						</p>
+						<p v-if="term.Assignment" class="ml-4"><span class="font-semibold">Assignment:</span> {{ term.Assignment }}</p>
 						<p v-if="term.SelectedTrainingTable !== undefined" class="ml-4">
 							<span class="font-semibold">Selected Training Table:</span> {{ term.SelectedTrainingTable }}
 						</p>
@@ -93,17 +73,26 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="block md:hidden" v-if="character.LifePath.length > 0">
+				<div v-for="path in character.LifePath" :key="path" class="prose max-w-lg mx-auto mt-1" v-html="renderMarkdown(path)"></div>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script lang="ts" setup>
 import { Race } from "#imports";
+import { marked } from "marked";
 
 const characterStore = useCharacterStore();
 const character = computed(() => characterStore.character);
 const characterInput = computed(() => characterStore.characterInput);
 const currentStageId = computed(() => character.value.currentStageId);
+
+const renderMarkdown = (markdown: string) => {
+	return marked(markdown);
+};
 
 const updateURL = () => {
 	const url = new URL(window.location.href);
