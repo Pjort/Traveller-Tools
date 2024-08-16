@@ -11,7 +11,6 @@
 
 <script lang="ts" setup>
 const characterStore = useCharacterStore();
-const currentCareer = computed(() => characterStore.getCurrentCareer);
 const currentTermString = computed(() => characterStore.getCharacterInput.TermsString);
 const roll: Ref<number> = ref(0);
 
