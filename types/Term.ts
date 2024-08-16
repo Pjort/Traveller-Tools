@@ -1,3 +1,4 @@
+import { Rank } from "#imports";
 export class Term {
 	Number: number;
 	Age: number;
@@ -7,6 +8,7 @@ export class Term {
 	SelectedTrainingTable?: number;
 	Survived?: boolean;
 	Advanced?: boolean;
+	Rank?: Rank;
 
 	constructor(
 		number: number,
@@ -16,7 +18,8 @@ export class Term {
 		assignment?: string,
 		selectedTrainingTable?: number,
 		survived?: boolean,
-		advanced?: boolean
+		advanced?: boolean,
+		rank?: Rank
 	) {
 		this.Number = number;
 		this.Age = age;
@@ -26,5 +29,6 @@ export class Term {
 		this.SelectedTrainingTable = selectedTrainingTable;
 		this.Survived = survived;
 		this.Advanced = advanced;
+		this.Rank = rank;
 	}
 }

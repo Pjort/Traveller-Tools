@@ -1,4 +1,4 @@
-import { DiceCheck } from "#imports";
+import { DiceCheck, Rank } from "#imports";
 
 export class Assignment {
 	Id: number;
@@ -6,21 +6,14 @@ export class Assignment {
 	Description?: string;
 	SurvivalCheck: DiceCheck;
 	AdvancementCheck: DiceCheck;
-	Rank?: number;
+	Ranks?: Rank[];
 
-	constructor(
-		id: number,
-		survivalCheck: DiceCheck,
-		advancementCheck: DiceCheck,
-		name?: string,
-		description?: string,
-		rank?: number
-	) {
+	constructor(id: number, survivalCheck: DiceCheck, advancementCheck: DiceCheck, name?: string, description?: string, ranks?: Rank[]) {
 		this.Id = id;
 		this.Name = name;
 		this.Description = description;
 		this.SurvivalCheck = survivalCheck;
 		this.AdvancementCheck = advancementCheck;
-		this.Rank = rank;
+		this.Ranks = ranks;
 	}
 }

@@ -181,10 +181,13 @@ export class CharacterUtilities {
 		if (!this.ParseTrainingTableRoll(character, career.TrainingTables[0], careerString)) return;
 
 		// Survival check
-		if (!this.ParseSurvivalCheck(character, career, assignment, careerString)) return;
+		if (!this.ParseSurvivalCheck(character, assignment, careerString)) return;
 
 		// Event roll
 		if (!this.ParseEventRoll(character, career, careerString)) return;
+
+		// Advancement roll
+		if (!this.ParseAdvancementRoll(character, assignment, careerString)) return;
 	}
 
 	private static ParseCareerSelection(character: Character, termNumber: number, age: number, careerString: CareerString): Career | undefined {
@@ -349,7 +352,7 @@ export class CharacterUtilities {
 		return true;
 	}
 
-	private static ParseSurvivalCheck(character: Character, career: Career, assignment: Assignment, careerString: CareerString): boolean {
+	private static ParseSurvivalCheck(character: Character, assignment: Assignment, careerString: CareerString): boolean {
 		if (careerString.value.length < 2) {
 			return false;
 		}
@@ -392,6 +395,42 @@ export class CharacterUtilities {
 		this.AddLifePath(character, "**Event:** " + event?.Description);
 
 		character.currentStageId = 11; // Advancement roll
+		return true;
+	}
+
+	private static ParseAdvancementRoll(character: Character, assignment: Assignment, careerString: CareerString): boolean {
+		if (careerString.value.length < 2) {
+			return false;
+		}
+
+		const advancementRoll = parseInt(careerString.value.slice(0, 2));
+		careerString.value = careerString.value.slice(2);
+		const advancementModifier = this.GetDiceModifier(assignment.AdvancementCheck, character);
+
+		this.AddLifePath(
+			character,
+			`Advancement roll (${assignment.AdvancementCheck?.CharacteristicsType} ${
+				assignment.AdvancementCheck?.TargetValue
+			}+): ${advancementRoll}(roll) + ${advancementModifier}(DM) = ${advancementRoll + advancementModifier}`
+		);
+
+		let currentRank: number = character.Terms[character.Terms.length - 1].Rank?.Id ?? 0;
+		if (advancementRoll + advancementModifier >= assignment.AdvancementCheck?.TargetValue) {
+			currentRank++;
+			this.AddLifePath(character, "Advancement successful");
+			if (assignment.Ranks) {
+				this.AddLifePath(character, "Gained Rank: " + currentRank);
+				this.AddLifePath(character, "Gained Title: " + assignment.Ranks[currentRank].Title);
+				this.AddRewardToCharacter(character, assignment.Ranks[currentRank]);
+				character.Terms[character.Terms.length - 1].Rank = assignment.Ranks[currentRank];
+			}
+			character.Terms[character.Terms.length - 1].Advanced = true;
+		} else {
+			this.AddLifePath(character, "Advancement failed");
+			character.Terms[character.Terms.length - 1].Advanced = false;
+		}
+
+		character.currentStageId = 12; // Muster out or not
 		return true;
 	}
 
@@ -472,37 +511,59 @@ export class CharacterUtilities {
 			return;
 		}
 
-		if (reward.Description.includes("+1")) {
+		if (reward.Description.includes(" +1")) {
 			const characteristicName = reward.Description.substring(0, 3);
 
 			if (!character.Characteristics) {
 				throw new Error("Characteristics must be rolled before adding rewards");
 			}
 
-			this.AddLifePath(character, "**Gained:** " + reward.Description);
-
 			switch (characteristicName) {
 				case "STR":
+					this.AddLifePath(character, "**Gained:** " + reward.Description);
 					character.Characteristics.Strength++;
 					break;
 				case "DEX":
+					this.AddLifePath(character, "**Gained:** " + reward.Description);
 					character.Characteristics.Dexterity++;
 					break;
 				case "END":
+					this.AddLifePath(character, "**Gained:** " + reward.Description);
 					character.Characteristics.Endurance++;
 					break;
 				case "INT":
+					this.AddLifePath(character, "**Gained:** " + reward.Description);
 					character.Characteristics.Intellect++;
 					break;
 				case "EDU":
+					this.AddLifePath(character, "**Gained:** " + reward.Description);
 					character.Characteristics.Education++;
 					break;
 				case "SOC":
+					this.AddLifePath(character, "**Gained:** " + reward.Description);
 					character.Characteristics.SocialStanding++;
 					break;
 				case "PSI":
+					this.AddLifePath(character, "**Gained:** " + reward.Description);
 					character.Characteristics.Psionics++;
 					break;
+				default:
+					throw new Error("Invalid characteristic name: " + reward.Description);
+			}
+		} else if (reward.Description.includes(" 1")) {
+			const skillDbRecord = SkillsDb.GetSkillByName(reward.Description.substring(0, reward.Description.length - 2));
+
+			if (!skillDbRecord) {
+				throw new Error("Invalid skill name: " + reward.Description);
+			}
+
+			const existingSkill = character.Skills.find((s: Skill) => s.Name == reward.Description?.substring(0, reward.Description.length - 2));
+			if (existingSkill) {
+				if (existingSkill.Level < 1) {
+					this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, 1));
+				}
+			} else {
+				this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, 1));
 			}
 		} else {
 			const skillDbRecord = SkillsDb.GetSkillByName(reward.Description);
@@ -511,7 +572,7 @@ export class CharacterUtilities {
 				throw new Error("Invalid skill name: " + reward.Description);
 			}
 
-			const existingSkill = character.Skills.find((s: Skill) => s.Name === reward.Description);
+			const existingSkill = character.Skills.find((s: Skill) => s.Name == reward.Description);
 			if (existingSkill) {
 				if (isLevelZeroOnly) {
 					this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, 0));
@@ -529,8 +590,6 @@ export class CharacterUtilities {
 			this.AddRewardToCharacter(character, reward, isLevelZeroOnly);
 		}
 	}
-
-	public static GetCurrentCareerId(character: Character) {}
 }
 
 class CareerString {

@@ -4,7 +4,7 @@
 		<div class="md:flex">
 			<div class="m-2">
 				<CharacterStage v-if="currentStageId === 1" />
-				<CharacteristicsStage v-if="currentStageId === 2" />
+				<RollCharacteristicsStage v-if="currentStageId === 2" />
 				<BackgroundSkillsStage v-if="currentStageId == 3" />
 				<SelectCareerStage v-if="currentStageId == 4" />
 				<RollQualificationStage v-if="currentStageId == 5" />
@@ -13,11 +13,13 @@
 				<RollTrainingTableStage v-if="currentStageId == 8" />
 				<RollSurvivalStage v-if="currentStageId == 9" />
 				<RollEventStage v-if="currentStageId == 10" />
+				<RollAdvancementStage v-if="currentStageId == 11" />
+				<RollMishapStage v-if="currentStageId == 65" />
 				<SelectDraftOrDriftStage v-if="currentStageId == 60" />
 				<RollDraftStage v-if="currentStageId == 61" />
 
-				<div class="hidden md:block pt-5" v-if="character.LifePath.length > 0">
-					<div v-for="path in character.LifePath" :key="path" class="prose max-w-lg mx-auto mt-1" v-html="renderMarkdown(path)"></div>
+				<div class="hidden md:block pt-8" v-if="character.LifePath.length > 0">
+					<div v-for="path in character.LifePath" :key="path" class="prose mx-auto mt-1" v-html="renderMarkdown(path)"></div>
 				</div>
 			</div>
 			<div class="w-full max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md" v-if="character.Name">
@@ -57,19 +59,12 @@
 						</p>
 						<p class="ml-4"><span class="font-semibold">Age:</span> {{ term.Age }}</p>
 						<p v-if="term.Career" class="ml-4"><span class="font-semibold">Career:</span> {{ term.Career }}</p>
-						<p v-if="term.Qualified !== undefined" class="ml-4">
-							<span class="font-semibold">Qualified:</span> {{ term.Qualified ? "Yes" : "No" }}
-						</p>
+						<p v-if="term.Qualified" class="ml-4"><span class="font-semibold">Qualified:</span> {{ term.Qualified ? "Yes" : "No" }}</p>
 						<p v-if="term.Assignment" class="ml-4"><span class="font-semibold">Assignment:</span> {{ term.Assignment }}</p>
-						<p v-if="term.SelectedTrainingTable !== undefined" class="ml-4">
-							<span class="font-semibold">Selected Training Table:</span> {{ term.SelectedTrainingTable }}
-						</p>
-						<p v-if="term.Survived !== undefined" class="ml-4">
-							<span class="font-semibold">Survived:</span> {{ term.Survived ? "Yes" : "No" }}
-						</p>
-						<p v-if="term.Advanced !== undefined" class="ml-4">
-							<span class="font-semibold">Advanced:</span> {{ term.Advanced ? "Yes" : "No" }}
-						</p>
+						<p v-if="term.Rank" class="ml-4"><span class="font-semibold">Rank:</span> {{ term.Rank.Id }}</p>
+						<p v-if="term.Rank" class="ml-4"><span class="font-semibold">Title:</span> {{ term.Rank.Title }}</p>
+						<p v-if="term.Survived" class="ml-4"><span class="font-semibold">Survived:</span> {{ term.Survived ? "Yes" : "No" }}</p>
+						<p v-if="term.Advanced" class="ml-4"><span class="font-semibold">Advanced:</span> {{ term.Advanced ? "Yes" : "No" }}</p>
 					</div>
 				</div>
 			</div>
