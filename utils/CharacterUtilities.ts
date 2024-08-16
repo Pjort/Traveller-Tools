@@ -5,7 +5,7 @@ export class CharacterUtilities {
 	public static ParseCharacter(input: CharacterInput): Character {
 		const character = new Character(input.Name, input.Race, input.HomeWorld, 18);
 
-		this.AddLifePath(character, "## Term 0 (18 years)");
+		this.AddLifePath(character, "## Term 0 (0 - 18 years)");
 
 		character.currentStageId = 2; // Characteristics roll
 
@@ -154,7 +154,7 @@ export class CharacterUtilities {
 	}
 
 	private static ParseCareer(character: Character, careerString: CareerString, termNumber: number, age: number) {
-		this.AddLifePath(character, "## Term " + termNumber + " (" + age + " years)");
+		this.AddLifePath(character, "## Term " + termNumber + " (" + (age - 4) + " - " + age + " years)");
 
 		let career = this.ParseCareerSelection(character, termNumber, age, careerString);
 		if (!career) {
