@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1 class="p-2">Characteristics</h1>
+		<h1 class="p-2">Roll Characteristics</h1>
 		<div>
 			<div class="p-2">
 				Strength:
@@ -33,7 +33,6 @@
 
 <script lang="ts" setup>
 const characteristics = ref(new Characteristics(0, 0, 0, 0, 0, 0, 0));
-
 const characterStore = useCharacterStore();
 
 const updateCharacteristicsString = () => {
