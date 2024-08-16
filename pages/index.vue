@@ -14,6 +14,7 @@
 				<RollSurvivalStage v-if="currentStageId == 9" />
 				<RollEventStage v-if="currentStageId == 10" />
 				<RollAdvancementStage v-if="currentStageId == 11" />
+				<SelectMusterOutOrNot v-if="currentStageId == 12" />
 				<RollMishapStage v-if="currentStageId == 65" />
 				<SelectDraftOrDriftStage v-if="currentStageId == 60" />
 				<RollDraftStage v-if="currentStageId == 61" />
