@@ -1,15 +1,4 @@
-import {
-	Character,
-	Skill,
-	Reward,
-	DiceCheck,
-	Assignment,
-	Term,
-	Characteristics,
-	CharacterInput,
-	Race,
-	TrainingTable,
-} from "#imports";
+import { Character, Skill, Reward, DiceCheck, Assignment, Term, Characteristics, CharacterInput, Race, TrainingTable, Career } from "#imports";
 import { SkillsDb, CareersDb } from "#imports";
 
 export class CharacterUtilities {
@@ -26,10 +15,7 @@ export class CharacterUtilities {
 		if (input.CharacteristicsString) {
 			characteristics = this.ParseCharacteristics(input.CharacteristicsString);
 			character.Characteristics = characteristics;
-			this.AddLifePath(
-				character,
-				"Initial characteristics rolls: " + (characteristics?.ToString() ?? "No characteristics rolled")
-			);
+			this.AddLifePath(character, "Initial characteristics rolls: " + (characteristics?.ToString() ?? "No characteristics rolled"));
 
 			// Alter characteristics by race
 			if (character.Race == Race.Aslan) {
@@ -160,7 +146,7 @@ export class CharacterUtilities {
 		const terms = termString.split("NT");
 
 		for (let i = 0; i < terms.length; i++) {
-			const careerString = terms[i];
+			const careerString: CareerString = new CareerString(terms[i]);
 			const termNumber = i + 1;
 			const age = termNumber * 4 + 18;
 			character.Age = age;
@@ -168,18 +154,47 @@ export class CharacterUtilities {
 		}
 	}
 
-	private static ParseCareer(character: Character, careerString: string, termNumber: number, age: number) {
+	private static ParseCareer(character: Character, careerString: CareerString, termNumber: number, age: number) {
 		this.AddLifePath(character, "--------------------------");
 		this.AddLifePath(character, "--- Term " + termNumber + " (" + age + " years) ---");
 		this.AddLifePath(character, "--------------------------");
 
-		if (careerString.length < 2) {
+		let career = this.ParseCareerSelection(character, termNumber, age, careerString);
+
+		// Qualification roll
+		if (!this.ParseQualificationRoll(character, career, careerString)) return;
+
+		if (!career) {
+			throw new Error("Career not found");
+		}
+
+		// Select Assignment
+		const assignment = this.ParseAssignment(character, career, termNumber, careerString);
+		if (!assignment) {
+			return;
+		}
+
+		// Select training table
+		if (!this.ParseTrainingTable(character, career, careerString)) return;
+
+		// Roll on training table
+		if (!this.ParseTrainingTableRoll(character, career.TrainingTables[0], careerString)) return;
+
+		// Survival check
+		if (!this.ParseSurvivalCheck(character, career, assignment, careerString)) return;
+
+		// Event roll
+		if (!this.ParseEventRoll(character, career, careerString)) return;
+	}
+
+	private static ParseCareerSelection(character: Character, termNumber: number, age: number, careerString: CareerString): Career | undefined {
+		if (careerString.value.length < 2) {
 			throw new Error("Career string must be at least 2 characters long");
 		}
 
-		const careerId = parseInt(careerString.slice(0, 2));
-		careerString = careerString.slice(2);
-		let career = CareersDb.GetCareerById(careerId);
+		const careerId = parseInt(careerString.value.slice(0, 2));
+		careerString.value = careerString.value.slice(2);
+		const career = CareersDb.GetCareerById(careerId);
 
 		if (!career) {
 			throw new Error("Invalid career ID: " + careerId);
@@ -189,10 +204,16 @@ export class CharacterUtilities {
 		character.Terms.push(new Term(termNumber, age, career.Name));
 
 		character.currentStageId = 5; // Qualification roll
+		return career;
+	}
 
-		if (careerString.length >= 2) {
-			const qualificationCheckRoll = parseInt(careerString.slice(0, 2));
-			careerString = careerString.slice(2);
+	private static ParseQualificationRoll(character: Character, career: Career | undefined, careerString: CareerString): boolean {
+		if (!career) {
+			return false;
+		}
+		if (careerString.value.length >= 2) {
+			const qualificationCheckRoll = parseInt(careerString.value.slice(0, 2));
+			careerString.value = careerString.value.slice(2);
 			const diceModifier = this.GetDiceModifier(career.QualificationCheck, character);
 
 			this.AddLifePath(
@@ -213,23 +234,23 @@ export class CharacterUtilities {
 				character.currentStageId = 60; // Submit to draft or take Drifter
 				this.AddLifePath(character, "Submit to Draft or become a Drifter");
 
-				if (careerString.length < 1) {
-					return;
+				if (careerString.value.length < 1) {
+					return false;
 				}
 
-				const draftOrDrifter = careerString.slice(0, 1);
-				careerString = careerString.slice(1);
+				const draftOrDrifter = careerString.value.slice(0, 1);
+				careerString.value = careerString.value.slice(1);
 
 				if (draftOrDrifter == "1") {
 					this.AddLifePath(character, "Chose to submit to Draft");
 
 					character.currentStageId = 61; // Draft roll
-					if (careerString.length < 1) {
-						return;
+					if (careerString.value.length < 1) {
+						return false;
 					}
 
-					const roolForDraft = careerString.slice(0, 1);
-					careerString = careerString.slice(1);
+					const roolForDraft = careerString.value.slice(0, 1);
+					careerString.value = careerString.value.slice(1);
 
 					this.AddLifePath(character, "Draft roll: " + roolForDraft);
 					if (roolForDraft == "1") {
@@ -259,13 +280,16 @@ export class CharacterUtilities {
 				}
 			}
 		}
+		return true;
+	}
 
-		if (careerString.length < 1) {
+	private static ParseAssignment(character: Character, career: Career, termNumber: number, careerString: CareerString): Assignment | undefined {
+		if (careerString.value.length < 1) {
 			return;
 		}
 
-		const assignmentId = parseInt(careerString.slice(0, 1));
-		careerString = careerString.slice(1);
+		const assignmentId = parseInt(careerString.value.slice(0, 1));
+		careerString.value = careerString.value.slice(1);
 
 		const assignment = career?.Assignments.find((a: Assignment) => a.Id === assignmentId);
 
@@ -286,22 +310,30 @@ export class CharacterUtilities {
 		}
 
 		character.currentStageId = 7; // Select a training table
+		return assignment;
+	}
 
-		if (careerString.length < 1) {
-			return;
+	private static ParseTrainingTable(character: Character, career: Career, careerString: CareerString): boolean {
+		if (careerString.value.length < 1) {
+			return false;
 		}
 
-		const trainingTableId = parseInt(careerString.slice(0, 1));
-		careerString = careerString.slice(1);
+		const trainingTableId = parseInt(careerString.value.slice(0, 1));
+		careerString.value = careerString.value.slice(1);
+
 		const trainingTable = career?.TrainingTables.find((t: TrainingTable) => t.Id === trainingTableId);
 		this.AddLifePath(character, "Training table selected: " + trainingTable?.Name);
 
 		character.currentStageId = 8; // Roll on training table
-		if (careerString.length < 1) {
-			return;
+		return true;
+	}
+
+	private static ParseTrainingTableRoll(character: Character, trainingTable: TrainingTable, careerString: CareerString): boolean {
+		if (careerString.value.length < 1) {
+			return false;
 		}
-		const trainingRoll = parseInt(careerString.slice(0, 1));
-		careerString = careerString.slice(1);
+		const trainingRoll = parseInt(careerString.value.slice(0, 1));
+		careerString.value = careerString.value.slice(1);
 
 		this.AddLifePath(character, "Training rolled: " + trainingRoll);
 
@@ -314,18 +346,22 @@ export class CharacterUtilities {
 		}
 
 		character.currentStageId = 9; // Survival check
-		if (careerString.length < 2) {
-			return;
+		return true;
+	}
+
+	private static ParseSurvivalCheck(character: Character, career: Career, assignment: Assignment, careerString: CareerString): boolean {
+		if (careerString.value.length < 2) {
+			return false;
 		}
 
-		const survivalRoll = parseInt(careerString.slice(0, 2));
-		careerString = careerString.slice(2);
+		const survivalRoll = parseInt(careerString.value.slice(0, 2));
+		careerString.value = careerString.value.slice(2);
 		const survivalModifier = this.GetDiceModifier(assignment.SurvivalCheck, character);
 
 		this.AddLifePath(
 			character,
-			`Survival roll (${assignment?.SurvivalCheck?.CharacteristicsType} ${
-				assignment?.SurvivalCheck?.TargetValue
+			`Survival roll (${assignment.SurvivalCheck?.CharacteristicsType} ${
+				assignment.SurvivalCheck?.TargetValue
 			}+): ${survivalRoll}(roll) + ${survivalModifier}(DM) = ${survivalRoll + survivalModifier}`
 		);
 
@@ -338,12 +374,17 @@ export class CharacterUtilities {
 		}
 
 		character.currentStageId = 10; // Event roll
-		if (careerString.length < 2) {
-			return;
+
+		return true;
+	}
+
+	private static ParseEventRoll(character: Character, career: Career, careerString: CareerString): boolean {
+		if (careerString.value.length < 2) {
+			return false;
 		}
 
-		const eventsRoll = parseInt(careerString.slice(0, 2));
-		careerString = careerString.slice(2);
+		const eventsRoll = parseInt(careerString.value.slice(0, 2));
+		careerString.value = careerString.value.slice(2);
 
 		this.AddLifePath(character, "Events rolled: " + eventsRoll);
 
@@ -351,6 +392,7 @@ export class CharacterUtilities {
 		this.AddLifePath(character, "Event: " + event?.Description);
 
 		character.currentStageId = 11; // Advancement roll
+		return true;
 	}
 
 	public static GetDiceModifier(diceCheck: DiceCheck | null, character: Character): number {
@@ -489,4 +531,12 @@ export class CharacterUtilities {
 	}
 
 	public static GetCurrentCareerId(character: Character) {}
+}
+
+class CareerString {
+	value: string;
+
+	constructor(value: string) {
+		this.value = value;
+	}
 }
