@@ -18,7 +18,7 @@ export const Agent: Career = new Career(
 			new Rank(0, "", ""),
 			new Rank(1, "Agent", "Deception 1"),
 			new Rank(2, "Field Agent", "Investigate 1"),
-			new Rank(3, "Field Agent", ""),
+			new Rank(3, "", ""),
 			new Rank(4, "Special Agent", "Gun Combat 1"),
 			new Rank(5, "Assistant Director", ""),
 			new Rank(6, "Director", ""),

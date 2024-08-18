@@ -432,7 +432,7 @@ export class CharacterUtilities {
 			this.AddLifePath(character, "Advancement successful");
 			if (assignment.Ranks) {
 				this.AddLifePath(character, "Gained Rank: " + currentRank);
-				this.AddLifePath(character, "Gained Title: " + assignment.Ranks[currentRank].Title);
+				if (assignment.Ranks[currentRank].Title != "") this.AddLifePath(character, "Gained Title: " + assignment.Ranks[currentRank].Title);
 				this.AddRewardToCharacter(character, assignment.Ranks[currentRank]);
 				character.Terms[character.Terms.length - 1].Rank = assignment.Ranks[currentRank];
 			}
