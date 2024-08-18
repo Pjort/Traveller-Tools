@@ -9,9 +9,23 @@ export class CharacterUtilities {
 
 		character.currentStageId = 2; // Characteristics roll
 
+		// Parse characteristics
+		if (!this.ParseCharacteristics(character, input.CharacteristicsString)) return character;
+
+		// Parse background skills
+		if (!this.ParseBackgroundSkillsString(character, input.BackgroundSkillsString)) return character;
+
+		if (input.TermsString) {
+			this.ParseTerms(input.TermsString, character);
+		}
+
+		return character;
+	}
+
+	private static ParseCharacteristics(character: Character, characteristicsString: string | undefined): boolean {
 		let characteristics: Characteristics | null = null;
-		if (input.CharacteristicsString) {
-			characteristics = this.ParseCharacteristics(input.CharacteristicsString);
+		if (characteristicsString) {
+			characteristics = this.ParseCharacteristicsString(characteristicsString);
 			character.Characteristics = characteristics;
 			this.AddLifePath(character, "**Initial characteristics rolls:** " + (characteristics?.ToString() ?? "No characteristics rolled"));
 
@@ -30,13 +44,16 @@ export class CharacterUtilities {
 				this.AddLifePath(character, "Vargr traits: Bite, Heightened Senses");
 			}
 		} else {
-			return character;
+			return false;
 		}
 
 		character.currentStageId = 3; // Background skills
+		return true;
+	}
 
-		if (input.BackgroundSkillsString) {
-			const backgroundSkills = this.ParseBackgroundSkills(input.BackgroundSkillsString);
+	private static ParseBackgroundSkillsString(character: Character, backgroundSkillsString: string | undefined): boolean {
+		if (backgroundSkillsString) {
+			const backgroundSkills = this.ParseBackgroundSkills(backgroundSkillsString);
 			this.AddSkillsToCharacter(character, backgroundSkills, false);
 
 			let backgroundLifePath = "**Background skills:** ";
@@ -46,19 +63,14 @@ export class CharacterUtilities {
 			backgroundLifePath = backgroundLifePath.slice(0, -2);
 			this.AddLifePath(character, backgroundLifePath);
 		} else {
-			return character;
+			return false;
 		}
 
 		character.currentStageId = 4; // Select a career
-
-		if (input.TermsString) {
-			this.ParseTerms(input.TermsString, character);
-		}
-
-		return character;
+		return true;
 	}
 
-	public static ParseCharacteristics(characteristicsString: string): Characteristics {
+	private static ParseCharacteristicsString(characteristicsString: string): Characteristics {
 		if (characteristicsString.length !== 14) {
 			throw new Error("Characteristics string must be 14 characters long");
 		}
@@ -74,7 +86,7 @@ export class CharacterUtilities {
 		return new Characteristics(strength, dexterity, endurance, intellect, education, socialStanding, psionics);
 	}
 
-	public static ParseBackgroundSkills(backgroundSkillsString: string): Skill[] {
+	private static ParseBackgroundSkills(backgroundSkillsString: string): Skill[] {
 		if (backgroundSkillsString.length % 2 !== 0) {
 			throw new Error("Background skills string must be a multiple of 2 characters long");
 		}
@@ -102,11 +114,11 @@ export class CharacterUtilities {
 		return backgroundSkills;
 	}
 
-	public static AddLifePath(character: Character, lifePath: string) {
+	private static AddLifePath(character: Character, lifePath: string) {
 		character.LifePath.push(lifePath);
 	}
 
-	public static AddSkillToCharacter(character: Character, skill: Skill, addToLifePath = true) {
+	private static AddSkillToCharacter(character: Character, skill: Skill, addToLifePath = true) {
 		const existingSkill = character.Skills.find((s: Skill) => s.Name === skill.Name);
 
 		if (existingSkill) {
@@ -130,17 +142,17 @@ export class CharacterUtilities {
 		this.SortCharacterSkills(character);
 	}
 
-	public static AddSkillsToCharacter(character: Character, skills: Skill[], addToLifePath = true) {
+	private static AddSkillsToCharacter(character: Character, skills: Skill[], addToLifePath = true) {
 		for (const skill of skills) {
 			this.AddSkillToCharacter(character, skill, addToLifePath);
 		}
 	}
 
-	public static SortCharacterSkills(character: Character) {
+	private static SortCharacterSkills(character: Character) {
 		character.Skills.sort((s1: Skill, s2: Skill) => s1.Name.localeCompare(s2.Name));
 	}
 
-	public static ParseTerms(termString: string, character: Character) {
+	private static ParseTerms(termString: string, character: Character) {
 		const terms = termString.split("NT");
 
 		for (let i = 0; i < terms.length; i++) {
@@ -434,7 +446,7 @@ export class CharacterUtilities {
 		return true;
 	}
 
-	public static GetDiceModifier(diceCheck: DiceCheck | null, character: Character): number {
+	private static GetDiceModifier(diceCheck: DiceCheck | null, character: Character): number {
 		if (!diceCheck) {
 			return 0;
 		}
@@ -480,7 +492,7 @@ export class CharacterUtilities {
 		return this.CalculateDiceModifier(characteristicValue);
 	}
 
-	public static CalculateDiceModifier(characteristicValue: number): number {
+	private static CalculateDiceModifier(characteristicValue: number): number {
 		if (characteristicValue === 0) {
 			return -3;
 		}
@@ -506,7 +518,7 @@ export class CharacterUtilities {
 		return -3;
 	}
 
-	public static AddRewardToCharacter(character: Character, reward: Reward, isLevelZeroOnly = false) {
+	private static AddRewardToCharacter(character: Character, reward: Reward, isLevelZeroOnly = false) {
 		if (!reward.Description) {
 			return;
 		}
@@ -585,7 +597,7 @@ export class CharacterUtilities {
 		}
 	}
 
-	public static AddRewardsToCharacter(character: Character, rewards: Reward[], isLevelZeroOnly = false) {
+	private static AddRewardsToCharacter(character: Character, rewards: Reward[], isLevelZeroOnly = false) {
 		for (const reward of rewards) {
 			this.AddRewardToCharacter(character, reward, isLevelZeroOnly);
 		}
