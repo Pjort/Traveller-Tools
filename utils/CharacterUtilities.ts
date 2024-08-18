@@ -125,17 +125,17 @@ export class CharacterUtilities {
 			if (skill.Level > existingSkill.Level) {
 				existingSkill.Level = skill.Level;
 				if (addToLifePath) {
-					this.AddLifePath(character, "**Gained:** " + skill.ToString());
+					this.AddLifePath(character, "**Gained skill:** " + skill.ToString() + " (+1)");
 				}
 			} else {
 				if (addToLifePath) {
-					this.AddLifePath(character, "**Gained:** " + skill.ToString() + " (already known)");
+					this.AddLifePath(character, "**Gained skill:** " + skill.ToString() + " (already known)");
 				}
 			}
 		} else {
 			character.Skills.push(skill);
 			if (addToLifePath) {
-				this.AddLifePath(character, "**Gained:** " + skill.ToString());
+				this.AddLifePath(character, "**Gained skill:** " + skill.ToString());
 			}
 		}
 
@@ -168,29 +168,36 @@ export class CharacterUtilities {
 	private static ParseCareer(character: Character, careerString: CareerString, termNumber: number, age: number) {
 		this.AddLifePath(character, "## Term " + termNumber + " (" + (age - 4) + " - " + age + " years)");
 
-		let career = this.ParseCareerSelection(character, termNumber, age, careerString);
-		if (!career) {
-			return;
-		}
-
-		// Qualification roll
-		if (!this.ParseQualificationRoll(character, career, careerString)) return;
+		let career: Career | undefined = this.ContinueCareer(character, termNumber, age);
+		let assignment: Assignment | undefined = this.ContinueAssignment(character, termNumber);
 
 		if (!career) {
-			throw new Error("Career not found");
+			career = this.ParseCareerSelection(character, termNumber, age, careerString);
+			if (!career) {
+				return;
+			}
+
+			// Qualification roll
+			if (!this.ParseQualificationRoll(character, career, careerString)) return;
+
+			if (!career) {
+				throw new Error("Career not found");
+			}
+
+			// Select Assignment
+			assignment = this.ParseAssignment(character, career, termNumber, careerString);
 		}
 
-		// Select Assignment
-		const assignment = this.ParseAssignment(character, career, termNumber, careerString);
 		if (!assignment) {
 			return;
 		}
 
 		// Select training table
-		if (!this.ParseTrainingTable(character, career, careerString)) return;
+		const trainingTable = this.ParseTrainingTable(character, career, careerString);
+		if (!trainingTable) return;
 
 		// Roll on training table
-		if (!this.ParseTrainingTableRoll(character, career.TrainingTables[0], careerString)) return;
+		if (!this.ParseTrainingTableRoll(character, trainingTable, careerString)) return;
 
 		// Survival check
 		if (!this.ParseSurvivalCheck(character, assignment, careerString)) return;
@@ -200,6 +207,45 @@ export class CharacterUtilities {
 
 		// Advancement roll
 		if (!this.ParseAdvancementRoll(character, assignment, careerString)) return;
+	}
+
+	private static ContinueCareer(character: Character, termNumber: number, age: number): Career | undefined {
+		// check if previous term was survived and no mustering out benefits if so then it is the same career this term
+		if (termNumber <= 1) return undefined;
+
+		const previousTerm = character.Terms[termNumber - 2];
+		const previousCareerName = character.Terms[termNumber - 2].Career;
+		if (previousTerm.Survived && previousTerm.MusterOutBenefits == undefined && previousCareerName != undefined) {
+			character.currentStageId = 7; // Select a training table
+			character.Terms.push(new Term(termNumber, age, previousCareerName));
+			return CareersDb.GetCareerByName(previousCareerName);
+		}
+
+		return undefined;
+	}
+
+	private static ContinueAssignment(character: Character, termNumber: number): Assignment | undefined {
+		// check if previous term was survived and no mustering out benefits if so then it is the same assignment this term
+		if (termNumber <= 1) return undefined;
+
+		const previousTerm = character.Terms[termNumber - 2];
+		const previousCareerName = character.Terms[termNumber - 2].Career;
+		const previousAssignmentName = character.Terms[termNumber - 2].Assignment;
+		if (
+			previousTerm.Survived &&
+			previousTerm.MusterOutBenefits == undefined &&
+			previousCareerName != undefined &&
+			previousAssignmentName != undefined
+		) {
+			const career = CareersDb.GetCareerByName(previousCareerName);
+			if (career) {
+				character.Terms[character.Terms.length - 1].Assignment = previousAssignmentName;
+				character.Terms[character.Terms.length - 1].Rank = previousTerm.Rank;
+				return career.Assignments.find((a: Assignment) => a.Name === previousAssignmentName);
+			}
+		}
+
+		return undefined;
 	}
 
 	private static ParseCareerSelection(character: Character, termNumber: number, age: number, careerString: CareerString): Career | undefined {
@@ -328,9 +374,9 @@ export class CharacterUtilities {
 		return assignment;
 	}
 
-	private static ParseTrainingTable(character: Character, career: Career, careerString: CareerString): boolean {
+	private static ParseTrainingTable(character: Character, career: Career, careerString: CareerString): TrainingTable | undefined {
 		if (careerString.value.length < 1) {
-			return false;
+			return undefined;
 		}
 
 		const trainingTableId = parseInt(careerString.value.slice(0, 1));
@@ -340,7 +386,7 @@ export class CharacterUtilities {
 		this.AddLifePath(character, "Training table selected: " + trainingTable?.Name);
 
 		character.currentStageId = 8; // Roll on training table
-		return true;
+		return trainingTable;
 	}
 
 	private static ParseTrainingTableRoll(character: Character, trainingTable: TrainingTable, careerString: CareerString): boolean {
@@ -428,7 +474,7 @@ export class CharacterUtilities {
 
 		let currentRank: number = character.Terms[character.Terms.length - 1].Rank?.Id ?? 0;
 		if (advancementRoll + advancementModifier >= assignment.AdvancementCheck?.TargetValue) {
-			currentRank++;
+			if (currentRank < 6) currentRank++;
 			this.AddLifePath(character, "Advancement successful");
 			if (assignment.Ranks) {
 				this.AddLifePath(character, "Gained Rank: " + currentRank);
@@ -573,6 +619,8 @@ export class CharacterUtilities {
 			if (existingSkill) {
 				if (existingSkill.Level < 1) {
 					this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, 1));
+				} else {
+					this.AddLifePath(character, "**Gained:** " + reward.Description + " (already known " + existingSkill.Level + ")");
 				}
 			} else {
 				this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, 1));

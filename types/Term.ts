@@ -9,6 +9,7 @@ export class Term {
 	Survived?: boolean;
 	Advanced?: boolean;
 	Rank?: Rank;
+	MusterOutBenefits?: string[];
 
 	constructor(
 		number: number,
@@ -19,7 +20,8 @@ export class Term {
 		selectedTrainingTable?: number,
 		survived?: boolean,
 		advanced?: boolean,
-		rank?: Rank
+		rank?: Rank,
+		musterOutBenefits?: string[]
 	) {
 		this.Number = number;
 		this.Age = age;
@@ -30,5 +32,6 @@ export class Term {
 		this.Survived = survived;
 		this.Advanced = advanced;
 		this.Rank = rank;
+		this.MusterOutBenefits = musterOutBenefits;
 	}
 }
