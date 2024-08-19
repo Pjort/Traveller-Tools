@@ -19,7 +19,7 @@ const pages = [
 	{
 		title: "Character Creator",
 		path: "/character-creator",
-		description: "Create and customize your character",
+		description: "Create and customize your character. Traveller Mongoose 2nd Edition style.",
 	},
 ];
 </script>
