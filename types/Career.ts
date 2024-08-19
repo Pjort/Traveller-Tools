@@ -1,4 +1,4 @@
-import { Assignment, DiceCheck, TrainingTable, Event } from "#imports";
+import { Assignment, DiceCheck, TrainingTable, Event, MusterOutRecord } from "#imports";
 
 export class Career {
 	Id: number;
@@ -8,6 +8,7 @@ export class Career {
 	TrainingTables: TrainingTable[] = [];
 	Events: Event[] = [];
 	Mishaps: Event[] = [];
+	MusterOutTable: MusterOutRecord[] = [];
 
 	constructor(
 		id: number,
@@ -16,7 +17,8 @@ export class Career {
 		assignments: Assignment[] = [],
 		trainingTables: TrainingTable[] = [],
 		events: Event[] = [],
-		mishaps: Event[] = []
+		mishaps: Event[] = [],
+		musterOutTable: MusterOutRecord[] = []
 	) {
 		this.Id = id;
 		this.Name = name;
@@ -25,5 +27,6 @@ export class Career {
 		this.TrainingTables = trainingTables;
 		this.Events = events;
 		this.Mishaps = mishaps;
+		this.MusterOutTable = musterOutTable;
 	}
 }
