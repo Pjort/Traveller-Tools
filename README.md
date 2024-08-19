@@ -1,6 +1,6 @@
 ## License
 
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0.
 
 This license allows you to use, modify, and distribute this software freely, but any derivative work must also be distributed under the same license terms. This ensures that improvements to the code remain open source and prevents commercial use without sharing improvements back to the community.
 
@@ -44,4 +44,4 @@ bun run preview
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
 
-# Copyright (C) 2024 Pjort Pieter Kat
+### Copyright (C) 2024 Pjort Pieter Kat
