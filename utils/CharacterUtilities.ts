@@ -1,4 +1,18 @@
-import { Character, Skill, Reward, DiceCheck, Assignment, Term, Characteristics, CharacterInput, Race, TrainingTable, Career } from "#imports";
+import {
+	Character,
+	Skill,
+	Reward,
+	DiceCheck,
+	Assignment,
+	Term,
+	Characteristics,
+	CharacterInput,
+	Race,
+	TrainingTable,
+	Career,
+	MusterOutRecord,
+	Item,
+} from "#imports";
 import { SkillsDb, CareersDb } from "#imports";
 
 export class CharacterUtilities {
@@ -208,6 +222,11 @@ export class CharacterUtilities {
 
 		// Advancement roll
 		if (!this.ParseAdvancementRoll(character, assignment, careerString)) return;
+
+		if (!this.ParseMusterOutOrContinue(character, career, careerString)) return;
+
+		// Muster out
+		while (this.ParseMusterOut(character, career, careerString));
 	}
 
 	private static ContinueCareer(character: Character, termNumber: number, age: number): Career | undefined {
@@ -496,6 +515,60 @@ export class CharacterUtilities {
 		return true;
 	}
 
+	private static ParseMusterOutOrContinue(character: Character, career: Career, careerString: CareerString): boolean {
+		if (careerString.value.length < 1) {
+			return false;
+		}
+
+		const musterOutOrContinue = careerString.value.slice(0, 1);
+		careerString.value = careerString.value.slice(1);
+
+		if (musterOutOrContinue == "2") {
+			this.AddLifePath(character, "Chose to muster out");
+			character.currentStageId = 13; // Muster out
+		} else {
+			this.AddLifePath(character, "Chose to continue");
+		}
+
+		return true;
+	}
+
+	private static ParseMusterOut(character: Character, career: Career, careerString: CareerString): boolean {
+		if (careerString.value.length < 2) {
+			return false;
+		}
+
+		const cashOrBenefits = careerString.value.slice(0, 1);
+		this.AddLifePath(character, "Muster out selection: " + (cashOrBenefits == "1" ? "Cash" : "Benefits"));
+
+		const roll = parseInt(careerString.value.slice(1, 2));
+		careerString.value = careerString.value.slice(2);
+
+		this.AddLifePath(character, "Muster out roll: " + roll);
+
+		const musterOutRecord = career.MusterOutTable.find((m: MusterOutRecord) => m.Id == roll);
+		if (!musterOutRecord) {
+			throw new Error("Invalid muster out roll: " + roll);
+		}
+
+		if (character.Terms[character.Terms.length - 1].MusterOutBenefits == undefined) {
+			character.Terms[character.Terms.length - 1].MusterOutBenefits = [];
+		}
+
+		if (cashOrBenefits == "1") {
+			// Cash
+			this.AddLifePath(character, "**Muster out:** " + musterOutRecord.Cash + " credits");
+			character.Cash += musterOutRecord.Cash;
+			character.Terms[character.Terms.length - 1].MusterOutBenefits?.push("CR" + musterOutRecord.Cash.toString());
+		} else {
+			// Benefits
+			this.AddRewardsToCharacter(character, musterOutRecord.Benefits);
+			character.Terms[character.Terms.length - 1].MusterOutBenefits?.push(musterOutRecord.Benefits.map((b) => b.Description).join(", "));
+		}
+
+		return true;
+	}
+
 	private static GetDiceModifier(diceCheck: DiceCheck | null, character: Character): number {
 		if (!diceCheck) {
 			return 0;
@@ -568,8 +641,15 @@ export class CharacterUtilities {
 		return -3;
 	}
 
-	private static AddRewardToCharacter(character: Character, reward: Reward, isLevelZeroOnly = false) {
+	private static AddRewardToCharacter(character: Character, reward: Reward | Item, isLevelZeroOnly = false) {
 		if (!reward.Description) {
+			return;
+		}
+
+		// Check if reward is type Item
+		if (reward instanceof Item) {
+			this.AddLifePath(character, "**Gained item:** " + reward.Description);
+			character.Items.push(reward);
 			return;
 		}
 

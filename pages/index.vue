@@ -15,6 +15,7 @@
 				<RollEventStage v-if="currentStageId == 10" />
 				<RollAdvancementStage v-if="currentStageId == 11" />
 				<SelectMusterOutOrNot v-if="currentStageId == 12" />
+				<RollMusterOut v-if="currentStageId == 13" />
 				<RollMishapStage v-if="currentStageId == 65" />
 				<SelectDraftOrDriftStage v-if="currentStageId == 60" />
 				<RollDraftStage v-if="currentStageId == 61" />
@@ -61,6 +62,14 @@
 							</li>
 						</ul>
 					</div>
+					<div class="flex" v-if="character.Terms.length > 0">
+						<h3 class="text-xl font-semibold mb-2">Cash:</h3>
+						<p class="text-xl ml-2">{{ "CR" + character.Cash }}</p>
+					</div>
+					<div class="mb-4" v-if="character.Items.length > 0">
+						<h3 class="text-xl font-semibold mb-2">Items:</h3>
+						<p class="ml-2" v-for="item in character.Items">{{ item.Description }}</p>
+					</div>
 					<div>
 						<h3 class="text-xl font-semibold mb-2" v-if="character.Terms.length > 0">Terms</h3>
 						<div v-for="(term, index) in character.Terms" :key="index" class="mb-4 p-4 border border-gray-200 rounded">
@@ -81,6 +90,12 @@
 							<p v-if="term.Advanced !== undefined" class="ml-4">
 								<span class="font-semibold">Advanced:</span> {{ term.Advanced ? "Yes" : "No" }}
 							</p>
+							<div v-if="term.MusterOutBenefits?.length ?? 0 > 0" class="ml-4">
+								<span class="font-semibold">Muster Out Benefits:</span>
+								<ul class="list-disc list-inside ml-4">
+									<li v-for="(benefit, index) in term.MusterOutBenefits" :key="index">{{ benefit }}</li>
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>

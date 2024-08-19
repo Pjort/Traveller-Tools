@@ -1,6 +1,6 @@
 // stores/characterInputStore.ts
 import { defineStore } from "pinia";
-import { Character, CharacterInput, Skill, Term, Characteristics, Race } from "#imports";
+import { Character, CharacterInput, Skill, Term, Characteristics, Race, Item } from "#imports";
 
 export const useCharacterStore = defineStore("character", {
 	state: () => ({
@@ -16,6 +16,8 @@ export const useCharacterStore = defineStore("character", {
 			currentStageId: 1,
 			Events: new Array<Event>(),
 			Mishaps: new Array<Event>(),
+			Cash: 0,
+			Items: new Array<Item>(),
 		} as Character,
 		characterInput: {
 			Name: "",
@@ -103,6 +105,31 @@ export const useCharacterStore = defineStore("character", {
 		getLastestLifePath: (state) => {
 			if (state.character.LifePath.length == state.lastestLifePath.length) return [];
 			return state.lastestLifePath;
+		},
+		getAmountOfBenefitRollsLeft: (state) => {
+			let benefitRollsLeft = 0;
+			benefitRollsLeft += state.character.Terms.length;
+
+			// Add benefits from each term where the character advanced and go rank 1, 3 or 5
+			for (let term of state.character.Terms) {
+				if (term.Advanced) {
+					if (term.Rank && term.Rank.Id == 1) {
+						benefitRollsLeft += 1;
+					} else if (term.Rank && term.Rank.Id == 3) {
+						benefitRollsLeft += 1;
+					} else if (term.Rank && term.Rank.Id == 5) {
+						benefitRollsLeft += 1;
+					}
+				}
+			}
+
+			// reduce the amount of benefit rolls left by the amount of benefits already received
+			for (let term of state.character.Terms) {
+				if (term.MusterOutBenefits) {
+					benefitRollsLeft -= term.MusterOutBenefits.length;
+				}
+			}
+			return benefitRollsLeft;
 		},
 	},
 });
