@@ -17,7 +17,7 @@ export class CareersDb {
 
 	static {
 		this.careers.push(Agent);
-		// this.careers.push(Army);
+		this.careers.push(Army);
 		// this.careers.push(Citizen);
 		// this.careers.push(Drifter);
 		// this.careers.push(Entertainer);
