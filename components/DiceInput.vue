@@ -1,5 +1,5 @@
 <template>
-	<div class="flex items-center">
+	<div class="flex items-center py-2">
 		<input
 			class="bg-slate-200 px-2 py-1 rounded-l"
 			type="number"
@@ -47,7 +47,7 @@ function rollDice() {
 		}
 		emit("update:modelValue", result);
 		isRolling.value = false;
-	}, 500); // Delay to allow animation to complete
+	}, 200); // Delay to allow animation to complete
 }
 </script>
 
@@ -63,6 +63,6 @@ function rollDice() {
 
 .animate-roll {
 	display: inline-block;
-	animation: roll 0.5s linear;
+	animation: roll 0.2s linear;
 }
 </style>

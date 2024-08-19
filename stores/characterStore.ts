@@ -30,6 +30,34 @@ export const useCharacterStore = defineStore("character", {
 		lastestLifePath: new Array<string>(),
 	}),
 	actions: {
+		reset() {
+			this.$patch((state) => {
+				state.character = {
+					Name: "",
+					Race: Race.Human,
+					HomeWorld: "",
+					Age: 0,
+					Characteristics: {} as Characteristics,
+					LifePath: [],
+					Skills: [],
+					Terms: [],
+					currentStageId: 1,
+					Events: [],
+					Mishaps: [],
+					Cash: 0,
+					Items: [],
+				};
+				state.characterInput = {
+					Name: "",
+					Race: Race.Human,
+					HomeWorld: "",
+					CharacteristicsString: "",
+					BackgroundSkillsString: "",
+					TermsString: "",
+				};
+				state.lastestLifePath = [];
+			});
+		},
 		setCharacterInput(characterInput: CharacterInput) {
 			this.characterInput = characterInput;
 		},

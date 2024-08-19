@@ -32,12 +32,7 @@ if (benefitRollsLeft.value < 1) {
 }
 
 const updateTermString = () => {
-	if (roll.value < 1 || roll.value > 7 || !selectedChoice.value) {
-		alert("Roll must be between 1 and 7, and Cash or Benefits must be selected.");
-		return;
-	}
-
-	let termString = currentTermString.value + selectedChoice.value.toString() + roll.value.toString().padStart(1, "0");
+	let termString = (currentTermString.value ?? "") + selectedChoice.value?.toString() + roll.value.toString().padStart(1, "0");
 	characterStore.updateTermsString(termString);
 
 	// Reset roll
@@ -47,6 +42,10 @@ const updateTermString = () => {
 };
 
 const ApplyInput = () => {
+	if (roll.value < 1 || roll.value > 7 || !selectedChoice.value) {
+		alert("Cash or Benefits must be selected and Roll must be between 1 and 7");
+		return;
+	}
 	updateTermString();
 	if (benefitRollsLeft.value - 1 < 1) {
 		characterStore.updateTermsString(currentTermString.value + "NT");

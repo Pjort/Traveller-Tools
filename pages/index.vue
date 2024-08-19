@@ -1,176 +1,25 @@
 <template>
-	<div class="m-2">
-		<p class="font-semibold">Character generator</p>
-		<div class="md:flex">
-			<div class="m-2">
-				<CharacterStage v-if="currentStageId === 1" />
-				<RollCharacteristicsStage v-if="currentStageId === 2" />
-				<BackgroundSkillsStage v-if="currentStageId == 3" />
-				<SelectCareerStage v-if="currentStageId == 4" />
-				<RollQualificationStage v-if="currentStageId == 5" />
-				<SelectAssignmentStage v-if="currentStageId == 6" />
-				<SelectTrainingTableStage v-if="currentStageId == 7" />
-				<RollTrainingTableStage v-if="currentStageId == 8" />
-				<RollSurvivalStage v-if="currentStageId == 9" />
-				<RollEventStage v-if="currentStageId == 10" />
-				<RollAdvancementStage v-if="currentStageId == 11" />
-				<SelectMusterOutOrNot v-if="currentStageId == 12" />
-				<RollMusterOut v-if="currentStageId == 13" />
-				<RollMishapStage v-if="currentStageId == 65" />
-				<SelectDraftOrDriftStage v-if="currentStageId == 60" />
-				<RollDraftStage v-if="currentStageId == 61" />
+	<h1 class="text-3xl font-bold mb-6 text-center">Welcome to Traveller Tools</h1>
 
-				<div class="p-2 my-5 bg-slate-100 rounded-md" v-if="lastestLifePath.length != 0">
-					<!-- <p class="text-lg font-semibold">Lastet life path:</p> -->
-					<div v-for="path in lastestLifePath" :key="path" class="prose mx-auto mt-1" v-html="renderMarkdown(path)"></div>
-				</div>
-
-				<div class="hidden md:block pt-8" v-if="character.LifePath.length > 0">
-					<p class="text-2xl font-semibold my-5">Life summary:</p>
-					<div v-for="path in character.LifePath" :key="path" class="prose mx-auto mt-1" v-html="renderMarkdown(path)"></div>
-				</div>
-			</div>
-			<div class="w-full max-w-lg mx-auto">
-				<div class="p-6 bg-white rounded-lg shadow-md" v-if="character.Name">
-					<h2 class="text-2xl font-bold mb-4">{{ character.Name }}</h2>
-					<div class="mb-4">
-						<p class="text-gray-700"><span class="font-semibold">Age:</span> {{ character.Age }}</p>
-						<p class="text-gray-700"><span class="font-semibold">Race:</span> {{ Race[character.Race] }}</p>
-						<p class="text-gray-700" v-if="character.HomeWorld">
-							<span class="font-semibold">Home World:</span> {{ character.HomeWorld }}
-						</p>
-					</div>
-					<div class="mb-4" v-if="character.Characteristics">
-						<h3 class="text-xl font-semibold mb-2">Characteristics</h3>
-						<ul class="grid grid-cols-2 gap-4">
-							<li class="text-gray-600"><span class="font-semibold">Strength:</span> {{ character.Characteristics.Strength }}</li>
-							<li class="text-gray-600"><span class="font-semibold">Intellect:</span> {{ character.Characteristics.Intellect }}</li>
-							<li class="text-gray-600"><span class="font-semibold">Dexterity:</span> {{ character.Characteristics.Dexterity }}</li>
-							<li class="text-gray-600"><span class="font-semibold">Education:</span> {{ character.Characteristics.Education }}</li>
-							<li class="text-gray-600"><span class="font-semibold">Endurance:</span> {{ character.Characteristics.Endurance }}</li>
-							<li class="text-gray-600">
-								<span class="font-semibold">Social Standing:</span> {{ character.Characteristics.SocialStanding }}
-							</li>
-							<li class="text-gray-600"><span class="font-semibold">Psionics:</span> {{ character.Characteristics.Psionics }}</li>
-						</ul>
-					</div>
-					<div class="mb-4" v-if="character.Skills.length > 0">
-						<h3 class="text-xl font-semibold mb-2">Skills</h3>
-						<ul class="list-disc list-inside">
-							<li v-for="(skill, index) in character.Skills" :key="index" class="text-gray-600">
-								<span class="font-semibold">{{ skill.Name }}:</span> Level {{ skill.Level }}
-							</li>
-						</ul>
-					</div>
-					<div class="flex" v-if="character.Terms.length > 0">
-						<h3 class="text-xl font-semibold mb-2">Cash:</h3>
-						<p class="text-xl ml-2">{{ "CR" + character.Cash }}</p>
-					</div>
-					<div class="mb-4" v-if="character.Items.length > 0">
-						<h3 class="text-xl font-semibold mb-2">Items:</h3>
-						<p class="ml-2" v-for="item in character.Items">{{ item.Description }}</p>
-					</div>
-					<div>
-						<h3 class="text-xl font-semibold mb-2" v-if="character.Terms.length > 0">Terms</h3>
-						<div v-for="(term, index) in character.Terms" :key="index" class="mb-4 p-4 border border-gray-200 rounded">
-							<p>
-								<span class="font-semibold">Term {{ term.Number }}:</span>
-							</p>
-							<p class="ml-4"><span class="font-semibold">Age:</span> {{ term.Age }}</p>
-							<p v-if="term.Career" class="ml-4"><span class="font-semibold">Career:</span> {{ term.Career }}</p>
-							<p v-if="term.Qualified !== undefined" class="ml-4">
-								<span class="font-semibold">Qualified:</span> {{ term.Qualified ? "Yes" : "No" }}
-							</p>
-							<p v-if="term.Assignment" class="ml-4"><span class="font-semibold">Assignment:</span> {{ term.Assignment }}</p>
-							<p v-if="term.Rank" class="ml-4"><span class="font-semibold">Rank:</span> {{ term.Rank.Id }}</p>
-							<p v-if="term.Rank" class="ml-4"><span class="font-semibold">Title:</span> {{ term.Rank.Title }}</p>
-							<p v-if="term.Survived !== undefined" class="ml-4">
-								<span class="font-semibold">Survived:</span> {{ term.Survived ? "Yes" : "No" }}
-							</p>
-							<p v-if="term.Advanced !== undefined" class="ml-4">
-								<span class="font-semibold">Advanced:</span> {{ term.Advanced ? "Yes" : "No" }}
-							</p>
-							<div v-if="term.MusterOutBenefits?.length ?? 0 > 0" class="ml-4">
-								<span class="font-semibold">Muster Out Benefits:</span>
-								<ul class="list-disc list-inside ml-4">
-									<li v-for="(benefit, index) in term.MusterOutBenefits" :key="index">{{ benefit }}</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="block md:hidden" v-if="character.LifePath.length > 0">
-				<div v-for="path in character.LifePath" :key="path" class="prose max-w-lg mx-auto mt-1" v-html="renderMarkdown(path)"></div>
-			</div>
-		</div>
+	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+		<NuxtLink
+			v-for="page in pages"
+			:key="page.path"
+			:to="page.path"
+			class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow duration-200"
+		>
+			<h2 class="text-xl font-semibold mb-2">{{ page.title }}</h2>
+			<p class="text-gray-600">{{ page.description }}</p>
+		</NuxtLink>
 	</div>
 </template>
 
-<script lang="ts" setup>
-import { Race } from "#imports";
-import { marked } from "marked";
-
-const characterStore = useCharacterStore();
-const character = computed(() => characterStore.character);
-const characterInput = computed(() => characterStore.characterInput);
-const currentStageId = computed(() => character.value.currentStageId);
-const lastestLifePath = computed(() => characterStore.getLastestLifePath);
-
-const renderMarkdown = (markdown: string) => {
-	return marked(markdown);
-};
-
-const updateURL = () => {
-	const url = new URL(window.location.href);
-	if (characterInput.value.Name != "") url.searchParams.set("name", characterInput.value.Name);
-	if (characterInput.value.Race != 0) url.searchParams.set("Race", characterInput.value.Race.toString());
-	if (characterInput.value.HomeWorld != null && characterInput.value.HomeWorld != "")
-		url.searchParams.set("homeWorld", characterInput.value.HomeWorld);
-	if (characterInput.value.CharacteristicsString != null && characterInput.value.CharacteristicsString != "")
-		url.searchParams.set("characteristics", characterInput.value.CharacteristicsString);
-	if (characterInput.value.BackgroundSkillsString != null && characterInput.value.BackgroundSkillsString != "")
-		url.searchParams.set("backgroundSkills", characterInput.value.BackgroundSkillsString);
-	if (characterInput.value.TermsString != null && characterInput.value.TermsString != "")
-		url.searchParams.set("terms", characterInput.value.TermsString);
-	window.history.replaceState({}, "", url);
-};
-
-watch(characterInput, updateURL, { deep: true });
-
-onMounted(() => {
-	// Get Name, Race and Home World from params
-	const params = new URLSearchParams(window.location.search);
-	const name = params.get("name") ?? "";
-	const race: number = parseInt(params.get("race") ?? "0");
-	const homeWorld = params.get("homeWorld") ?? "";
-	const characteristicsString = params.get("characteristics") ?? "";
-	const backgroundSkillsString = params.get("backgroundSkills") ?? "";
-	const termString = params.get("terms") ?? "";
-
-	if (race) {
-		characterStore.updateRace(race);
-	}
-	if (homeWorld != "") {
-		characterStore.updateHomeWorld(homeWorld);
-	}
-
-	if (characteristicsString != "") {
-		characterStore.updateCharacteristicsString(characteristicsString);
-	}
-
-	if (backgroundSkillsString != "") {
-		characterStore.updateBackgroundSkillsString(backgroundSkillsString);
-	}
-
-	if (termString != "") {
-		characterStore.updateTermsString(termString);
-	}
-
-	if (name != "") {
-		characterStore.updateName(name);
-		characterStore.parseCharacter();
-	}
-});
+<script setup lang="ts">
+const pages = [
+	{
+		title: "Character Creator",
+		path: "/character-creator",
+		description: "Create and customize your character",
+	},
+];
 </script>

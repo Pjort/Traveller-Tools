@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1 class="text-xl font-bold mb-4">Basic Information</h1>
+		<h1 class="p-2">Basic Information</h1>
 		<div class="space-y-4">
 			<div class="flex items-center">
 				<label for="name" class="w-24">Name:</label>
@@ -8,13 +8,7 @@
 			</div>
 			<div class="flex items-center">
 				<label for="homeWorld" class="w-24">Home World:</label>
-				<input
-					id="homeWorld"
-					class="bg-slate-200 px-2 py-1 rounded"
-					type="text"
-					v-model="homeWorld"
-					placeholder="Home World"
-				/>
+				<input id="homeWorld" class="bg-slate-200 px-2 py-1 rounded" type="text" v-model="homeWorld" placeholder="Home World" />
 			</div>
 			<div class="flex items-center">
 				<label for="race" class="w-24">Race:</label>
@@ -25,7 +19,7 @@
 				</select>
 			</div>
 		</div>
-		<button @click="ApplyInput" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Apply</button>
+		<button @click="ApplyInput" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 mt-4">Apply</button>
 	</div>
 </template>
 

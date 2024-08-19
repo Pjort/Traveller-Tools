@@ -16,6 +16,8 @@ export class Character {
 	Skills: Skill[] = [];
 	Terms: Term[] = [];
 	currentStageId: number = 1;
+	Events: Event[] = [];
+	Mishaps: Event[] = [];
 	Cash: number = 0;
 	Items: Item[] = [];
 
