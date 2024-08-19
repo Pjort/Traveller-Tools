@@ -227,6 +227,15 @@ export class CharacterUtilities {
 			// Advancement roll
 			if (!this.ParseAdvancementRoll(character, assignment, careerString)) return;
 
+			if (character.Terms[character.Terms.length - 1].Advanced == true) {
+				// Select training table
+				const trainingTable = this.ParseTrainingTable(character, career, careerString);
+				if (!trainingTable) return;
+
+				// Roll on training table
+				if (!this.ParseTrainingTableRoll(character, trainingTable, careerString)) return;
+			}
+
 			// Muster out or continue
 			if (!this.ParseMusterOutOrContinue(character, career, careerString)) return;
 		}
@@ -435,7 +444,11 @@ export class CharacterUtilities {
 			this.AddRewardToCharacter(character, reward);
 		}
 
-		character.currentStageId = 9; // Survival check
+		if (character.Terms[character.Terms.length - 1].Advanced == true) {
+			character.currentStageId = 12; // Muster out or not
+		} else {
+			character.currentStageId = 9; // Survival check
+		}
 		return true;
 	}
 
@@ -537,7 +550,7 @@ export class CharacterUtilities {
 			character.Terms[character.Terms.length - 1].Advanced = false;
 		}
 
-		character.currentStageId = 12; // Muster out or not
+		character.currentStageId = 7; // Training table selection, for extra training because of advancement
 		return true;
 	}
 

@@ -48,13 +48,9 @@ const updateTermString = () => {
 
 const ApplyInput = () => {
 	updateTermString();
+	if (benefitRollsLeft.value - 1 < 1) {
+		characterStore.updateTermsString(currentTermString.value + "NT");
+	}
 	characterStore.parseCharacter();
 };
-
-watch(benefitRollsLeft, (newValue) => {
-	if (newValue < 1) {
-		characterStore.updateTermsString(currentTermString.value + "NT");
-		characterStore.parseCharacter();
-	}
-});
 </script>
