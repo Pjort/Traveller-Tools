@@ -41,7 +41,7 @@
 					</div>
 					<div class="mb-4" v-if="character.Characteristics">
 						<h3 class="text-xl font-semibold mb-2">Characteristics</h3>
-						<ul class="grid grid-cols-2 gap-4">
+						<ul class="grid grid-cols-2 gap-4 ml-2">
 							<li class="text-gray-600"><span class="font-semibold">Strength:</span> {{ character.Characteristics.Strength }}</li>
 							<li class="text-gray-600"><span class="font-semibold">Intellect:</span> {{ character.Characteristics.Intellect }}</li>
 							<li class="text-gray-600"><span class="font-semibold">Dexterity:</span> {{ character.Characteristics.Dexterity }}</li>
@@ -55,7 +55,7 @@
 					</div>
 					<div class="mb-4" v-if="character.Skills.length > 0">
 						<h3 class="text-xl font-semibold mb-2">Skills</h3>
-						<ul class="list-disc list-inside">
+						<ul class="list-disc list-inside ml-2">
 							<li v-for="(skill, index) in character.Skills" :key="index" class="text-gray-600">
 								<span class="font-semibold">{{ skill.Name }}:</span> Level {{ skill.Level }}
 							</li>
