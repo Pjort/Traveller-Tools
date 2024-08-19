@@ -545,12 +545,13 @@ export class CharacterUtilities {
 				character.Terms[character.Terms.length - 1].Rank = assignment.Ranks[currentRank];
 			}
 			character.Terms[character.Terms.length - 1].Advanced = true;
+			character.currentStageId = 7; // Training table selection, for extra training because of advancement
 		} else {
 			this.AddLifePath(character, "Advancement failed");
 			character.Terms[character.Terms.length - 1].Advanced = false;
+			character.currentStageId = 12; // Muster out or not
 		}
 
-		character.currentStageId = 7; // Training table selection, for extra training because of advancement
 		return true;
 	}
 
