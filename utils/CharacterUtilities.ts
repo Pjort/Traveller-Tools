@@ -217,13 +217,19 @@ export class CharacterUtilities {
 		// Survival check
 		if (!this.ParseSurvivalCheck(character, assignment, careerString)) return;
 
-		// Event roll
-		if (!this.ParseEventRoll(character, career, careerString)) return;
+		if (character.Terms[character.Terms.length - 1].Survived == false) {
+			// Mishap roll
+			if (!this.ParseMishapRoll(character, career, careerString)) return;
+		} else {
+			// Event roll
+			if (!this.ParseEventRoll(character, career, careerString)) return;
 
-		// Advancement roll
-		if (!this.ParseAdvancementRoll(character, assignment, careerString)) return;
+			// Advancement roll
+			if (!this.ParseAdvancementRoll(character, assignment, careerString)) return;
 
-		if (!this.ParseMusterOutOrContinue(character, career, careerString)) return;
+			// Muster out or continue
+			if (!this.ParseMusterOutOrContinue(character, career, careerString)) return;
+		}
 
 		// Muster out
 		while (this.ParseMusterOut(character, career, careerString));
@@ -451,13 +457,13 @@ export class CharacterUtilities {
 
 		if (survivalRoll + survivalModifier >= assignment?.SurvivalCheck?.TargetValue) {
 			this.AddLifePath(character, "Survival successful");
+			character.currentStageId = 10; // Event roll
 			character.Terms[character.Terms.length - 1].Survived = true;
 		} else {
 			this.AddLifePath(character, "Survival failed");
+			character.currentStageId = 65; // Mishap roll
 			character.Terms[character.Terms.length - 1].Survived = false;
 		}
-
-		character.currentStageId = 10; // Event roll
 
 		return true;
 	}
@@ -476,6 +482,26 @@ export class CharacterUtilities {
 		this.AddLifePath(character, "**Event:** " + event?.Description);
 
 		character.currentStageId = 11; // Advancement roll
+		return true;
+	}
+
+	private static ParseMishapRoll(character: Character, career: Career, careerString: CareerString): boolean {
+		if (careerString.value.length < 1) {
+			return false;
+		}
+
+		const mishapRoll = parseInt(careerString.value.slice(0, 1));
+		careerString.value = careerString.value.slice(1);
+
+		this.AddLifePath(character, "Mishap roll: " + mishapRoll);
+
+		const mishap = career?.Mishaps.find((m) => m.Id == mishapRoll);
+		if (!mishap) {
+			throw new Error("Invalid mishap roll: " + mishapRoll);
+		}
+
+		this.AddLifePath(character, "**Mishap:** " + mishap.Description);
+		character.currentStageId = 13; // Muster out
 		return true;
 	}
 
