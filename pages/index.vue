@@ -19,7 +19,13 @@
 				<SelectDraftOrDriftStage v-if="currentStageId == 60" />
 				<RollDraftStage v-if="currentStageId == 61" />
 
+				<div class="p-2 my-5 bg-slate-100 rounded-md" v-if="lastestLifePath.length != 0">
+					<!-- <p class="text-lg font-semibold">Lastet life path:</p> -->
+					<div v-for="path in lastestLifePath" :key="path" class="prose mx-auto mt-1" v-html="renderMarkdown(path)"></div>
+				</div>
+
 				<div class="hidden md:block pt-8" v-if="character.LifePath.length > 0">
+					<p class="text-2xl font-semibold my-5">Life summary:</p>
 					<div v-for="path in character.LifePath" :key="path" class="prose mx-auto mt-1" v-html="renderMarkdown(path)"></div>
 				</div>
 			</div>
@@ -95,6 +101,7 @@ const characterStore = useCharacterStore();
 const character = computed(() => characterStore.character);
 const characterInput = computed(() => characterStore.characterInput);
 const currentStageId = computed(() => character.value.currentStageId);
+const lastestLifePath = computed(() => characterStore.getLastestLifePath);
 
 const renderMarkdown = (markdown: string) => {
 	return marked(markdown);

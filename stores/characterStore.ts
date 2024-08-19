@@ -25,6 +25,7 @@ export const useCharacterStore = defineStore("character", {
 			BackgroundSkillsString: "",
 			TermsString: "",
 		} as CharacterInput,
+		lastestLifePath: new Array<string>(),
 	}),
 	actions: {
 		setCharacterInput(characterInput: CharacterInput) {
@@ -66,7 +67,17 @@ export const useCharacterStore = defineStore("character", {
 			this.characterInput.TermsString = termsString;
 		},
 		parseCharacter() {
-			this.character = CharacterUtilities.ParseCharacter(this.characterInput);
+			let character = CharacterUtilities.ParseCharacter(this.characterInput);
+			// find the lastest life path, by comparing the current life path with the lastest life path
+			let oldLifepathLength = this.character.LifePath.length;
+			let newLifepathLength = character.LifePath.length;
+			let lastestLifePath = new Array<string>();
+			for (let i = oldLifepathLength; i < newLifepathLength; i++) {
+				lastestLifePath.push(character.LifePath[i]);
+			}
+			this.lastestLifePath = lastestLifePath;
+
+			this.character = character;
 		},
 	},
 	getters: {
@@ -88,6 +99,10 @@ export const useCharacterStore = defineStore("character", {
 			if (!career) return null;
 			let assignment = career.Assignments.find((a) => a.Name == assignmentName);
 			return assignment;
+		},
+		getLastestLifePath: (state) => {
+			if (state.character.LifePath.length == state.lastestLifePath.length) return [];
+			return state.lastestLifePath;
 		},
 	},
 });

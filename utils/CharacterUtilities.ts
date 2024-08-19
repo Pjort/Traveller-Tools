@@ -6,6 +6,7 @@ export class CharacterUtilities {
 		const character = new Character(input.Name, input.Race, input.HomeWorld, 18);
 
 		this.AddLifePath(character, "## Term 0 (0 - 18 years)");
+		if (input.HomeWorld) this.AddLifePath(character, "Grew up on " + input.HomeWorld);
 
 		character.currentStageId = 2; // Characteristics roll
 
@@ -217,6 +218,8 @@ export class CharacterUtilities {
 		const previousCareerName = character.Terms[termNumber - 2].Career;
 		if (previousTerm.Survived && previousTerm.MusterOutBenefits == undefined && previousCareerName != undefined) {
 			character.currentStageId = 7; // Select a training table
+			this.AddLifePath(character, "Stayed in the same career");
+			this.AddLifePath(character, "**Career:** " + previousCareerName);
 			character.Terms.push(new Term(termNumber, age, previousCareerName));
 			return CareersDb.GetCareerByName(previousCareerName);
 		}
@@ -241,6 +244,7 @@ export class CharacterUtilities {
 			if (career) {
 				character.Terms[character.Terms.length - 1].Assignment = previousAssignmentName;
 				character.Terms[character.Terms.length - 1].Rank = previousTerm.Rank;
+				this.AddLifePath(character, "**Assignment:** " + previousAssignmentName);
 				return career.Assignments.find((a: Assignment) => a.Name === previousAssignmentName);
 			}
 		}
@@ -396,7 +400,7 @@ export class CharacterUtilities {
 		const trainingRoll = parseInt(careerString.value.slice(0, 1));
 		careerString.value = careerString.value.slice(1);
 
-		this.AddLifePath(character, "Training rolled: " + trainingRoll);
+		this.AddLifePath(character, "Training table roll: " + trainingRoll);
 
 		if (trainingTable) {
 			const reward = trainingTable.Rewards.find((r: Reward) => r.Id === trainingRoll);
@@ -447,7 +451,7 @@ export class CharacterUtilities {
 		const eventsRoll = parseInt(careerString.value.slice(0, 2));
 		careerString.value = careerString.value.slice(2);
 
-		this.AddLifePath(character, "Events rolled: " + eventsRoll);
+		this.AddLifePath(character, "Event roll: " + eventsRoll);
 
 		const event = career?.Events.find((e) => e.Id == eventsRoll);
 		this.AddLifePath(character, "**Event:** " + event?.Description);
