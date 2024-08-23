@@ -30,74 +30,7 @@
 				</div>
 			</div>
 			<div class="w-full max-w-lg mx-auto">
-				<div class="p-6 bg-white rounded-lg shadow-md" v-if="character.Name">
-					<h2 class="text-2xl font-bold mb-4">{{ character.Name }}</h2>
-					<div class="mb-4">
-						<p class="text-gray-700"><span class="font-semibold">Age:</span> {{ character.Age }}</p>
-						<p class="text-gray-700"><span class="font-semibold">Race:</span> {{ Race[character.Race] }}</p>
-						<p class="text-gray-700" v-if="character.HomeWorld">
-							<span class="font-semibold">Home World:</span> {{ character.HomeWorld }}
-						</p>
-					</div>
-					<div class="mb-4" v-if="character.Characteristics">
-						<h3 class="text-xl font-semibold mb-2">Characteristics</h3>
-						<ul class="grid grid-cols-2 gap-4 ml-2">
-							<li class="text-gray-600"><span class="font-semibold">Strength:</span> {{ character.Characteristics.Strength }}</li>
-							<li class="text-gray-600"><span class="font-semibold">Intellect:</span> {{ character.Characteristics.Intellect }}</li>
-							<li class="text-gray-600"><span class="font-semibold">Dexterity:</span> {{ character.Characteristics.Dexterity }}</li>
-							<li class="text-gray-600"><span class="font-semibold">Education:</span> {{ character.Characteristics.Education }}</li>
-							<li class="text-gray-600"><span class="font-semibold">Endurance:</span> {{ character.Characteristics.Endurance }}</li>
-							<li class="text-gray-600">
-								<span class="font-semibold">Social Standing:</span> {{ character.Characteristics.SocialStanding }}
-							</li>
-							<li class="text-gray-600"><span class="font-semibold">Psionics:</span> {{ character.Characteristics.Psionics }}</li>
-						</ul>
-					</div>
-					<div class="mb-4" v-if="character.Skills.length > 0">
-						<h3 class="text-xl font-semibold mb-2">Skills</h3>
-						<ul class="list-disc list-inside ml-2">
-							<li v-for="(skill, index) in character.Skills" :key="index" class="text-gray-600">
-								<span class="font-semibold">{{ skill.Name }}:</span> Level {{ skill.Level }}
-							</li>
-						</ul>
-					</div>
-					<div class="flex" v-if="character.Terms.length > 0">
-						<h3 class="text-xl font-semibold mb-2">Cash:</h3>
-						<p class="text-xl ml-2">{{ "CR" + character.Cash }}</p>
-					</div>
-					<div class="mb-4" v-if="character.Items.length > 0">
-						<h3 class="text-xl font-semibold mb-2">Items:</h3>
-						<p class="ml-2" v-for="item in character.Items">{{ item.Description }}</p>
-					</div>
-					<div>
-						<h3 class="text-xl font-semibold mb-2" v-if="character.Terms.length > 0">Terms</h3>
-						<div v-for="(term, index) in character.Terms" :key="index" class="mb-4 p-4 border border-gray-200 rounded">
-							<p>
-								<span class="font-semibold">Term {{ term.Number }}:</span>
-							</p>
-							<p class="ml-4"><span class="font-semibold">Age:</span> {{ term.Age }}</p>
-							<p v-if="term.Career" class="ml-4"><span class="font-semibold">Career:</span> {{ term.Career }}</p>
-							<p v-if="term.Qualified !== undefined" class="ml-4">
-								<span class="font-semibold">Qualified:</span> {{ term.Qualified ? "Yes" : "No" }}
-							</p>
-							<p v-if="term.Assignment" class="ml-4"><span class="font-semibold">Assignment:</span> {{ term.Assignment }}</p>
-							<p v-if="term.Rank" class="ml-4"><span class="font-semibold">Rank:</span> {{ term.Rank.Id }}</p>
-							<p v-if="term.Rank" class="ml-4"><span class="font-semibold">Title:</span> {{ term.Rank.Title }}</p>
-							<p v-if="term.Survived !== undefined" class="ml-4">
-								<span class="font-semibold">Survived:</span> {{ term.Survived ? "Yes" : "No" }}
-							</p>
-							<p v-if="term.Advanced !== undefined" class="ml-4">
-								<span class="font-semibold">Advanced:</span> {{ term.Advanced ? "Yes" : "No" }}
-							</p>
-							<div v-if="term.MusterOutBenefits?.length ?? 0 > 0" class="ml-4">
-								<span class="font-semibold">Muster Out Benefits:</span>
-								<ul class="list-disc list-inside ml-4">
-									<li v-for="(benefit, index) in term.MusterOutBenefits" :key="index">{{ benefit }}</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
+				<Character />
 			</div>
 
 			<div class="block md:hidden" v-if="character.LifePath.length > 0">
