@@ -1,8 +1,8 @@
 <template>
-	<div class="m-2">
-		<p class="text-2xl font-semibold">Character creator</p>
+	<div class="pb-5">
+		<p class="text-2xl font-semibold mb-2">Character creator</p>
 		<div class="md:flex">
-			<div class="mt-2 px-4 pt-2 pb-4 bg-white rounded-lg shadow-md max-w-xl w-full">
+			<div class="px-4 pt-2 pb-4 bg-white rounded-lg shadow-md max-w-2xl w-full mb-4">
 				<CharacterStage v-if="currentStageId === 1" />
 				<RollCharacteristicsStage v-if="currentStageId === 2" />
 				<BackgroundSkillsStage v-if="currentStageId == 3" />
@@ -24,7 +24,7 @@
 					<div v-for="path in lastestLifePath" :key="path" class="prose mx-auto mt-1" v-html="renderMarkdown(path)"></div>
 				</div>
 
-				<div class="hidden md:block pt-8" v-if="character.LifePath.length > 0">
+				<div class="hidden md:block pt-4" v-if="character.LifePath.length > 0">
 					<p class="text-2xl font-semibold my-5">Life summary:</p>
 					<div v-for="path in character.LifePath" :key="path" class="prose mx-auto mt-1" v-html="renderMarkdown(path)"></div>
 				</div>
