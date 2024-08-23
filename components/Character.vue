@@ -8,32 +8,32 @@
 		</div>
 		<div class="mb-4" v-if="character.Characteristics">
 			<h3 class="text-xl font-semibold mb-2">Characteristics</h3>
-			<ul class="grid grid-cols-2 gap-4">
-				<li class="text-gray-600">
+			<ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+				<li class="text-gray-600 order-1 sm:order-1">
 					<span class="font-semibold">Strength:</span> {{ character.Characteristics.Strength }} (DM:
 					{{ createDiceModifierString(character.Characteristics.Strength) }})
 				</li>
-				<li class="text-gray-600">
+				<li class="text-gray-600 order-4 sm:order-2">
 					<span class="font-semibold">Intellect:</span> {{ character.Characteristics.Intellect }} (DM:
 					{{ createDiceModifierString(character.Characteristics.Intellect) }})
 				</li>
-				<li class="text-gray-600">
+				<li class="text-gray-600 order-2 sm:order-3">
 					<span class="font-semibold">Dexterity:</span> {{ character.Characteristics.Dexterity }} (DM:
 					{{ createDiceModifierString(character.Characteristics.Dexterity) }})
 				</li>
-				<li class="text-gray-600">
+				<li class="text-gray-600 order-5 sm:order-4">
 					<span class="font-semibold">Education:</span> {{ character.Characteristics.Education }} (DM:
 					{{ createDiceModifierString(character.Characteristics.Education) }})
 				</li>
-				<li class="text-gray-600">
+				<li class="text-gray-600 order-3 sm:order-5">
 					<span class="font-semibold">Endurance:</span> {{ character.Characteristics.Endurance }} (DM:
 					{{ createDiceModifierString(character.Characteristics.Endurance) }})
 				</li>
-				<li class="text-gray-600">
+				<li class="text-gray-600 order-6 sm:order-6">
 					<span class="font-semibold">Social St:</span> {{ character.Characteristics.SocialStanding }} (DM:
 					{{ createDiceModifierString(character.Characteristics.SocialStanding) }})
 				</li>
-				<li class="text-gray-600">
+				<li class="text-gray-600 order-7 sm:order-7">
 					<span class="font-semibold">Psionics:</span> {{ character.Characteristics.Psionics }} (DM:
 					{{ createDiceModifierString(character.Characteristics.Psionics) }})
 				</li>

@@ -33,7 +33,8 @@
 				<Character />
 			</div>
 
-			<div class="block md:hidden" v-if="character.LifePath.length > 0">
+			<div class="block md:hidden mt-6" v-if="character.LifePath.length > 0">
+				<p class="text-2xl font-semibold my-5">Life summary:</p>
 				<div v-for="path in character.LifePath" :key="path" class="prose max-w-lg mx-auto mt-1" v-html="renderMarkdown(path)"></div>
 			</div>
 		</div>

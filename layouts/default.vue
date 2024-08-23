@@ -8,7 +8,7 @@
 					target="_blank"
 					rel="noopener noreferrer"
 					class="flex items-center hover:text-blue-200 transition-colors duration-200"
-					><p class="pr-2">Assist dev:</p>
+					><p class="pr-2 hidden md:block">Assist dev:</p>
 					<svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 						<path
 							fill-rule="evenodd"
