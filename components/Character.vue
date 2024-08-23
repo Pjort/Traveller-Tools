@@ -68,7 +68,7 @@
 				</p>
 				<p v-if="term.Assignment" class="ml-4"><span class="font-semibold">Assignment:</span> {{ term.Assignment }}</p>
 				<p v-if="term.Rank" class="ml-4"><span class="font-semibold">Rank:</span> {{ term.Rank.Id }}</p>
-				<p v-if="term.Rank" class="ml-4"><span class="font-semibold">Title:</span> {{ term.Rank.Title }}</p>
+				<p v-if="term.Rank && term.Rank?.Title != ''" class="ml-4"><span class="font-semibold">Title:</span> {{ term.Rank.Title }}</p>
 				<p v-if="term.Survived !== undefined" class="ml-4"><span class="font-semibold">Survived:</span> {{ term.Survived ? "Yes" : "No" }}</p>
 				<p v-if="term.Advanced !== undefined" class="ml-4"><span class="font-semibold">Advanced:</span> {{ term.Advanced ? "Yes" : "No" }}</p>
 				<div v-if="term.MusterOutBenefits?.length ?? 0 > 0" class="ml-4">
