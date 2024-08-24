@@ -12,6 +12,7 @@ import {
 	Career,
 	MusterOutRecord,
 	Item,
+	Relation,
 } from "#imports";
 import { SkillsDb, CareersDb } from "#imports";
 
@@ -685,7 +686,7 @@ export class CharacterUtilities {
 		return -3;
 	}
 
-	private static AddRewardToCharacter(character: Character, reward: Reward | Item, isLevelZeroOnly = false) {
+	private static AddRewardToCharacter(character: Character, reward: Reward | Item | Relation, isLevelZeroOnly = false) {
 		if (!reward.Description) {
 			return;
 		}
@@ -694,6 +695,14 @@ export class CharacterUtilities {
 		if (reward instanceof Item) {
 			this.AddLifePath(character, "**Gained item:** " + reward.Description);
 			character.Items.push(reward);
+			return;
+		}
+
+		// Check if reward is type Relation
+		if (reward instanceof Relation) {
+			reward.TermNumber = character.Terms[character.Terms.length - 1].Number;
+			this.AddLifePath(character, "**Gained relation:** " + reward.Description);
+			character.Relations.push(reward);
 			return;
 		}
 

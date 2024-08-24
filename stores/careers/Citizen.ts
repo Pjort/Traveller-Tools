@@ -134,7 +134,7 @@ const mishapTable: Event[] = [
 
 const musterOutTable: MusterOutRecord[] = [
 	new MusterOutRecord(1, 2000, [new Item(1, "Ship Share")]),
-	new MusterOutRecord(2, 5000, [new Item(1, "Ally")]),
+	new MusterOutRecord(2, 5000, [new Relation(1, "Ally")]),
 	new MusterOutRecord(3, 10000, [new Reward(1, "INT +1")]),
 	new MusterOutRecord(4, 10000, [new Item(1, "Gun")]),
 	new MusterOutRecord(5, 10000, [new Reward(1, "EDU +1")]),

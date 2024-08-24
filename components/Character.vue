@@ -77,7 +77,7 @@
 		</div>
 		<div class="mb-4" v-if="character.Traits.length > 0">
 			<h3 class="text-xl font-semibold mb-2">Traits</h3>
-			<div class="text-gray-700 prose" v-for="trait in character.Traits" :key="trait" v-html="renderMarkdown(trait)"></div>
+			<div class="text-gray-600 my-1" v-for="trait in character.Traits" :key="trait" v-html="renderMarkdown(trait)"></div>
 		</div>
 		<div class="mb-4" v-if="character.Skills.length > 0">
 			<h3 class="text-xl font-semibold mb-2">Skills</h3>
@@ -87,16 +87,23 @@
 				</li>
 			</ul>
 		</div>
+		<div class="mb-4" v-if="character.Relations.length > 0">
+			<h3 class="text-xl font-semibold mb-2">Relations:</h3>
+			<p class="ml-2" v-for="relation in character.Relations">
+				{{ relation.Amount + "x " + relation.Description + " (Term: " + relation.TermNumber + ")" }}
+			</p>
+		</div>
 		<div class="flex" v-if="character.Terms.length > 0">
 			<h3 class="text-xl font-semibold mb-2">Cash:</h3>
 			<p class="text-xl ml-2">{{ "Cr" + character.Cash }}</p>
 		</div>
+
 		<div class="mb-4" v-if="character.Items.length > 0">
 			<h3 class="text-xl font-semibold mb-2">Items:</h3>
 			<p class="ml-2" v-for="item in character.Items">{{ item.Description }}</p>
 		</div>
 		<div>
-			<h3 class="text-xl font-semibold mb-2" v-if="character.Terms.length > 0">Terms</h3>
+			<h3 class="text-xl font-semibold mb-2 mt-2" v-if="character.Terms.length > 0">Terms</h3>
 			<div v-for="(term, index) in character.Terms" :key="index" class="mb-4 p-4 border border-gray-200 rounded">
 				<p>
 					<span class="font-semibold">Term {{ term.Number }}:</span>

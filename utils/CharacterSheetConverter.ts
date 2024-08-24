@@ -13,37 +13,49 @@ export class CharacterSheetConverter {
 		if (!character.Characteristics) return markdown;
 
 		// Characteristics
-		markdown += "## Characteristics\n\n";
+		markdown += "## Characteristics\n";
 		for (let [key, value] of Object.entries(character.Characteristics)) {
 			if (key == "SocialStanding") key = "Social Standing";
-			markdown += `**${key}:** ${value}  (${CharacterUtilities.createDiceModifierString(value)})\n`;
+			markdown += `- **${key}:** ${value}  (${CharacterUtilities.createDiceModifierString(value)})\n`;
 		}
 		markdown += "\n";
 
 		// Traits
 		if (character.Traits && character.Traits.length > 0) {
-			markdown += "## Traits\n\n";
+			markdown += "## Traits\n";
 			for (const trait of character.Traits) {
-				markdown += `${trait}\n`;
+				markdown += `- ${trait}\n`;
 			}
 			markdown += "\n";
 		}
 
 		// Skills
-		markdown += "## Skills\n\n";
+		markdown += "## Skills\n";
 		for (const skill of character.Skills) {
 			markdown += `- ${skill.Name}: ${skill.Level}\n`;
 		}
 		markdown += "\n";
 
-		// Cash and Items
-		markdown += `## Possessions\n\n`;
-		markdown += `**Cash:** Cr${character.Cash}\n`;
+		// Relations
+		if (character.Relations && character.Relations.length > 0) {
+			markdown += "## Relations\n";
+			for (const relation of character.Relations) {
+				markdown += `- ${relation.Amount}x ${relation.Description} (Term: ${relation.TermNumber})\n`;
+			}
+			markdown += "\n";
+		}
+
+		// Cash
+		markdown += `## Cash:\n`;
+		markdown += `Cr${character.Cash}\n\n`;
+
+		// Items
 		if (character.Items && character.Items.length > 0) {
-			markdown += "**Items:**\n";
+			markdown += "## Items:\n";
 			for (const item of character.Items) {
 				markdown += `- ${item.Description}\n`;
 			}
+			markdown += "\n";
 		}
 
 		// Terms
@@ -52,6 +64,8 @@ export class CharacterSheetConverter {
 			markdown += `### Term ${term.Number} (Age ${term.Age})\n`;
 			markdown += `**Career:** ${term.Career}\n`;
 			markdown += `**Assignment:** ${term.Assignment}\n`;
+			markdown += `**Survived:** ${term.Survived ? "Yes" : "No"}\n`;
+			if (term.Survived) markdown += `**Advanced:** ${term.Advanced ? "Yes" : "No"}\n`;
 			if (term.Rank) {
 				markdown += `**Rank:** ${term.Rank.Id}` + (term.Rank.Title && term.Rank.Title != "" ? ` - ${term.Rank.Title}` : "") + "\n";
 				if (term.MusterOutBenefits) {

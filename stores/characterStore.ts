@@ -1,6 +1,6 @@
 // stores/characterInputStore.ts
 import { defineStore } from "pinia";
-import { Character, CharacterInput, Skill, Term, Characteristics, Race, Item } from "#imports";
+import { Character, CharacterInput, Skill, Term, Characteristics, Race, Item, Relation } from "#imports";
 
 export const useCharacterStore = defineStore("character", {
 	state: () => ({
@@ -19,6 +19,7 @@ export const useCharacterStore = defineStore("character", {
 			Mishaps: new Array<Event>(),
 			Cash: 0,
 			Items: new Array<Item>(),
+			Relations: new Array<Relation>(),
 		} as Character,
 		characterInput: {
 			Name: "",
@@ -48,6 +49,7 @@ export const useCharacterStore = defineStore("character", {
 					Mishaps: [],
 					Cash: 0,
 					Items: [],
+					Relations: [],
 				};
 				state.characterInput = {
 					Name: "",

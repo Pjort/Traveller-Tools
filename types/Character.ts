@@ -1,4 +1,4 @@
-import { Characteristics, Item, Skill, Term } from "#imports";
+import { Characteristics, Item, Skill, Term, Relation } from "#imports";
 
 export enum Race {
 	Human,
@@ -21,6 +21,7 @@ export class Character {
 	Mishaps: Event[] = [];
 	Cash: number = 0;
 	Items: Item[] = [];
+	Relations: Relation[] = [];
 
 	constructor(
 		name: string,
@@ -33,7 +34,8 @@ export class Character {
 		skills: Skill[] = [],
 		terms: Term[] = [],
 		cash: number = 0,
-		items: Item[] = []
+		items: Item[] = [],
+		relations: Relation[] = []
 	) {
 		this.Name = name;
 		this.Race = race;
@@ -46,5 +48,6 @@ export class Character {
 		this.Terms = terms;
 		this.Cash = cash;
 		this.Items = items;
+		this.Relations = relations;
 	}
 }

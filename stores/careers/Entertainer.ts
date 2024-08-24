@@ -140,9 +140,9 @@ const mishapTable: Event[] = [
 ];
 
 const musterOutTable: MusterOutRecord[] = [
-	new MusterOutRecord(1, 0, [new Item(1, "Contact")]),
+	new MusterOutRecord(1, 0, [new Relation(1, "Contact")]),
 	new MusterOutRecord(2, 0, [new Reward(1, "SOC +1")]),
-	new MusterOutRecord(3, 10000, [new Item(1, "Contact")]),
+	new MusterOutRecord(3, 10000, [new Relation(1, "Contact")]),
 	new MusterOutRecord(4, 10000, [new Reward(1, "SOC +1")]),
 	new MusterOutRecord(5, 40000, [new Reward(1, "INT +1")]),
 	new MusterOutRecord(6, 40000, [new Item(1, "Two Ship Shares")]),
