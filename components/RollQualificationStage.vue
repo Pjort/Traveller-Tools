@@ -1,11 +1,10 @@
 <template>
 	<div>
-		<h1 class="p-2">Roll Qualifications</h1>
+		<h1 class="text-2xl font-bold mb-4">Roll Qualifications</h1>
 
 		<div class="p-2">
 			<p class="p-2">
-				Requires: {{ currentCareer?.QualificationCheck.CharacteristicsType }}
-				{{ currentCareer?.QualificationCheck.TargetValue }}+
+				Requires: {{ currentCareer?.QualificationCheck.CharacteristicsType }} {{ currentCareer?.QualificationCheck.TargetValue }}+
 			</p>
 			<DiceInput v-model="roll" :numDice="2" />
 		</div>

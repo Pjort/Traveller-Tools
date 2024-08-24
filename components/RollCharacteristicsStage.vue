@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<h1 class="p-2">Roll Characteristics</h1>
+		<h1 class="text-2xl font-bold mb-4">Roll Characteristics</h1>
+
 		<div>
 			<div class="p-2">
 				Strength:

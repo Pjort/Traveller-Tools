@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<h1 class="p-2">Background Skill</h1>
+		<h1 class="text-2xl font-bold mb-4">Background Skill</h1>
+
 		<div class="p-2">
 			<!-- TODO: Add the education calculation for how many maximum backgroundSkills can be taken -->
 			<div v-for="skill in backgroundSkills" :key="skill.Id">

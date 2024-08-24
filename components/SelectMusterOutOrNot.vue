@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<h1 class="p-2">Do you muster out of your career?</h1>
+		<h1 class="text-2xl font-bold mb-4">Do you muster out of your career?</h1>
+
 		<div class="p-2">
 			<div v-for="choice in choices" :key="choice.key">
 				<input type="radio" v-model="selectedChoice" :value="choice.key" :id="choice.key" />

@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<h1 class="p-2">Select Assignment</h1>
+		<h1 class="text-2xl font-bold mb-4">Select Assignment</h1>
+
 		<div class="p-2">
 			<div v-for="assignment in assignments" :key="assignment.Id">
 				<input type="radio" v-model="selectedAssignment" :value="assignment.Id" :id="assignment.Name" />

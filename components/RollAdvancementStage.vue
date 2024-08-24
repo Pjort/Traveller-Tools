@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1 class="p-2">Roll Advancement</h1>
+		<h1 class="text-2xl font-bold mb-4">Roll Advancement</h1>
 
 		<div class="p-2">
 			<p class="p-2">

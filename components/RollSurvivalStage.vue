@@ -1,11 +1,10 @@
 <template>
 	<div>
-		<h1 class="p-2">Roll Survival</h1>
+		<h1 class="text-2xl font-bold mb-4">Roll Survival<</h1>
 
 		<div class="p-2">
 			<p class="p-2">
-				Requires: {{ currentAssignment?.SurvivalCheck.CharacteristicsType }}
-				{{ currentAssignment?.SurvivalCheck.TargetValue }}+
+				Requires: {{ currentAssignment?.SurvivalCheck.CharacteristicsType }} {{ currentAssignment?.SurvivalCheck.TargetValue }}+
 			</p>
 			<DiceInput v-model="roll" :numDice="2" />
 		</div>

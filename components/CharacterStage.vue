@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<h1 class="p-2">Basic Information</h1>
+		<h1 class="text-2xl font-bold mb-4">Basic Information</h1>
+
 		<div class="space-y-4">
 			<div class="flex items-center">
 				<label for="name" class="w-24">Name:</label>
