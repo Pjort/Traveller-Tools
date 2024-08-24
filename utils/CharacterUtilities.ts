@@ -587,10 +587,31 @@ export class CharacterUtilities {
 		const cashOrBenefits = careerString.value.slice(0, 1);
 		this.AddLifePath(character, "Muster out selection: " + (cashOrBenefits == "1" ? "Cash" : "Benefits"));
 
-		const roll = parseInt(careerString.value.slice(1, 2));
+		let roll = parseInt(careerString.value.slice(1, 2));
 		careerString.value = careerString.value.slice(2);
 
-		this.AddLifePath(character, "Muster out roll: " + roll);
+		let musterOutRollString = "Muster out roll: " + roll;
+
+		if (cashOrBenefits == "1") {
+			// Cash
+			// Check if character has skill Gambler
+			const gamblerSkill = character.Skills.find((s) => s.Name == "Gambler");
+			if (gamblerSkill) {
+				roll += 1;
+				musterOutRollString += " (+1 from Gambler)";
+			}
+		}
+
+		// Check if rank 5 or 6 in current career
+		const currentRank = character.Terms[character.Terms.length - 1].Rank;
+		if (currentRank?.Id == 5 || currentRank?.Id == 6) {
+			roll += 1;
+			musterOutRollString += " (+1 from Rank)";
+		}
+
+		if (roll > 7) roll = 7;
+
+		this.AddLifePath(character, musterOutRollString + " = " + roll);
 
 		const musterOutRecord = career.MusterOutTable.find((m: MusterOutRecord) => m.Id == roll);
 		if (!musterOutRecord) {
