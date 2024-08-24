@@ -198,10 +198,11 @@ export class CharacterUtilities {
 			}
 
 			// Qualification roll
-			if (!this.ParseQualificationRoll(character, career, careerString)) return;
+			career = this.ParseQualificationRoll(character, career, careerString);
 
 			if (!career) {
-				throw new Error("Career not found");
+				return;
+				// throw new Error("Career not found");
 			}
 
 			// Select Assignment
@@ -311,9 +312,9 @@ export class CharacterUtilities {
 		return career;
 	}
 
-	private static ParseQualificationRoll(character: Character, career: Career | undefined, careerString: CareerString): boolean {
+	private static ParseQualificationRoll(character: Character, career: Career | undefined, careerString: CareerString): Career | undefined {
 		if (!career) {
-			return false;
+			return undefined;
 		}
 		if (careerString.value.length >= 2) {
 			const qualificationCheckRoll = parseInt(careerString.value.slice(0, 2));
@@ -339,7 +340,7 @@ export class CharacterUtilities {
 				this.AddLifePath(character, "Submit to Draft or become a Drifter");
 
 				if (careerString.value.length < 1) {
-					return false;
+					return undefined;
 				}
 
 				const draftOrDrifter = careerString.value.slice(0, 1);
@@ -350,7 +351,7 @@ export class CharacterUtilities {
 
 					character.currentStageId = 61; // Draft roll
 					if (careerString.value.length < 1) {
-						return false;
+						return undefined;
 					}
 
 					const roolForDraft = careerString.value.slice(0, 1);
@@ -384,7 +385,7 @@ export class CharacterUtilities {
 				}
 			}
 		}
-		return true;
+		return career;
 	}
 
 	private static ParseAssignment(character: Character, career: Career, termNumber: number, careerString: CareerString): Assignment | undefined {
