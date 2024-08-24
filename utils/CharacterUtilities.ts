@@ -19,7 +19,7 @@ export class CharacterUtilities {
 	public static ParseCharacter(input: CharacterInput): Character {
 		const character = new Character(input.Name, input.Race, input.HomeWorld, 18);
 
-		this.AddLifePath(character, "## Term 0 (0 - 18 years)");
+		this.AddLifePath(character, "### Term 0 (0 - 18 years)");
 		if (input.HomeWorld) this.AddLifePath(character, "Grew up on " + input.HomeWorld);
 
 		character.currentStageId = 2; // Characteristics roll
@@ -181,7 +181,7 @@ export class CharacterUtilities {
 	}
 
 	private static ParseCareer(character: Character, careerString: CareerString, termNumber: number, age: number) {
-		this.AddLifePath(character, "## Term " + termNumber + " (" + (age - 4) + " - " + age + " years)");
+		this.AddLifePath(character, "### Term " + termNumber + " (" + (age - 4) + " - " + age + " years)");
 
 		let career: Career | undefined = this.ContinueCareer(character, termNumber, age);
 		let assignment: Assignment | undefined = this.ContinueAssignment(character, termNumber);
@@ -597,9 +597,9 @@ export class CharacterUtilities {
 
 		if (cashOrBenefits == "1") {
 			// Cash
-			this.AddLifePath(character, "**Muster out:** " + musterOutRecord.Cash + " credits");
+			this.AddLifePath(character, "**Muster out:** Cr" + musterOutRecord.Cash);
 			character.Cash += musterOutRecord.Cash;
-			character.Terms[character.Terms.length - 1].MusterOutBenefits?.push("CR" + musterOutRecord.Cash.toString());
+			character.Terms[character.Terms.length - 1].MusterOutBenefits?.push("Cr" + musterOutRecord.Cash.toString());
 		} else {
 			// Benefits
 			this.AddRewardsToCharacter(character, musterOutRecord.Benefits);
@@ -774,6 +774,34 @@ export class CharacterUtilities {
 			this.AddRewardToCharacter(character, reward, isLevelZeroOnly);
 		}
 	}
+
+	public static calculateDiceModifier = (value: number): number => {
+		// 0 is -3
+		// 1-2 is -2
+		// 3-5 is -1
+		// 6-8 is 0
+		// 9-11 is +1
+		// 12-14 is +2
+		// 15+ is +3
+
+		if (value <= 0) return -3;
+		if (value <= 2) return -2;
+		if (value <= 5) return -1;
+		if (value <= 8) return 0;
+		if (value <= 11) return 1;
+		if (value <= 14) return 2;
+		if (value <= 17) return 3;
+		if (value <= 20) return 4;
+		if (value <= 23) return 5;
+
+		return -3;
+	};
+
+	public static createDiceModifierString = (value: number): string => {
+		const modifier = this.calculateDiceModifier(value);
+		if (modifier > 0) return `+${modifier}`;
+		return modifier.toString();
+	};
 }
 
 class CareerString {

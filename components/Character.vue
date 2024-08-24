@@ -1,6 +1,35 @@
 <template>
 	<div class="p-6 bg-white rounded-lg shadow-md" v-if="character.Name">
-		<h2 class="text-2xl font-bold mb-4">{{ character.Name }}</h2>
+		<div class="flex justify-between">
+			<h2 class="text-2xl font-bold mb-4">{{ character.Name }}</h2>
+			<button @click="copyToClipboard" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 h-8 flex items-center">
+				<svg
+					class="mr-2 fill-white"
+					fill="#000000"
+					version="1.1"
+					id="Capa_1"
+					xmlns="http://www.w3.org/2000/svg"
+					xmlns:xlink="http://www.w3.org/1999/xlink"
+					width="16px"
+					height="16px"
+					viewBox="0 0 93.842 93.843"
+					xml:space="preserve"
+				>
+					<g>
+						<path
+							d="M74.042,11.379h-9.582v-0.693c0-1.768-1.438-3.205-3.206-3.205h-6.435V3.205C54.819,1.437,53.381,0,51.614,0H42.23
+		c-1.768,0-3.206,1.438-3.206,3.205V7.48H32.59c-1.768,0-3.206,1.438-3.206,3.205v0.693h-9.582c-2.393,0-4.339,1.945-4.339,4.34
+		v73.785c0,2.394,1.946,4.34,4.339,4.34h54.238c2.394,0,4.339-1.946,4.339-4.34V15.719C78.38,13.324,76.434,11.379,74.042,11.379z
+		 M32.617,25.336h28.61c1.709,0,3.102-1.391,3.102-3.1v-3.438h7.554l0.021,68.164l-49.939,0.021V18.801h7.554v3.436
+		C29.517,23.945,30.907,25.336,32.617,25.336z"
+						/>
+					</g>
+				</svg>
+				Markdown
+				<p v-if="copied" class="text-green-500 bg-black rounded-md p-2 mt-16 fixed">Copied!</p>
+			</button>
+		</div>
+
 		<div class="mb-4">
 			<p class="text-gray-700"><span class="font-semibold">Age:</span> {{ character.Age }}</p>
 			<p class="text-gray-700"><span class="font-semibold">Race:</span> {{ Race[character.Race] }}</p>
@@ -10,32 +39,39 @@
 			<h3 class="text-xl font-semibold mb-2">Characteristics</h3>
 			<ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 				<li class="text-gray-600 order-1 sm:order-1">
-					<span class="font-semibold">Strength:</span> {{ character.Characteristics.Strength }} (DM:
-					{{ createDiceModifierString(character.Characteristics.Strength) }})
+					<span class="font-semibold">Strength:</span> {{ character.Characteristics.Strength }} ({{
+						CharacterUtilities.createDiceModifierString(character.Characteristics.Strength)
+					}})
 				</li>
 				<li class="text-gray-600 order-4 sm:order-2">
-					<span class="font-semibold">Intellect:</span> {{ character.Characteristics.Intellect }} (DM:
-					{{ createDiceModifierString(character.Characteristics.Intellect) }})
+					<span class="font-semibold">Intellect:</span> {{ character.Characteristics.Intellect }} ({{
+						CharacterUtilities.createDiceModifierString(character.Characteristics.Intellect)
+					}})
 				</li>
 				<li class="text-gray-600 order-2 sm:order-3">
-					<span class="font-semibold">Dexterity:</span> {{ character.Characteristics.Dexterity }} (DM:
-					{{ createDiceModifierString(character.Characteristics.Dexterity) }})
+					<span class="font-semibold">Dexterity:</span> {{ character.Characteristics.Dexterity }} ({{
+						CharacterUtilities.createDiceModifierString(character.Characteristics.Dexterity)
+					}})
 				</li>
 				<li class="text-gray-600 order-5 sm:order-4">
-					<span class="font-semibold">Education:</span> {{ character.Characteristics.Education }} (DM:
-					{{ createDiceModifierString(character.Characteristics.Education) }})
+					<span class="font-semibold">Education:</span> {{ character.Characteristics.Education }} ({{
+						CharacterUtilities.createDiceModifierString(character.Characteristics.Education)
+					}})
 				</li>
 				<li class="text-gray-600 order-3 sm:order-5">
-					<span class="font-semibold">Endurance:</span> {{ character.Characteristics.Endurance }} (DM:
-					{{ createDiceModifierString(character.Characteristics.Endurance) }})
+					<span class="font-semibold">Endurance:</span> {{ character.Characteristics.Endurance }} ({{
+						CharacterUtilities.createDiceModifierString(character.Characteristics.Endurance)
+					}})
 				</li>
 				<li class="text-gray-600 order-6 sm:order-6">
-					<span class="font-semibold">Social St:</span> {{ character.Characteristics.SocialStanding }} (DM:
-					{{ createDiceModifierString(character.Characteristics.SocialStanding) }})
+					<span class="font-semibold">Social St:</span> {{ character.Characteristics.SocialStanding }} ({{
+						CharacterUtilities.createDiceModifierString(character.Characteristics.SocialStanding)
+					}})
 				</li>
 				<li class="text-gray-600 order-7 sm:order-7">
-					<span class="font-semibold">Psionics:</span> {{ character.Characteristics.Psionics }} (DM:
-					{{ createDiceModifierString(character.Characteristics.Psionics) }})
+					<span class="font-semibold">Psionics:</span> {{ character.Characteristics.Psionics }} ({{
+						CharacterUtilities.createDiceModifierString(character.Characteristics.Psionics)
+					}})
 				</li>
 			</ul>
 		</div>
@@ -49,7 +85,7 @@
 		</div>
 		<div class="flex" v-if="character.Terms.length > 0">
 			<h3 class="text-xl font-semibold mb-2">Cash:</h3>
-			<p class="text-xl ml-2">{{ "CR" + character.Cash }}</p>
+			<p class="text-xl ml-2">{{ "Cr" + character.Cash }}</p>
 		</div>
 		<div class="mb-4" v-if="character.Items.length > 0">
 			<h3 class="text-xl font-semibold mb-2">Items:</h3>
@@ -86,29 +122,17 @@
 const characterStore = useCharacterStore();
 const character = computed(() => characterStore.character);
 
-const calculateDiceModifier = (value: number): number => {
-	// 0 is -3
-	// 1-2 is -2
-	// 3-5 is -1
-	// 6-8 is 0
-	// 9-11 is +1
-	// 12-14 is +2
-	// 15+ is +3
+const copied = ref(false);
 
-	if (value <= 0) return -3;
-	if (value <= 2) return -2;
-	if (value <= 5) return -1;
-	if (value <= 8) return 0;
-	if (value <= 11) return 1;
-	if (value <= 14) return 2;
-	if (value <= 15) return 3;
-
-	return -3;
-};
-
-const createDiceModifierString = (value: number): string => {
-	const modifier = calculateDiceModifier(value);
-	if (modifier > 0) return `+${modifier}`;
-	return modifier.toString();
+const copyToClipboard = () => {
+	navigator.clipboard
+		.writeText(CharacterSheetConverter.toMarkdown(character.value))
+		.then(() => {
+			copied.value = true;
+			setTimeout(() => {
+				copied.value = false;
+			}, 1000);
+		})
+		.catch((err) => console.error(err));
 };
 </script>
