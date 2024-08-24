@@ -20,7 +20,7 @@ export class CareersDb {
 		this.careers.push(Army);
 		this.careers.push(Citizen);
 		this.careers.push(Drifter);
-		// this.careers.push(Entertainer);
+		this.careers.push(Entertainer);
 		// this.careers.push(Marine);
 		// this.careers.push(Merchant);
 		// this.careers.push(Navy);
