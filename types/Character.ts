@@ -11,6 +11,7 @@ export class Character {
 	Race: Race = Race.Human;
 	HomeWorld?: string;
 	Age: number;
+	Traits: string[] = [];
 	Characteristics?: Characteristics;
 	LifePath: string[] = [];
 	Skills: Skill[] = [];
@@ -26,6 +27,7 @@ export class Character {
 		race: Race = Race.Human,
 		homeWorld?: string,
 		age: number = 0,
+		traits: string[] = [],
 		characteristics?: Characteristics,
 		lifePath: string[] = [],
 		skills: Skill[] = [],
@@ -37,6 +39,7 @@ export class Character {
 		this.Race = race;
 		this.HomeWorld = homeWorld;
 		this.Age = age;
+		this.Traits = traits;
 		this.Characteristics = characteristics;
 		this.LifePath = lifePath;
 		this.Skills = skills;

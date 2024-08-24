@@ -75,6 +75,10 @@
 				</li>
 			</ul>
 		</div>
+		<div class="mb-4" v-if="character.Traits.length > 0">
+			<h3 class="text-xl font-semibold mb-2">Traits</h3>
+			<div class="text-gray-700 prose" v-for="trait in character.Traits" :key="trait" v-html="renderMarkdown(trait)"></div>
+		</div>
 		<div class="mb-4" v-if="character.Skills.length > 0">
 			<h3 class="text-xl font-semibold mb-2">Skills</h3>
 			<ul class="list-disc list-inside ml-2">
@@ -119,8 +123,12 @@
 </template>
 
 <script lang="ts" setup>
+import { marked } from "marked";
 const characterStore = useCharacterStore();
 const character = computed(() => characterStore.character);
+const renderMarkdown = (markdown: string) => {
+	return marked(markdown);
+};
 
 const copied = ref(false);
 

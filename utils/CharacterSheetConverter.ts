@@ -20,6 +20,15 @@ export class CharacterSheetConverter {
 		}
 		markdown += "\n";
 
+		// Traits
+		if (character.Traits && character.Traits.length > 0) {
+			markdown += "## Traits\n\n";
+			for (const trait of character.Traits) {
+				markdown += `${trait}\n`;
+			}
+			markdown += "\n";
+		}
+
 		// Skills
 		markdown += "## Skills\n\n";
 		for (const skill of character.Skills) {
