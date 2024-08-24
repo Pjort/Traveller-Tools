@@ -4,7 +4,9 @@
 		<div class="p-2">
 			<div v-for="career in careers" :key="career.Id">
 				<input type="radio" v-model="selectedCareer" :value="career.Id" :id="career.Name" />
-				<label :for="career.Name">{{ " " + career.Name }}</label>
+				<label :for="career.Name">{{
+					" " + career.Name + " (" + career.QualificationCheck.CharacteristicsType + " " + career.QualificationCheck.TargetValue + "+)"
+				}}</label>
 			</div>
 		</div>
 		<button @click="ApplyInput" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Apply</button>

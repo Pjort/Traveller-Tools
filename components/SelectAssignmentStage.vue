@@ -4,7 +4,19 @@
 		<div class="p-2">
 			<div v-for="assignment in assignments" :key="assignment.Id">
 				<input type="radio" v-model="selectedAssignment" :value="assignment.Id" :id="assignment.Name" />
-				<label :for="assignment.Name">{{ " " + assignment.Name }}</label>
+				<label :for="assignment.Name">{{
+					" " +
+					assignment.Name +
+					" (" +
+					assignment.SurvivalCheck.CharacteristicsType +
+					" " +
+					assignment.SurvivalCheck.TargetValue +
+					"+, " +
+					assignment.AdvancementCheck.CharacteristicsType +
+					" " +
+					assignment.AdvancementCheck.TargetValue +
+					"+)"
+				}}</label>
 			</div>
 		</div>
 		<button @click="ApplyInput" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Apply</button>
