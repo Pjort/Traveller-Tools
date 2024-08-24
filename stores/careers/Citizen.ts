@@ -138,7 +138,7 @@ const musterOutTable: MusterOutRecord[] = [
 	new MusterOutRecord(3, 10000, [new Reward(1, "INT +1")]),
 	new MusterOutRecord(4, 10000, [new Item(1, "Gun")]),
 	new MusterOutRecord(5, 10000, [new Reward(1, "EDU +1")]),
-	new MusterOutRecord(6, 50000, [new Item(2, "Two Ship Shares")]),
+	new MusterOutRecord(6, 50000, [new Item(1, "Two Ship Shares")]),
 	new MusterOutRecord(7, 100000, [new Item(1, "TAS Membership")]),
 ];
 

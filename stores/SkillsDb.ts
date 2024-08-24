@@ -118,5 +118,6 @@ export class SkillsDb {
 		this._skills.push(new SkillDbRecord(78, "Tactics: Military"));
 		this._skills.push(new SkillDbRecord(79, "Tactics: Naval"));
 		this._skills.push(new SkillDbRecord(80, "Vacc Suit"));
+		this._skills.push(new SkillDbRecord(81, "Melee: Unarmed"));
 	}
 }
