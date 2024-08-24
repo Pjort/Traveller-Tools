@@ -38,7 +38,7 @@ const assignments: Assignment[] = [
 		new Rank(1, "", ""),
 		new Rank(2, "", "Vacc Suit 1"),
 		new Rank(3, "", ""),
-		new Rank(4, "", "Mechanic 1"),
+		new Rank(4, "", "Mechanic 1"), // TODO: Or Professions: Belter 1
 		new Rank(5, "", ""),
 		new Rank(6, "", ""),
 	]),
@@ -66,7 +66,7 @@ const trainingTables: TrainingTable[] = [
 		new Reward(2, "Carouse"),
 		new Reward(3, "Melee: Blade"),
 		new Reward(4, "Stealth"),
-		new Reward(5, "Seafarer: Sail"),
+		new Reward(5, "Seafarer: Sail"), // TODO: Or Seafarer: Personal
 		new Reward(6, "Survival"),
 	]),
 	new TrainingTable(4, "Wanderer", [
@@ -103,7 +103,7 @@ const eventsTable: Event[] = [
 	),
 	new Event(
 		9,
-		"You are offered a chance to take part in a risky but rewarding adventure. If you accept, roll 1D: On a 1–2, you are injured or arrested; either roll on the Injury table or take the Prisoner career in your next term. On 3–4, you survive, but gain nothing. On a 5–6, you succeed. Gain DM+4 to one Benefit roll"
+		"You are offered a chance to take part in a risky but rewarding adventure. If you accept, roll 1D: On a 1–2, you are injured or arrested; either roll on the Injury table or take the Prisoner career in your next term. On 3–4, you survive, but gain nothing. On a 5–6, you succeed. Gain DM+4 to one Benefit roll."
 	),
 	new Event(10, "Life on the edge hones your abilities. Increase any skill you already have by one level."),
 	new Event(11, "You are forcibly drafted. Roll for the Draft next term."),
