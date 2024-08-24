@@ -707,7 +707,7 @@ export class CharacterUtilities {
 			return;
 		}
 
-		if (reward.Description.includes(" +1")) {
+		if (reward.Description.includes(" +1") || reward.Description.includes(" +2")) {
 			const characteristicName = reward.Description.substring(0, 3);
 
 			if (!character.Characteristics) {
