@@ -24,7 +24,7 @@ export class CareersDb {
 		this.careers.push(Marine);
 		this.careers.push(Merchant);
 		this.careers.push(Navy);
-		// this.careers.push(Noble);
+		this.careers.push(Noble);
 		// this.careers.push(Rogue);
 		// this.careers.push(Scholar);
 		this.careers.push(Scout);
