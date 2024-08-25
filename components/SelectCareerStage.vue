@@ -23,6 +23,7 @@ const currentTermString = computed(() => characterStore.getCharacterInput.TermsS
 const ApplyInput = () => {
 	let termString = selectedCareer.value?.toString().padStart(2, "0");
 	if (!termString) return;
+	if (termString == "04" || termString == "13") termString += "99"; // If the career selected is Drifter or Prisoner then apply 99 as qualification roll
 	termString = currentTermString.value + termString;
 	characterStore.updateTermsString(termString);
 	characterStore.parseCharacter();
