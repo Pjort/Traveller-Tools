@@ -16,6 +16,7 @@ const roll: Ref<number> = ref(0);
 
 const updateTermString = () => {
 	let termString = currentTermString.value + roll.value.toString();
+	if (roll.value === 4 || roll.value === 6) termString += "1"; // If the roll is Merchant or Agent, then select assigment 1 (Merchant marine or Law enforcement)
 	characterStore.updateTermsString(termString);
 };
 
