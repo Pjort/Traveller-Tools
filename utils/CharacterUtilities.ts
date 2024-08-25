@@ -320,15 +320,17 @@ export class CharacterUtilities {
 			const qualificationCheckRoll = parseInt(careerString.value.slice(0, 2));
 			careerString.value = careerString.value.slice(2);
 			const diceModifier = this.GetDiceModifier(career.QualificationCheck, character);
+			const previousCareerCount = this.countPreviousCareers(character);
+			let qualificationRollString = `Qualification roll (${career.QualificationCheck?.CharacteristicsType} ${career.QualificationCheck?.TargetValue}+): ${qualificationCheckRoll}(roll) + ${diceModifier}(DM)`;
 
-			this.AddLifePath(
-				character,
-				`Qualification roll (${career.QualificationCheck?.CharacteristicsType} ${
-					career.QualificationCheck?.TargetValue
-				}+): ${qualificationCheckRoll}(roll) + ${diceModifier}(DM) = ${qualificationCheckRoll + diceModifier}`
-			);
+			if (previousCareerCount > 0) {
+				qualificationRollString += ` - ${previousCareerCount}(previous careers)`;
+			}
 
-			if (qualificationCheckRoll + diceModifier >= career.QualificationCheck?.TargetValue) {
+			qualificationRollString += ` = ${qualificationCheckRoll + diceModifier - previousCareerCount}`;
+			this.AddLifePath(character, qualificationRollString);
+
+			if (qualificationCheckRoll + diceModifier - previousCareerCount >= career.QualificationCheck?.TargetValue) {
 				this.AddLifePath(character, "Qualification successful");
 				character.currentStageId = 6; // Select an assignment
 				character.Terms[character.Terms.length - 1].Qualified = true;
@@ -845,6 +847,14 @@ export class CharacterUtilities {
 		const modifier = this.calculateDiceModifier(value);
 		if (modifier > 0) return `+${modifier}`;
 		return modifier.toString();
+	};
+
+	public static countPreviousCareers = (character: Character): number => {
+		let count = 0;
+		for (const term of character.Terms) {
+			if (term.MusterOutBenefits && term.MusterOutBenefits.length > 0) count++;
+		}
+		return count;
 	};
 }
 
