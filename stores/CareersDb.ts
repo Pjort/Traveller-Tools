@@ -28,6 +28,6 @@ export class CareersDb {
 		this.careers.push(Rogue);
 		this.careers.push(Scholar);
 		this.careers.push(Scout);
-		// this.careers.push(Prisoner);
+		this.careers.push(Prisoner);
 	}
 }
