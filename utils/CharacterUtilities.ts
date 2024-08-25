@@ -767,17 +767,19 @@ export class CharacterUtilities {
 				default:
 					throw new Error("Invalid characteristic name: " + reward.Description);
 			}
-		} else if (reward.Description.includes(" 1")) {
+		} else if (reward.Description.includes(" 1") || reward.Description.includes(" 2")) {
 			const skillDbRecord = SkillsDb.GetSkillByName(reward.Description.substring(0, reward.Description.length - 2));
 
 			if (!skillDbRecord) {
 				throw new Error("Invalid skill name: " + reward.Description);
 			}
 
+			const newLevel = parseInt(reward.Description.substring(reward.Description.length - 1));
+
 			const existingSkill = character.Skills.find((s: Skill) => s.Name == reward.Description?.substring(0, reward.Description.length - 2));
 			if (existingSkill) {
-				if (existingSkill.Level < 1) {
-					this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, 1));
+				if (existingSkill.Level < newLevel) {
+					this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, newLevel));
 				} else {
 					this.AddLifePath(character, "**Gained:** " + reward.Description + " (already known " + existingSkill.Level + ")");
 				}
