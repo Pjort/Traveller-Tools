@@ -414,6 +414,13 @@ export class CharacterUtilities {
 			}
 		}
 
+		if (assignment.Ranks) {
+			this.AddLifePath(character, "Gained Rank: 0");
+			if (assignment.Ranks[0].Title != "") this.AddLifePath(character, "Gained Title: " + assignment.Ranks[0].Title);
+			this.AddRewardToCharacter(character, assignment.Ranks[0]);
+			character.Terms[character.Terms.length - 1].Rank = assignment.Ranks[0];
+		}
+
 		character.currentStageId = 7; // Select a training table
 		return assignment;
 	}
