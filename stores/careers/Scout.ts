@@ -17,7 +17,7 @@ const assignments: Assignment[] = [
 			new Rank(6, "", ""),
 		]
 	),
-	new Assignment(2, new DiceCheck(6, "END"), new DiceCheck(8, "INT"), "Surveyor:", "You visit border worlds and assess their worth.", [
+	new Assignment(2, new DiceCheck(6, "END"), new DiceCheck(8, "INT"), "Surveyor", "You visit border worlds and assess their worth.", [
 		new Rank(0, "", ""),
 		new Rank(1, "Scout", "Vacc Suit 1"),
 		new Rank(2, "", ""),
