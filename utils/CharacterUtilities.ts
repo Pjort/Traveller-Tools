@@ -1044,7 +1044,10 @@ export class CharacterUtilities {
 				if (existingSkill.Level < newLevel) {
 					this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, newLevel));
 				} else {
-					this.AddLifePath(character, "**Gained:** " + reward.Description + " (already known " + existingSkill.Level + ")");
+					this.AddLifePath(
+						character,
+						"**Gained skill:** " + reward.Description + ": " + existingSkill.Level + " (already known " + existingSkill.Level + ")"
+					);
 				}
 			} else {
 				this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, 1));
@@ -1059,12 +1062,19 @@ export class CharacterUtilities {
 			const existingSkill = character.Skills.find((s: Skill) => s.Name == reward.Description);
 			if (existingSkill) {
 				if (isLevelZeroOnly) {
-					this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, 0));
+					this.AddLifePath(
+						character,
+						"**Gained skill:** " + reward.Description + ": " + existingSkill.Level + " (already known " + existingSkill.Level + ")"
+					);
 				} else {
 					this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, existingSkill.Level + 1));
 				}
 			} else {
-				this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, 0));
+				if (isLevelZeroOnly) {
+					this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, 0));
+				} else {
+					this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, 1));
+				}
 			}
 		}
 	}
