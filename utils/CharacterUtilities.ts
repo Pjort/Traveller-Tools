@@ -91,8 +91,8 @@ export class CharacterUtilities {
 	}
 
 	private static ParseCharacteristicsString(characteristicsString: string): Characteristics {
-		if (characteristicsString.length !== 14) {
-			throw new Error("Characteristics string must be 14 characters long");
+		if (characteristicsString.length !== 16) {
+			throw new Error("Characteristics string must be 16 characters long");
 		}
 
 		const strength = parseInt(characteristicsString.substring(0, 2));
@@ -102,8 +102,9 @@ export class CharacterUtilities {
 		const education = parseInt(characteristicsString.substring(8, 10));
 		const socialStanding = parseInt(characteristicsString.substring(10, 12));
 		const psionics = parseInt(characteristicsString.substring(12, 14));
+		const reputation = parseInt(characteristicsString.substring(14, 16));
 
-		return new Characteristics(strength, dexterity, endurance, intellect, education, socialStanding, psionics);
+		return new Characteristics(strength, dexterity, endurance, intellect, education, socialStanding, psionics, reputation);
 	}
 
 	private static ParseBackgroundSkills(backgroundSkillsString: string): Skill[] {
@@ -323,14 +324,23 @@ export class CharacterUtilities {
 			const previousCareerCount = this.countPreviousCareers(character);
 			let qualificationRollString = `Qualification roll (${career.QualificationCheck?.CharacteristicsType} ${career.QualificationCheck?.TargetValue}+): ${qualificationCheckRoll}(roll) + ${diceModifier}(DM)`;
 
-			if (previousCareerCount > 0) {
-				qualificationRollString += ` - ${previousCareerCount}(previous careers)`;
+			if (career.Name == "Bounty Hunter") {
+				if (previousCareerCount > 0) {
+					qualificationRollString += ` + ${previousCareerCount}(previous careers)`;
+				}
+				qualificationRollString += ` = ${qualificationCheckRoll + diceModifier + previousCareerCount}`;
+			} else {
+				if (previousCareerCount > 0) {
+					qualificationRollString += ` - ${previousCareerCount}(previous careers)`;
+				}
+				qualificationRollString += ` = ${qualificationCheckRoll + diceModifier - previousCareerCount}`;
 			}
-
-			qualificationRollString += ` = ${qualificationCheckRoll + diceModifier - previousCareerCount}`;
 			this.AddLifePath(character, qualificationRollString);
 
-			if (qualificationCheckRoll + diceModifier - previousCareerCount >= career.QualificationCheck?.TargetValue) {
+			if (
+				qualificationCheckRoll + diceModifier - previousCareerCount * (career.Name == "Bounty Hunter" ? -1 : 1) >=
+				career.QualificationCheck?.TargetValue
+			) {
 				this.AddLifePath(character, "Qualification successful");
 				character.currentStageId = 6; // Select an assignment
 				character.Terms[character.Terms.length - 1].Qualified = true;
@@ -678,6 +688,9 @@ export class CharacterUtilities {
 			case "PSI":
 				characteristicValue = character.Characteristics.Psionics;
 				break;
+			case "REP":
+				characteristicValue = character.Characteristics.Reputation;
+				break;
 			case "Automatic":
 				return 0;
 			case "DEX or INT":
@@ -772,6 +785,10 @@ export class CharacterUtilities {
 				case "PSI":
 					this.AddLifePath(character, "**Gained:** " + reward.Description);
 					character.Characteristics.Psionics++;
+					break;
+				case "REP":
+					this.AddLifePath(character, "**Gained:** " + reward.Description);
+					character.Characteristics.Reputation++;
 					break;
 				default:
 					throw new Error("Invalid characteristic name: " + reward.Description);

@@ -1,4 +1,21 @@
-import { Career, Agent, Army, Citizen, Drifter, Entertainer, Marine, Merchant, Navy, Noble, Rogue, Scholar, Scout, Prisoner } from "#imports";
+import {
+	Career,
+	Agent,
+	Army,
+	Citizen,
+	Drifter,
+	Entertainer,
+	Marine,
+	Merchant,
+	Navy,
+	Noble,
+	Rogue,
+	Scholar,
+	Scout,
+	Prisoner,
+	Psion,
+	BountyHunter,
+} from "#imports";
 
 export class CareersDb {
 	private static careers: Career[] = [];
@@ -29,5 +46,7 @@ export class CareersDb {
 		this.careers.push(Scholar);
 		this.careers.push(Scout);
 		this.careers.push(Prisoner);
+		// this.careers.push(Psion);
+		this.careers.push(BountyHunter);
 	}
 }

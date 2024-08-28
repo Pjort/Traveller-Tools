@@ -63,8 +63,6 @@ const updateTermString = () => {
 
 	// Reset roll
 	roll.value = 0;
-	// Reset selected choice
-	selectedChoice.value = null;
 };
 
 const ApplyInput = () => {

@@ -68,9 +68,17 @@
 						CharacterUtilities.createDiceModifierString(character.Characteristics.SocialStanding)
 					}})
 				</li>
-				<li class="text-gray-600 order-7 sm:order-7">
+				<li class="text-gray-600 order-7 sm:order-7" v-if="character.Characteristics.Psionics != 0 || currentCareer?.Name == 'Psion'">
 					<span class="font-semibold">Psionics:</span> {{ character.Characteristics.Psionics }} ({{
 						CharacterUtilities.createDiceModifierString(character.Characteristics.Psionics)
+					}})
+				</li>
+				<li
+					class="text-gray-600 order-7 sm:order-7"
+					v-if="character.Characteristics.Reputation != 0 || currentCareer?.Name == 'Bounty Hunter'"
+				>
+					<span class="font-semibold">Reputation:</span> {{ character.Characteristics.Reputation }} ({{
+						CharacterUtilities.createDiceModifierString(character.Characteristics.Reputation)
 					}})
 				</li>
 			</ul>
@@ -136,6 +144,8 @@ const character = computed(() => characterStore.character);
 const renderMarkdown = (markdown: string) => {
 	return marked(markdown);
 };
+
+const currentCareer = computed(() => characterStore.getCurrentCareer);
 
 const copied = ref(false);
 

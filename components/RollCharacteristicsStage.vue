@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-const characteristics = ref(new Characteristics(0, 0, 0, 0, 0, 0, 0));
+const characteristics = ref(new Characteristics(0, 0, 0, 0, 0, 0, 0, 0));
 const characterStore = useCharacterStore();
 
 const updateCharacteristicsString = () => {
