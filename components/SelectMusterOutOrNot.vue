@@ -14,6 +14,7 @@
 
 <script lang="ts" setup>
 const characterStore = useCharacterStore();
+const termsCount = computed(() => characterStore.getCharacter.Terms.length);
 const currentTermString = computed(() => characterStore.getCharacterInput.TermsString);
 
 const choices: { key: string; value: string }[] = [
@@ -25,7 +26,11 @@ const selectedChoice = ref<string | null>(null);
 const ApplyInput = () => {
 	if (!selectedChoice.value) return;
 	if (selectedChoice.value === "1") {
-		characterStore.updateTermsString(currentTermString.value + "NT");
+		if (termsCount.value >= 4) {
+			characterStore.updateTermsString(currentTermString.value + selectedChoice.value.toString() + "A");
+		} else {
+			characterStore.updateTermsString(currentTermString.value + "NT");
+		}
 		characterStore.parseCharacter();
 		return;
 	}

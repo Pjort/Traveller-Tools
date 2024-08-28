@@ -41,6 +41,7 @@
 
 <script lang="ts" setup>
 const characterStore = useCharacterStore();
+const termsCount = computed(() => characterStore.getCharacter.Terms.length);
 const currentTermString = computed(() => characterStore.getCharacterInput.TermsString);
 const roll: Ref<number> = ref(0);
 const benefitRollsLeft = computed(() => characterStore.getAmountOfBenefitRollsLeft);
@@ -53,7 +54,11 @@ const choices: { key: string; value: string }[] = [
 const selectedChoice = ref<string | null>(null);
 
 if (benefitRollsLeft.value < 1) {
-	characterStore.updateTermsString(currentTermString.value + "NT");
+	if (termsCount.value >= 4) {
+		characterStore.updateTermsString(currentTermString.value + "A");
+	} else {
+		characterStore.updateTermsString(currentTermString.value + "NT");
+	}
 	characterStore.parseCharacter();
 }
 
@@ -72,7 +77,11 @@ const ApplyInput = () => {
 	}
 	updateTermString();
 	if (benefitRollsLeft.value - 1 < 1) {
-		characterStore.updateTermsString(currentTermString.value + "NT");
+		if (termsCount.value >= 4) {
+			characterStore.updateTermsString(currentTermString.value + "A");
+		} else {
+			characterStore.updateTermsString(currentTermString.value + "NT");
+		}
 	}
 	characterStore.parseCharacter();
 };

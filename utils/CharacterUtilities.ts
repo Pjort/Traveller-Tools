@@ -35,6 +35,8 @@ export class CharacterUtilities {
 			this.ParseTerms(input.TermsString, character);
 		}
 
+		character.Age = this.calculateAge(character);
+
 		return character;
 	}
 
@@ -187,8 +189,6 @@ export class CharacterUtilities {
 	}
 
 	private static ParseCareer(character: Character, careerString: CareerString, termNumber: number, age: number) {
-		this.AddLifePath(character, "### Term " + termNumber + " (" + (age - 4) + " - " + age + " years)");
-
 		let career: Career | undefined = this.ContinueCareer(character, termNumber, age);
 		let assignment: Assignment | undefined = this.ContinueAssignment(character, termNumber);
 
@@ -247,8 +247,10 @@ export class CharacterUtilities {
 			if (!this.ParseMusterOutOrContinue(character, career, careerString)) return;
 		}
 
-		// Muster out
 		while (this.ParseMusterOut(character, career, careerString));
+
+		// Ageing
+		if (!this.ParseAgeing(character, career, careerString)) return;
 	}
 
 	private static ContinueCareer(character: Character, termNumber: number, age: number): Career | undefined {
@@ -259,7 +261,7 @@ export class CharacterUtilities {
 		const previousCareerName = character.Terms[termNumber - 2].Career;
 		if (previousTerm.Survived && previousTerm.MusterOutBenefits == undefined && previousCareerName != undefined) {
 			character.currentStageId = 7; // Select a training table
-			this.AddLifePath(character, "Stayed in the same career");
+			this.AddLifePath(character, "### Term " + termNumber + " (" + (age - 4) + " - " + age + " years)");
 			this.AddLifePath(character, "**Career:** " + previousCareerName);
 			character.Terms.push(new Term(termNumber, age, previousCareerName));
 			return CareersDb.GetCareerByName(previousCareerName);
@@ -305,6 +307,7 @@ export class CharacterUtilities {
 		if (!career) {
 			throw new Error("Invalid career ID: " + careerId);
 		}
+		this.AddLifePath(character, "### Term " + termNumber + " (" + (age - 4) + " - " + age + " years)");
 		this.AddLifePath(character, "**Career:** " + career.Name);
 
 		character.Terms.push(new Term(termNumber, age, career.Name));
@@ -592,13 +595,17 @@ export class CharacterUtilities {
 			this.AddLifePath(character, "Chose to muster out");
 			character.currentStageId = 13; // Muster out
 		} else {
-			this.AddLifePath(character, "Chose to continue");
+			this.AddLifePath(character, "Chose to continue in the same " + career.Name + " career");
 		}
 
 		return true;
 	}
 
 	private static ParseMusterOut(character: Character, career: Career, careerString: CareerString): boolean {
+		if (careerString.value.slice(0, 1) == "A") {
+			return false;
+		}
+
 		if (careerString.value.length < 2) {
 			return false;
 		}
@@ -653,6 +660,236 @@ export class CharacterUtilities {
 		}
 
 		return true;
+	}
+
+	private static ParseAgeing(character: Character, career: Career, careerString: CareerString): boolean {
+		if (careerString.value.slice(0, 1) != "A") {
+			return true;
+		}
+		character.currentStageId = 14; // Ageing roll
+
+		if (careerString.value.length < 3) {
+			return false;
+		}
+
+		const ageRoll = parseInt(careerString.value.slice(1, 3));
+		careerString.value = careerString.value.slice(3);
+
+		let ageResult: number = ageRoll;
+
+		ageResult -= character.Terms.length;
+
+		this.AddLifePath(character, "Ageing roll: " + ageRoll + " - " + character.Terms.length + "(total terms)" + " = " + ageResult);
+		this.ApplyAgeing(character, ageResult);
+
+		// Check if any characteristics are 0 or less
+		if (character.Characteristics) {
+			if (character.Characteristics.Strength <= 0) {
+				this.AddLifePath(character, "**Ageing Crisis:** Strength 0 or less");
+			}
+			if (character.Characteristics.Dexterity <= 0) {
+				this.AddLifePath(character, "**Ageing Crisis:** Dexterity 0 or less");
+			}
+			if (character.Characteristics.Endurance <= 0) {
+				this.AddLifePath(character, "**Ageing Crisis:** Endurance 0 or less");
+			}
+			if (character.Characteristics.Intellect <= 0) {
+				this.AddLifePath(character, "**Ageing Crisis:** Intellect 0 or less");
+			}
+			if (character.Characteristics.Education <= 0) {
+				this.AddLifePath(character, "**Ageing Crisis:** Education 0 or less");
+			}
+			if (character.Characteristics.SocialStanding <= 0) {
+				this.AddLifePath(character, "**Ageing Crisis:** Social Standing 0 or less");
+			}
+		}
+		return true;
+	}
+
+	private static ApplyAgeing(character: Character, ageResult: number) {
+		if (ageResult > 0) {
+			this.AddLifePath(character, "**Ageing:** has no effect");
+			return;
+		}
+
+		if (character.Characteristics == undefined) return;
+
+		// Sort the 3 physical characteristics by value
+		const physicalCharacteristics = [
+			{ name: "Strength", value: character.Characteristics.Strength },
+			{ name: "Dexterity", value: character.Characteristics.Dexterity },
+			{ name: "Endurance", value: character.Characteristics.Endurance },
+		];
+		physicalCharacteristics.sort((a, b) => a.value - b.value);
+
+		// Sort the 3 mental characteristics by value
+		const mentalCharacteristics = [
+			{ name: "Intellect", value: character.Characteristics.Intellect },
+			{ name: "Education", value: character.Characteristics.Education },
+			{ name: "Social Standing", value: character.Characteristics.SocialStanding },
+		];
+		mentalCharacteristics.sort((a, b) => a.value - b.value);
+
+		if (ageResult == 0) {
+			// Reduce the highst physical characteristic by 1
+			const highestPhysicalCharacteristic = physicalCharacteristics[2].name;
+			if (highestPhysicalCharacteristic == "Strength") {
+				character.Characteristics.Strength--;
+			} else if (highestPhysicalCharacteristic == "Dexterity") {
+				character.Characteristics.Dexterity--;
+			} else if (highestPhysicalCharacteristic == "Endurance") {
+				character.Characteristics.Endurance--;
+			}
+
+			this.AddLifePath(character, "**Ageing:** -1 " + highestPhysicalCharacteristic);
+			return;
+		}
+
+		if (ageResult == -1) {
+			// Reduce the highest 2 physical characteristic by 1
+			const highestPhysicalCharacteristic = physicalCharacteristics[2].name;
+			const secondHighestPhysicalCharacteristic = physicalCharacteristics[1].name;
+			if (highestPhysicalCharacteristic == "Strength") {
+				character.Characteristics.Strength--;
+			} else if (highestPhysicalCharacteristic == "Dexterity") {
+				character.Characteristics.Dexterity--;
+			} else if (highestPhysicalCharacteristic == "Endurance") {
+				character.Characteristics.Endurance--;
+			}
+			if (secondHighestPhysicalCharacteristic == "Strength") {
+				character.Characteristics.Strength--;
+			} else if (secondHighestPhysicalCharacteristic == "Dexterity") {
+				character.Characteristics.Dexterity--;
+			} else if (secondHighestPhysicalCharacteristic == "Endurance") {
+				character.Characteristics.Endurance--;
+			}
+
+			this.AddLifePath(character, "**Ageing:** -1 " + highestPhysicalCharacteristic + ", -1 " + secondHighestPhysicalCharacteristic);
+			return;
+		}
+
+		if (ageResult == -2) {
+			// Reduce all physical characteristics by 1
+			character.Characteristics.Strength--;
+			character.Characteristics.Dexterity--;
+			character.Characteristics.Endurance--;
+
+			this.AddLifePath(character, "**Ageing:** -1 all physical characteristics");
+
+			return;
+		}
+
+		if (ageResult == -3) {
+			// Reduce highest physical characteristic by 2 and the other two by 1
+			const highestPhysicalCharacteristic = physicalCharacteristics[2].name;
+			const secondHighestPhysicalCharacteristic = physicalCharacteristics[1].name;
+			const lowestPhysicalCharacteristic = physicalCharacteristics[0].name;
+			if (highestPhysicalCharacteristic == "Strength") {
+				character.Characteristics.Strength -= 2;
+			} else if (highestPhysicalCharacteristic == "Dexterity") {
+				character.Characteristics.Dexterity -= 2;
+			} else if (highestPhysicalCharacteristic == "Endurance") {
+				character.Characteristics.Endurance -= 2;
+			}
+
+			if (secondHighestPhysicalCharacteristic == "Strength") {
+				character.Characteristics.Strength--;
+			} else if (secondHighestPhysicalCharacteristic == "Dexterity") {
+				character.Characteristics.Dexterity--;
+			} else if (secondHighestPhysicalCharacteristic == "Endurance") {
+				character.Characteristics.Endurance--;
+			}
+			if (lowestPhysicalCharacteristic == "Strength") {
+				character.Characteristics.Strength--;
+			} else if (lowestPhysicalCharacteristic == "Dexterity") {
+				character.Characteristics.Dexterity--;
+			} else if (lowestPhysicalCharacteristic == "Endurance") {
+				character.Characteristics.Endurance--;
+			}
+
+			this.AddLifePath(
+				character,
+				"**Ageing:** -2 " +
+					highestPhysicalCharacteristic +
+					", -1 " +
+					secondHighestPhysicalCharacteristic +
+					", -1 " +
+					lowestPhysicalCharacteristic
+			);
+			return;
+		}
+
+		if (ageResult == -4) {
+			// Reduce two highest physical characteristics by 2 and the third by 1
+			const highestPhysicalCharacteristic = physicalCharacteristics[2].name;
+			const secondHighestPhysicalCharacteristic = physicalCharacteristics[1].name;
+			const lowestPhysicalCharacteristic = physicalCharacteristics[0].name;
+
+			if (highestPhysicalCharacteristic == "Strength") {
+				character.Characteristics.Strength -= 2;
+			} else if (highestPhysicalCharacteristic == "Dexterity") {
+				character.Characteristics.Dexterity -= 2;
+			} else if (highestPhysicalCharacteristic == "Endurance") {
+				character.Characteristics.Endurance -= 2;
+			}
+
+			if (secondHighestPhysicalCharacteristic == "Strength") {
+				character.Characteristics.Strength -= 2;
+			} else if (secondHighestPhysicalCharacteristic == "Dexterity") {
+				character.Characteristics.Dexterity -= 2;
+			} else if (secondHighestPhysicalCharacteristic == "Endurance") {
+				character.Characteristics.Endurance -= 2;
+			}
+
+			if (lowestPhysicalCharacteristic == "Strength") {
+				character.Characteristics.Strength--;
+			} else if (lowestPhysicalCharacteristic == "Dexterity") {
+				character.Characteristics.Dexterity--;
+			} else if (lowestPhysicalCharacteristic == "Endurance") {
+				character.Characteristics.Endurance--;
+			}
+
+			this.AddLifePath(
+				character,
+				"**Ageing:** -2 " +
+					highestPhysicalCharacteristic +
+					", -2 " +
+					secondHighestPhysicalCharacteristic +
+					", -1 " +
+					lowestPhysicalCharacteristic
+			);
+			return;
+		}
+
+		if (ageResult == -5) {
+			// Reduce all physical characteristics by 2
+			character.Characteristics.Strength -= 2;
+			character.Characteristics.Dexterity -= 2;
+			character.Characteristics.Endurance -= 2;
+
+			this.AddLifePath(character, "**Ageing:** -2 all physical characteristics");
+
+			return;
+		}
+
+		if (ageResult <= -6) {
+			// Reduce all physical characteristics by 2 and highest mental characteristic by 1
+			character.Characteristics.Strength -= 2;
+			character.Characteristics.Dexterity -= 2;
+			character.Characteristics.Endurance -= 2;
+
+			const highestMentalCharacteristic = mentalCharacteristics[2].name;
+			if (highestMentalCharacteristic == "Intellect") {
+				character.Characteristics.Intellect--;
+			} else if (highestMentalCharacteristic == "Education") {
+				character.Characteristics.Education--;
+			} else if (highestMentalCharacteristic == "Social Standing") {
+				character.Characteristics.SocialStanding--;
+			}
+
+			this.AddLifePath(character, "**Ageing:** -2 all physical characteristics, -1 " + highestMentalCharacteristic);
+			return;
+		}
 	}
 
 	private static GetDiceModifier(diceCheck: DiceCheck | null, character: Character): number {
@@ -872,6 +1109,14 @@ export class CharacterUtilities {
 			if (term.MusterOutBenefits && term.MusterOutBenefits.length > 0) count++;
 		}
 		return count;
+	};
+
+	public static calculateAge = (character: Character): number => {
+		let age = 18;
+		for (const term of character.Terms) {
+			if (term.Career) age += 4;
+		}
+		return age;
 	};
 }
 

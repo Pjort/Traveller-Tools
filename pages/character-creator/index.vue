@@ -19,6 +19,7 @@
 				<RollMishapStage v-if="currentStageId == 65" />
 				<SelectDraftOrDriftStage v-if="currentStageId == 60" />
 				<RollDraftStage v-if="currentStageId == 61" />
+				<RollAgeing v-if="currentStageId == 14" />
 
 				<div class="p-3 pl-5 my-5 bg-slate-200 rounded-lg shadow-md" v-if="lastestLifePath.length != 0">
 					<div v-for="path in lastestLifePath" :key="path" class="prose mx-auto mt-1" v-html="renderMarkdown(path)"></div>
