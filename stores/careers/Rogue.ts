@@ -1,7 +1,7 @@
 import { Career, Assignment, DiceCheck, TrainingTable, Reward, Event, Item, MusterOutRecord } from "#imports";
 
 const assignments: Assignment[] = [
-	new Assignment(1, new DiceCheck(6, "INT"), new DiceCheck(6, "DEX"), "Rogue", "You steal from the rich and give to… well, yourself, actually.", [
+	new Assignment(1, new DiceCheck(6, "INT"), new DiceCheck(6, "DEX"), "Thief", "You steal from the rich and give to… well, yourself, actually.", [
 		new Rank(0, "", ""),
 		new Rank(1, "", "Stealth 1"),
 		new Rank(2, "", ""),
