@@ -119,20 +119,28 @@ export const useCharacterStore = defineStore("character", {
 		getCharacterInput: (state) => state.characterInput,
 		getCurrentStageId: (state) => state.character.currentStageId,
 		getCurrentCareer: (state) => {
-			let careerName = state.character.Terms[state.character.Terms.length - 1].Career;
-			if (!careerName) return null;
-			const career = CareersDb.GetCareerByName(careerName);
-			return career;
+			try {
+				let careerName = state.character.Terms[state.character.Terms.length - 1].Career;
+				if (!careerName) return null;
+				const career = CareersDb.GetCareerByName(careerName);
+				return career;
+			} catch (e) {
+				return null;
+			}
 		},
 		getCurrentAssignment: (state) => {
-			let assignmentName = state.character.Terms[state.character.Terms.length - 1].Assignment;
-			if (!assignmentName) return null;
-			let careerName = state.character.Terms[state.character.Terms.length - 1].Career;
-			if (!careerName) return null;
-			const career = CareersDb.GetCareerByName(careerName);
-			if (!career) return null;
-			let assignment = career.Assignments.find((a) => a.Name == assignmentName);
-			return assignment;
+			try {
+				let assignmentName = state.character.Terms[state.character.Terms.length - 1].Assignment;
+				if (!assignmentName) return null;
+				let careerName = state.character.Terms[state.character.Terms.length - 1].Career;
+				if (!careerName) return null;
+				const career = CareersDb.GetCareerByName(careerName);
+				if (!career) return null;
+				let assignment = career.Assignments.find((a) => a.Name == assignmentName);
+				return assignment;
+			} catch (e) {
+				return null;
+			}
 		},
 		getLastestLifePath: (state) => {
 			if (state.character.LifePath.length == state.lastestLifePath.length) return [];

@@ -44,6 +44,8 @@ export class CharacterUtilities {
 	}
 
 	private static ParseCharacteristics(character: Character, characteristicsString: string | undefined): boolean {
+		if (!characteristicsString || characteristicsString?.length <= 0) return false;
+
 		let characteristics: Characteristics | null = null;
 		if (characteristicsString) {
 			characteristics = this.ParseCharacteristicsString(characteristicsString);
@@ -68,8 +70,6 @@ export class CharacterUtilities {
 				character.Traits.push("**Heightened Senses:** +1 DM to any Recon and Survival checks, but -1 DM in darkness");
 				this.AddLifePath(character, "Vargr traits: Bite, Heightened Senses");
 			}
-		} else {
-			return false;
 		}
 
 		character.currentStageId = 3; // Background skills
@@ -77,6 +77,8 @@ export class CharacterUtilities {
 	}
 
 	private static ParseBackgroundSkillsString(character: Character, backgroundSkillsString: string | undefined): boolean {
+		if (!backgroundSkillsString || backgroundSkillsString?.length <= 0) return false;
+
 		if (backgroundSkillsString) {
 			const backgroundSkills = this.ParseBackgroundSkills(backgroundSkillsString);
 			this.AddSkillsToCharacter(character, backgroundSkills, false);
@@ -87,8 +89,6 @@ export class CharacterUtilities {
 			}
 			backgroundLifePath = backgroundLifePath.slice(0, -2);
 			this.AddLifePath(character, backgroundLifePath);
-		} else {
-			return false;
 		}
 
 		character.currentStageId = 4; // Select a career
