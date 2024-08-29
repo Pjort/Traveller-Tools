@@ -197,9 +197,6 @@ export class CharacterUtilities {
 
 		if (!career) {
 			career = this.ParseCareerSelection(character, termNumber, age, careerString);
-			if (!career) {
-				return;
-			}
 
 			// Qualification roll
 			career = this.ParseQualificationRoll(character, career, careerString);
@@ -211,6 +208,9 @@ export class CharacterUtilities {
 
 			// Select Assignment
 			assignment = this.ParseAssignment(character, career, termNumber, careerString);
+
+			// Select Basic Training
+			if (!this.ParseBasicTrainning(character, career, termNumber, careerString)) return;
 		}
 
 		if (!assignment) {
@@ -256,6 +256,7 @@ export class CharacterUtilities {
 			if (!this.ParseMusterOutOrContinue(character, career, careerString)) return;
 		}
 
+		// Muster out, roll until all benefit rolls are done
 		while (this.ParseMusterOut(character, career, careerString));
 
 		// Ageing
@@ -430,14 +431,6 @@ export class CharacterUtilities {
 		this.AddLifePath(character, "Assignment description: " + assignment.Description);
 		character.Terms[character.Terms.length - 1].Assignment = assignment.Name;
 
-		if (termNumber === 1) {
-			this.AddLifePath(character, `First term learn all ${career?.Name}'s service skills`);
-			const serviceSkillsTrainingTable = career?.TrainingTables.find((t: TrainingTable) => t.Id === 2);
-			if (serviceSkillsTrainingTable) {
-				this.AddRewardsToCharacter(character, serviceSkillsTrainingTable.Rewards, true);
-			}
-		}
-
 		if (assignment.Ranks) {
 			this.AddLifePath(character, "Gained Rank: 0");
 			if (assignment.Ranks[0].Title != "") this.AddLifePath(character, "Gained Title: " + assignment.Ranks[0].Title);
@@ -445,8 +438,40 @@ export class CharacterUtilities {
 			character.Terms[character.Terms.length - 1].Rank = assignment.Ranks[0];
 		}
 
-		character.currentStageId = 7; // Select a training table
+		character.currentStageId = 21; // Basic training
 		return assignment;
+	}
+
+	private static ParseBasicTrainning(character: Character, career: Career, termNumber: Number, careerString: CareerString): boolean {
+		if (termNumber === 1) {
+			this.AddLifePath(character, `Basic training: First term learn all ${career?.Name}'s service skills`);
+			const serviceSkillsTrainingTable = career?.TrainingTables.find((t: TrainingTable) => t.Id === 2);
+			if (serviceSkillsTrainingTable) {
+				this.AddRewardsToCharacter(character, serviceSkillsTrainingTable.Rewards, true);
+			}
+			character.currentStageId = 7; // Select a training table
+			return true;
+		}
+
+		if (careerString.value.length < 1) {
+			return false;
+		}
+
+		const basicTrainingSelection = parseInt(careerString.value.slice(0, 1));
+		careerString.value = careerString.value.slice(1);
+
+		const serviceSkillsTrainingTable = career?.TrainingTables.find((t: TrainingTable) => t.Id === 2);
+		if (serviceSkillsTrainingTable) {
+			const selectedSkill = serviceSkillsTrainingTable.Rewards[basicTrainingSelection - 1];
+			if (!selectedSkill) {
+				throw new Error("Invalid basic training ID: " + (basicTrainingSelection - 1));
+			}
+			this.AddLifePath(character, "Basic training selected: " + selectedSkill.Description);
+			this.AddRewardToCharacter(character, selectedSkill, true);
+		}
+
+		character.currentStageId = 7; // Select a training table
+		return true;
 	}
 
 	private static ParseTrainingTable(character: Character, career: Career, careerString: CareerString): TrainingTable | undefined {

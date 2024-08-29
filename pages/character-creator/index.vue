@@ -9,6 +9,7 @@
 				<SelectCareerStage v-if="currentStageId == 4" />
 				<RollQualificationStage v-if="currentStageId == 5" />
 				<SelectAssignmentStage v-if="currentStageId == 6" />
+				<SelectBasicTraningStage v-if="currentStageId == 21" />
 				<SelectTrainingTableStage v-if="currentStageId == 7" />
 				<RollTrainingTableStage v-if="currentStageId == 8" />
 				<RollSurvivalStage v-if="currentStageId == 9" />
