@@ -1002,7 +1002,7 @@ export class CharacterUtilities {
 		return this.CalculateDiceModifier(characteristicValue);
 	}
 
-	private static CalculateDiceModifier(characteristicValue: number): number {
+	public static CalculateDiceModifier(characteristicValue: number): number {
 		if (characteristicValue === 0) {
 			return -3;
 		}
