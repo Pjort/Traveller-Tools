@@ -13,8 +13,11 @@ import {
 	MusterOutRecord,
 	Item,
 	Relation,
+	Event,
+	LifeEvents,
+	SkillsDb,
+	CareersDb,
 } from "#imports";
-import { SkillsDb, CareersDb } from "#imports";
 
 export class CharacterUtilities {
 	public static ParseCharacter(input: CharacterInput): Character {
@@ -229,7 +232,13 @@ export class CharacterUtilities {
 			if (!this.ParseMishapRoll(character, career, careerString)) return;
 		} else {
 			// Event roll
-			if (!this.ParseEventRoll(character, career, careerString)) return;
+			const eventRoll = this.ParseEventRoll(character, career, careerString);
+			if (eventRoll == 0) return;
+
+			if (eventRoll == 7) {
+				// Roll on Life Events table
+				if (!this.ParseLifeEvents(character, career, careerString)) return;
+			}
 
 			// Advancement roll
 			if (!this.ParseAdvancementRoll(character, assignment, careerString)) return;
@@ -509,9 +518,9 @@ export class CharacterUtilities {
 		return true;
 	}
 
-	private static ParseEventRoll(character: Character, career: Career, careerString: CareerString): boolean {
+	private static ParseEventRoll(character: Character, career: Career, careerString: CareerString): number {
 		if (careerString.value.length < 2) {
-			return false;
+			return 0;
 		}
 
 		const eventsRoll = parseInt(careerString.value.slice(0, 2));
@@ -521,6 +530,31 @@ export class CharacterUtilities {
 
 		const event = career?.Events.find((e) => e.Id == eventsRoll);
 		this.AddLifePath(character, "**Event:** " + event?.Description);
+
+		if (eventsRoll == 7) {
+			character.currentStageId = 20; // Life events roll
+		} else {
+			character.currentStageId = 11; // Advancement roll
+		}
+		return eventsRoll;
+	}
+
+	private static ParseLifeEvents(character: Character, career: Career, careerString: CareerString): boolean {
+		if (careerString.value.length < 2) {
+			return false;
+		}
+
+		const lifeEventsRoll = parseInt(careerString.value.slice(0, 2));
+		careerString.value = careerString.value.slice(2);
+
+		this.AddLifePath(character, "Life events roll: " + lifeEventsRoll);
+
+		const lifeEvent: Event | undefined = LifeEvents.GetLifeEvents().find((e) => e.Id == lifeEventsRoll);
+		if (!lifeEvent) {
+			throw new Error("Invalid life events roll: " + lifeEventsRoll);
+		}
+
+		this.AddLifePath(character, "Life Event: " + lifeEvent.Description);
 
 		character.currentStageId = 11; // Advancement roll
 		return true;

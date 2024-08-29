@@ -13,6 +13,7 @@
 				<RollTrainingTableStage v-if="currentStageId == 8" />
 				<RollSurvivalStage v-if="currentStageId == 9" />
 				<RollEventStage v-if="currentStageId == 10" />
+				<RollLifeEventsStage v-if="currentStageId == 20" />
 				<RollAdvancementStage v-if="currentStageId == 11" />
 				<SelectMusterOutOrNot v-if="currentStageId == 12" />
 				<RollMusterOut v-if="currentStageId == 13" />
