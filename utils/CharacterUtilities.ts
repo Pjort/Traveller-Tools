@@ -205,12 +205,11 @@ export class CharacterUtilities {
 				return;
 				// throw new Error("Career not found");
 			}
+			// Select Basic Training
+			if (!this.ParseBasicTrainning(character, career, termNumber, careerString)) return;
 
 			// Select Assignment
 			assignment = this.ParseAssignment(character, career, termNumber, careerString);
-
-			// Select Basic Training
-			if (!this.ParseBasicTrainning(character, career, termNumber, careerString)) return;
 		}
 
 		if (!assignment) {
@@ -330,87 +329,122 @@ export class CharacterUtilities {
 		if (!career) {
 			return undefined;
 		}
-		if (careerString.value.length >= 2) {
-			const qualificationCheckRoll = parseInt(careerString.value.slice(0, 2));
-			careerString.value = careerString.value.slice(2);
-			const diceModifier = this.GetDiceModifier(career.QualificationCheck, character);
-			const previousCareerCount = this.countPreviousCareers(character);
-			let qualificationRollString = `Qualification roll (${career.QualificationCheck?.CharacteristicsType} ${career.QualificationCheck?.TargetValue}+): ${qualificationCheckRoll}(roll) + ${diceModifier}(DM)`;
+		if (careerString.value.length < 2) {
+			return undefined;
+		}
 
-			if (career.Name == "Bounty Hunter") {
-				if (previousCareerCount > 0) {
-					qualificationRollString += ` + ${previousCareerCount}(previous careers)`;
-				}
-				qualificationRollString += ` = ${qualificationCheckRoll + diceModifier + previousCareerCount}`;
-			} else {
-				if (previousCareerCount > 0) {
-					qualificationRollString += ` - ${previousCareerCount}(previous careers)`;
-				}
-				qualificationRollString += ` = ${qualificationCheckRoll + diceModifier - previousCareerCount}`;
+		const qualificationCheckRoll = parseInt(careerString.value.slice(0, 2));
+		careerString.value = careerString.value.slice(2);
+		const diceModifier = this.GetDiceModifier(career.QualificationCheck, character);
+		const previousCareerCount = this.countPreviousCareers(character);
+		let qualificationRollString = `Qualification roll (${career.QualificationCheck?.CharacteristicsType} ${career.QualificationCheck?.TargetValue}+): ${qualificationCheckRoll}(roll) + ${diceModifier}(DM)`;
+
+		if (career.Name == "Bounty Hunter") {
+			if (previousCareerCount > 0) {
+				qualificationRollString += ` + ${previousCareerCount}(previous careers)`;
 			}
-			this.AddLifePath(character, qualificationRollString);
+			qualificationRollString += ` = ${qualificationCheckRoll + diceModifier + previousCareerCount}`;
+		} else {
+			if (previousCareerCount > 0) {
+				qualificationRollString += ` - ${previousCareerCount}(previous careers)`;
+			}
+			qualificationRollString += ` = ${qualificationCheckRoll + diceModifier - previousCareerCount}`;
+		}
+		this.AddLifePath(character, qualificationRollString);
 
-			if (
-				qualificationCheckRoll + diceModifier - previousCareerCount * (career.Name == "Bounty Hunter" ? -1 : 1) >=
-				career.QualificationCheck?.TargetValue
-			) {
-				this.AddLifePath(character, "Qualification successful");
-				character.currentStageId = 6; // Select an assignment
-				character.Terms[character.Terms.length - 1].Qualified = true;
-			} else {
-				this.AddLifePath(character, "Qualification failed");
-				character.Terms[character.Terms.length - 1].Qualified = false;
+		if (
+			qualificationCheckRoll + diceModifier - previousCareerCount * (career.Name == "Bounty Hunter" ? -1 : 1) >=
+			career.QualificationCheck?.TargetValue
+		) {
+			this.AddLifePath(character, "Qualification successful");
+			character.currentStageId = 21; // Basic training
+			character.Terms[character.Terms.length - 1].Qualified = true;
+		} else {
+			this.AddLifePath(character, "Qualification failed");
+			character.Terms[character.Terms.length - 1].Qualified = false;
 
-				character.currentStageId = 60; // Submit to draft or take Drifter
-				this.AddLifePath(character, "Submit to Draft or become a Drifter");
+			character.currentStageId = 60; // Submit to draft or take Drifter
+			this.AddLifePath(character, "Submit to Draft or become a Drifter");
 
+			if (careerString.value.length < 1) {
+				return undefined;
+			}
+
+			const draftOrDrifter = careerString.value.slice(0, 1);
+			careerString.value = careerString.value.slice(1);
+
+			if (draftOrDrifter == "1") {
+				this.AddLifePath(character, "Chose to submit to Draft");
+
+				character.currentStageId = 61; // Draft roll
 				if (careerString.value.length < 1) {
 					return undefined;
 				}
 
-				const draftOrDrifter = careerString.value.slice(0, 1);
+				const roolForDraft = careerString.value.slice(0, 1);
 				careerString.value = careerString.value.slice(1);
 
-				if (draftOrDrifter == "1") {
-					this.AddLifePath(character, "Chose to submit to Draft");
-
-					character.currentStageId = 61; // Draft roll
-					if (careerString.value.length < 1) {
-						return undefined;
-					}
-
-					const roolForDraft = careerString.value.slice(0, 1);
-					careerString.value = careerString.value.slice(1);
-
-					this.AddLifePath(character, "Draft roll: " + roolForDraft);
-					if (roolForDraft == "1") {
-						career = CareersDb.GetCareerByName("Navy");
-					} else if (roolForDraft == "2") {
-						career = CareersDb.GetCareerByName("Army");
-					} else if (roolForDraft == "3") {
-						career = CareersDb.GetCareerByName("Marine");
-					} else if (roolForDraft == "4") {
-						career = CareersDb.GetCareerByName("Merchant");
-					} else if (roolForDraft == "5") {
-						career = CareersDb.GetCareerByName("Scout");
-					} else if (roolForDraft == "6") {
-						career = CareersDb.GetCareerByName("Agent");
-					} else {
-						throw new Error("Invalid draft roll: " + roolForDraft);
-					}
-
-					this.AddLifePath(character, "Drafted into: " + career?.Name);
-					character.Terms[character.Terms.length - 1].Career = career?.Name;
-					character.currentStageId = 6; // Select an assignment
+				this.AddLifePath(character, "Draft roll: " + roolForDraft);
+				if (roolForDraft == "1") {
+					career = CareersDb.GetCareerByName("Navy");
+				} else if (roolForDraft == "2") {
+					career = CareersDb.GetCareerByName("Army");
+				} else if (roolForDraft == "3") {
+					career = CareersDb.GetCareerByName("Marine");
+				} else if (roolForDraft == "4") {
+					career = CareersDb.GetCareerByName("Merchant");
+				} else if (roolForDraft == "5") {
+					career = CareersDb.GetCareerByName("Scout");
+				} else if (roolForDraft == "6") {
+					career = CareersDb.GetCareerByName("Agent");
 				} else {
-					this.AddLifePath(character, "Chose to become a Drifter");
-					career = CareersDb.GetCareerByName("Drifter");
-					character.Terms[character.Terms.length - 1].Career = career?.Name;
-					character.currentStageId = 6; // Select an assignment
+					throw new Error("Invalid draft roll: " + roolForDraft);
 				}
+
+				this.AddLifePath(character, "Drafted into: " + career?.Name);
+				character.Terms[character.Terms.length - 1].Career = career?.Name;
+				character.currentStageId = 21; // Basic training
+			} else {
+				this.AddLifePath(character, "Chose to become a Drifter");
+				career = CareersDb.GetCareerByName("Drifter");
+				character.Terms[character.Terms.length - 1].Career = career?.Name;
+				character.currentStageId = 21; // Basic training
 			}
 		}
+
 		return career;
+	}
+
+	private static ParseBasicTrainning(character: Character, career: Career, termNumber: Number, careerString: CareerString): boolean {
+		if (termNumber === 1) {
+			this.AddLifePath(character, `Basic training: First term learn all ${career?.Name}'s service skills`);
+			const serviceSkillsTrainingTable = career?.TrainingTables.find((t: TrainingTable) => t.Id === 2);
+			if (serviceSkillsTrainingTable) {
+				this.AddRewardsToCharacter(character, serviceSkillsTrainingTable.Rewards, true);
+			}
+			character.currentStageId = 6; // Select assignment
+			return true;
+		}
+
+		if (careerString.value.length < 1) {
+			return false;
+		}
+
+		const basicTrainingSelection = parseInt(careerString.value.slice(0, 1));
+		careerString.value = careerString.value.slice(1);
+
+		const serviceSkillsTrainingTable = career?.TrainingTables.find((t: TrainingTable) => t.Id === 2);
+		if (serviceSkillsTrainingTable) {
+			const selectedSkill = serviceSkillsTrainingTable.Rewards[basicTrainingSelection - 1];
+			if (!selectedSkill) {
+				throw new Error("Invalid basic training ID: " + (basicTrainingSelection - 1));
+			}
+			this.AddLifePath(character, "Basic training selected: " + selectedSkill.Description);
+			this.AddRewardToCharacter(character, selectedSkill, true);
+		}
+
+		character.currentStageId = 6; // Select assignment
+		return true;
 	}
 
 	private static ParseAssignment(character: Character, career: Career, termNumber: number, careerString: CareerString): Assignment | undefined {
@@ -438,40 +472,8 @@ export class CharacterUtilities {
 			character.Terms[character.Terms.length - 1].Rank = assignment.Ranks[0];
 		}
 
-		character.currentStageId = 21; // Basic training
+		character.currentStageId = 7; // Training table selection
 		return assignment;
-	}
-
-	private static ParseBasicTrainning(character: Character, career: Career, termNumber: Number, careerString: CareerString): boolean {
-		if (termNumber === 1) {
-			this.AddLifePath(character, `Basic training: First term learn all ${career?.Name}'s service skills`);
-			const serviceSkillsTrainingTable = career?.TrainingTables.find((t: TrainingTable) => t.Id === 2);
-			if (serviceSkillsTrainingTable) {
-				this.AddRewardsToCharacter(character, serviceSkillsTrainingTable.Rewards, true);
-			}
-			character.currentStageId = 7; // Select a training table
-			return true;
-		}
-
-		if (careerString.value.length < 1) {
-			return false;
-		}
-
-		const basicTrainingSelection = parseInt(careerString.value.slice(0, 1));
-		careerString.value = careerString.value.slice(1);
-
-		const serviceSkillsTrainingTable = career?.TrainingTables.find((t: TrainingTable) => t.Id === 2);
-		if (serviceSkillsTrainingTable) {
-			const selectedSkill = serviceSkillsTrainingTable.Rewards[basicTrainingSelection - 1];
-			if (!selectedSkill) {
-				throw new Error("Invalid basic training ID: " + (basicTrainingSelection - 1));
-			}
-			this.AddLifePath(character, "Basic training selected: " + selectedSkill.Description);
-			this.AddRewardToCharacter(character, selectedSkill, true);
-		}
-
-		character.currentStageId = 7; // Select a training table
-		return true;
 	}
 
 	private static ParseTrainingTable(character: Character, career: Career, careerString: CareerString): TrainingTable | undefined {
