@@ -154,8 +154,14 @@ export const useCharacterStore = defineStore("character", {
 					}
 				}
 			}
+			// Reduce by one for each term that wasn't survived
+			for (let term of state.character.Terms) {
+				if (!term.Survived) {
+					benefitRollsLeft -= 1;
+				}
+			}
 
-			// reduce the amount of benefit rolls left by the amount of benefits already received
+			// Reduce the amount of benefit rolls left by the amount of benefits already received
 			for (let term of state.character.Terms) {
 				if (term.MusterOutBenefits) {
 					benefitRollsLeft -= term.MusterOutBenefits.length;
