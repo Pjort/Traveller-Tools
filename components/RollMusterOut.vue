@@ -11,9 +11,11 @@
 		<div class="mt-4">
 			<DiceInput v-model="roll" :numDice="1" />
 		</div>
-		<button @click="ApplyInput" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200">
-			Apply
-		</button>
+		<div class="flex mt-4">
+			<button @click="ApplyInput" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Apply</button>
+			<p class="ml-3 px-3 py-1" v-if="benefitRollsLeft > 0">Rolls left: {{ benefitRollsLeft }}</p>
+		</div>
+
 		<div class="overflow-x-auto mt-6">
 			<table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
 				<thead class="bg-gray-100">
