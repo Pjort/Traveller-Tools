@@ -16,7 +16,7 @@
 			>
 				Apply
 			</button>
-			<p class="ml-3 px-3 py-1" v-if="educationDM">Selections left: {{ 3 + educationDM - selectedBackgroundSkills.length }}</p>
+			<p class="ml-3 px-3 py-1">Selections left: {{ 3 + educationDM - selectedBackgroundSkills.length }}</p>
 		</div>
 	</div>
 </template>
