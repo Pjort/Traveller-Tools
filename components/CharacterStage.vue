@@ -4,18 +4,21 @@
 
 		<div class="space-y-4">
 			<div class="md:flex block items-center">
-				<label for="name" class="w-24 md:mr-0 mr-3">Name:</label>
-				<input id="name" class="bg-slate-200 px-2 py-1 rounded" type="text" v-model="name" placeholder="Name" />
+				<label for="name" class="w-28 md:mr-0 mr-3">Name:</label>
+				<input id="name" class="bg-slate-200 px-2 py-1 rounded mr-2" type="text" v-model="name" placeholder="Name" />
 				<button @click="GenerateName" class="bg-blue-500 text-white px-3 py-1 ml-0 md:ml-3 mt-3 md:mt-0 rounded hover:bg-blue-600">
 					Generate
 				</button>
 			</div>
 			<div class="md:flex block items-center">
-				<label for="homeWorld" class="w-24">Home World:</label>
-				<input id="homeWorld" class="bg-slate-200 px-2 py-1 rounded" type="text" v-model="homeWorld" placeholder="Home World" />
+				<label for="homeWorld" class="w-28">Home World:</label>
+				<input id="homeWorld" class="bg-slate-200 px-2 py-1 rounded mr-2" type="text" v-model="homeWorld" placeholder="Home World" />
+				<button @click="RandomHomeWorld" class="bg-blue-500 text-white px-3 py-1 ml-0 md:ml-3 mt-3 md:mt-0 rounded hover:bg-blue-600">
+					Random
+				</button>
 			</div>
 			<div class="flex items-center">
-				<label for="race" class="w-24">Race:</label>
+				<label for="race" class="w-28">Race:</label>
 				<select id="race" v-model="race" class="bg-slate-200 px-2 py-1 rounded">
 					<option value="0">Human</option>
 					<option value="1">Aslan</option>
@@ -51,5 +54,9 @@ const ApplyInput = () => {
 
 const GenerateName = () => {
 	name.value = NameGenerator.generateFullName();
+};
+
+const RandomHomeWorld = async () => {
+	homeWorld.value = await MapUtilities.randomSubSectorName();
 };
 </script>
