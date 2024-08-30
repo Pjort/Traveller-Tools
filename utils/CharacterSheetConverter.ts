@@ -16,6 +16,7 @@ export class CharacterSheetConverter {
 		markdown += "## Characteristics\n";
 		for (let [key, value] of Object.entries(character.Characteristics)) {
 			if (key == "SocialStanding") key = "Social Standing";
+			if (value <= 0) continue;
 			markdown += `- **${key}:** ${value}  (${CharacterUtilities.createDiceModifierString(value)})\n`;
 		}
 		markdown += "\n";
