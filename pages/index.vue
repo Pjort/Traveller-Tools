@@ -21,5 +21,10 @@ const pages = [
 		path: "/character-creator",
 		description: "Create and customize your character. Traveller Mongoose 2nd Edition style.",
 	},
+	{
+		title: "Name Generator",
+		path: "/name-generator",
+		description: "Generate random names for your characters.",
+	},
 ];
 </script>

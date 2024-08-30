@@ -3,11 +3,14 @@
 		<h1 class="text-2xl font-bold mb-4">Basic Information</h1>
 
 		<div class="space-y-4">
-			<div class="flex items-center">
-				<label for="name" class="w-24">Name:</label>
+			<div class="md:flex block items-center">
+				<label for="name" class="w-24 md:mr-0 mr-3">Name:</label>
 				<input id="name" class="bg-slate-200 px-2 py-1 rounded" type="text" v-model="name" placeholder="Name" />
+				<button @click="GenerateName" class="bg-blue-500 text-white px-3 py-1 ml-0 md:ml-3 mt-3 md:mt-0 rounded hover:bg-blue-600">
+					Generate
+				</button>
 			</div>
-			<div class="flex items-center">
+			<div class="md:flex block items-center">
 				<label for="homeWorld" class="w-24">Home World:</label>
 				<input id="homeWorld" class="bg-slate-200 px-2 py-1 rounded" type="text" v-model="homeWorld" placeholder="Home World" />
 			</div>
@@ -44,5 +47,9 @@ const race = computed({
 const ApplyInput = () => {
 	if (!name.value) return;
 	characterStore.parseCharacter();
+};
+
+const GenerateName = () => {
+	name.value = NameGenerator.generateFullName();
 };
 </script>

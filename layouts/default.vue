@@ -2,7 +2,10 @@
 	<div class="min-h-screen bg-gray-100">
 		<nav class="bg-blue-500 p-4 text-white">
 			<div class="container mx-auto flex justify-between items-center">
-				<NuxtLink to="/" class="text-xl font-bold">Traveller Tools (version: ALFA)</NuxtLink>
+				<div class="flex">
+					<NuxtLink to="/" class="text-xl font-bold">Traveller Tools</NuxtLink>
+					<p class="text-sm ml-3 text-orange-300">Alpha</p>
+				</div>
 				<a
 					href="https://github.com/Pjort/Traveller-Tools"
 					target="_blank"
