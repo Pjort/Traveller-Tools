@@ -9,4 +9,5 @@ export default defineNuxtConfig({
 	imports: {
 		dirs: ["types/*.ts", "stores/*.ts", "stores/careers/*.ts"],
 	},
+	ssr: false, // Disable Server-Side Rendering - Client-Side Rendering only
 });
