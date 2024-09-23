@@ -5,8 +5,8 @@
 		<div class="mb-4">
 			<label for="apiKey" class="block text-sm font-medium text-gray-700">OpenAI API Key</label>
 			<p class="text-xs text-gray-500 mt-1">
-				Your API key is only stored in your browser's local cookies and is not sent or stored anywhere else. It's used client-side to make requests to
-				OpenAI's API.
+				Your API key is only stored in your browser's local cookies and is not sent or stored anywhere else. It's used client-side to make
+				requests to OpenAI's API.
 			</p>
 			<div class="flex mt-1">
 				<input
@@ -17,7 +17,10 @@
 					class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 px-3 py-2"
 					placeholder="Enter your OpenAI API key"
 				/>
-				<button @click="clearApiKey" class="bg-red-500 w-60 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-200 ml-2">
+				<button
+					@click="clearApiKey"
+					class="bg-red-500 w-60 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-200 ml-2"
+				>
 					Clear API Key
 				</button>
 			</div>
