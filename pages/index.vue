@@ -31,5 +31,10 @@ const pages = [
 		path: "/bounty-generator",
 		description: "Generate random bounty contracts for your Traveller adventures using OpenAI. Requires your own API key.",
 	},
+	{
+		title: "Mock Shot Generator",
+		path: "/mock-shot-generator",
+		description: "Generate mock shots for your Traveller adventures using OpenAI. Requires your own API key.",
+	},
 ];
 </script>
