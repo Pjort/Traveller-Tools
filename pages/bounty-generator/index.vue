@@ -1,146 +1,113 @@
 <template>
-    <div class="container mx-auto p-4">
-        <h1 class="text-2xl font-bold mb-4">Bounty Generator</h1>
+	<div class="container mx-auto p-4">
+		<h1 class="text-2xl font-bold mb-4">Bounty Generator</h1>
 
-        <div class="mb-4">
-            <label for="apiKey" class="block text-sm font-medium text-gray-700"
-                >OpenAI API Key</label
-            >
-            <p class="text-xs text-gray-500 mt-1">
-                Your API key is only stored in your browser's local cookies and
-                is not sent or stored anywhere else. It's used client-side to
-                make requests to OpenAI's API.
-            </p>
-            <div class="flex mt-1">
-                <input
-                    @input="setApiKey"
-                    type="password"
-                    id="apiKey"
-                    v-model="apiKey"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 px-3 py-2"
-                    placeholder="Enter your OpenAI API key"
-                />
-                <button
-                    @click="clearApiKey"
-                    class="bg-red-500 w-60 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-200 ml-2"
-                >
-                    Clear API Key
-                </button>
-            </div>
-        </div>
+		<div class="mb-4">
+			<label for="apiKey" class="block text-sm font-medium text-gray-700">OpenAI API Key</label>
+			<p class="text-xs text-gray-500 mt-1">
+				Your API key is only stored in your browser's local cookies and is not sent or stored anywhere else. It's used client-side to make requests to
+				OpenAI's API.
+			</p>
+			<div class="flex mt-1">
+				<input
+					@input="setApiKey"
+					type="password"
+					id="apiKey"
+					v-model="apiKey"
+					class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 px-3 py-2"
+					placeholder="Enter your OpenAI API key"
+				/>
+				<button @click="clearApiKey" class="bg-red-500 w-60 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-200 ml-2">
+					Clear API Key
+				</button>
+			</div>
+		</div>
 
-        <div class="mb-4">
-            <label class="inline-flex items-center">
-                <input
-                    type="checkbox"
-                    v-model="rememberMe"
-                    class="form-checkbox"
-                    @change="setApiKey"
-                />
-                <span class="ml-2">Remember API Key</span>
-            </label>
-        </div>
+		<div class="mb-4">
+			<label class="inline-flex items-center">
+				<input type="checkbox" v-model="rememberMe" class="form-checkbox" @change="setApiKey" />
+				<span class="ml-2">Remember API Key</span>
+			</label>
+		</div>
 
-        <div class="mb-4">
-            <label
-                for="priority"
-                class="block text-sm font-medium text-gray-700"
-                >Priority</label
-            >
-            <select
-                v-model="priority"
-                id="priority"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 bg-white px-3 py-2"
-            >
-                <option value="(★) Low">(★) Low</option>
-                <option value="(★★) Mid">(★★) Mid</option>
-                <option value="(★★★) High">(★★★) High</option>
-                <option value="(★★★★) Critical">(★★★★) Critical</option>
-            </select>
-        </div>
+		<div class="mb-4">
+			<label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
+			<select
+				v-model="priority"
+				id="priority"
+				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 bg-white px-3 py-2"
+			>
+				<option value="(★) Low">(★) Low</option>
+				<option value="(★★) Mid">(★★) Mid</option>
+				<option value="(★★★) High">(★★★) High</option>
+				<option value="(★★★★) Critical">(★★★★) Critical</option>
+			</select>
+		</div>
 
-        <div class="mb-4">
-            <label
-                for="reputation"
-                class="block text-sm font-medium text-gray-700"
-                >Required Reputation</label
-            >
-            <input
-                v-model.number="reputation"
-                type="number"
-                id="reputation"
-                min="0"
-                max="9"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 px-3 py-2"
-            />
-        </div>
-        <div class="flex">
-            <button
-                @click="generateBounty"
-                class="px-4 py-2 rounded mb-4 mr-2 transition-colors duration-200"
-                :class="{
-                    'bg-blue-500 text-white hover:bg-blue-600':
-                        apiKey && !isLoading,
-                    'bg-gray-300 text-gray-500 cursor-not-allowed':
-                        !apiKey || isLoading,
-                }"
-                :disabled="!apiKey || isLoading"
-            >
-                {{ bounty ? "Generate new bounty" : "Generate Bounty" }}
-            </button>
+		<div class="mb-4">
+			<label for="reputation" class="block text-sm font-medium text-gray-700">Required Reputation</label>
+			<input
+				v-model.number="reputation"
+				type="number"
+				id="reputation"
+				min="0"
+				max="9"
+				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 px-3 py-2"
+			/>
+		</div>
+		<div class="flex">
+			<button
+				@click="generateBounty"
+				class="px-4 py-2 rounded mb-4 mr-2 transition-colors duration-200"
+				:class="{
+					'bg-blue-500 text-white hover:bg-blue-600': apiKey && !isLoading,
+					'bg-gray-300 text-gray-500 cursor-not-allowed': !apiKey || isLoading,
+				}"
+				:disabled="!apiKey || isLoading"
+			>
+				{{ bounty ? "Generate new bounty" : "Generate Bounty" }}
+			</button>
 
-            <button
-                @click="copyToClipboard"
-                class="px-4 py-2 rounded mb-4 ml-6 mr-2 transition-colors duration-200 bg-blue-500 text-white hover:bg-blue-600 flex items-center"
-                v-if="bounty"
-            >
-                <svg
-                    class="mr-2 fill-white"
-                    fill="#000000"
-                    version="1.1"
-                    id="Capa_1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    width="16px"
-                    height="16px"
-                    viewBox="0 0 93.842 93.843"
-                    xml:space="preserve"
-                >
-                    <g>
-                        <path
-                            d="M74.042,11.379h-9.582v-0.693c0-1.768-1.438-3.205-3.206-3.205h-6.435V3.205C54.819,1.437,53.381,0,51.614,0H42.23
+			<button
+				@click="copyToClipboard"
+				class="px-4 py-2 rounded mb-4 ml-6 mr-2 transition-colors duration-200 bg-blue-500 text-white hover:bg-blue-600 flex items-center"
+				v-if="bounty"
+			>
+				<svg
+					class="mr-2 fill-white"
+					fill="#000000"
+					version="1.1"
+					id="Capa_1"
+					xmlns="http://www.w3.org/2000/svg"
+					xmlns:xlink="http://www.w3.org/1999/xlink"
+					width="16px"
+					height="16px"
+					viewBox="0 0 93.842 93.843"
+					xml:space="preserve"
+				>
+					<g>
+						<path
+							d="M74.042,11.379h-9.582v-0.693c0-1.768-1.438-3.205-3.206-3.205h-6.435V3.205C54.819,1.437,53.381,0,51.614,0H42.23
         c-1.768,0-3.206,1.438-3.206,3.205V7.48H32.59c-1.768,0-3.206,1.438-3.206,3.205v0.693h-9.582c-2.393,0-4.339,1.945-4.339,4.34
         v73.785c0,2.394,1.946,4.34,4.339,4.34h54.238c2.394,0,4.339-1.946,4.339-4.34V15.719C78.38,13.324,76.434,11.379,74.042,11.379z
         M32.617,25.336h28.61c1.709,0,3.102-1.391,3.102-3.1v-3.438h7.554l0.021,68.164l-49.939,0.021V18.801h7.554v3.436
         C29.517,23.945,30.907,25.336,32.617,25.336z"
-                        />
-                    </g>
-                </svg>
-                Copy Markdown
-                <p
-                    v-if="copied"
-                    class="text-green-500 bg-black rounded-md p-2 mt-16 absolute"
-                >
-                    Copied!
-                </p>
-            </button>
-        </div>
-        <div v-if="isLoading" class="flex justify-center items-center py-4">
-            <div
-                class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"
-            ></div>
-        </div>
-        <div
-            v-else-if="bounty"
-            class="bg-white shadow-md rounded-lg overflow-hidden p-5 w-full"
-        >
-            <div class="prose max-w-none" v-html="renderMarkdown(bounty)"></div>
-        </div>
+						/>
+					</g>
+				</svg>
+				Copy Markdown
+				<p v-if="copied" class="text-green-500 bg-black rounded-md p-2 mt-16 absolute">Copied!</p>
+			</button>
+		</div>
+		<div v-if="isLoading" class="flex justify-center items-center py-4">
+			<div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+		</div>
+		<div v-else-if="bounty" class="bg-white shadow-md rounded-lg overflow-hidden p-5 w-full">
+			<div class="prose max-w-none" v-html="renderMarkdown(bounty)"></div>
+		</div>
 
-        <p v-else class="text-gray-600 italic">
-            Click the button above to generate a bounty.
-        </p>
-    </div>
+		<p v-else class="text-gray-600 italic">Click the button above to generate a bounty.</p>
+	</div>
 </template>
 
 <script setup lang="ts">
@@ -158,56 +125,53 @@ const reputation = ref(0);
 const copied = ref(false);
 
 function copyToClipboard() {
-    if (bounty.value) {
-        navigator.clipboard.writeText(bounty.value).then(() => {
-            copied.value = true;
-            setTimeout(() => {
-                copied.value = false;
-            }, 1000);
-        });
-    }
+	if (bounty.value) {
+		navigator.clipboard.writeText(bounty.value).then(() => {
+			copied.value = true;
+			setTimeout(() => {
+				copied.value = false;
+			}, 1000);
+		});
+	}
 }
 
 onMounted(() => {
-    apiKeyStore.loadApiKey();
-    apiKey.value = apiKeyStore.apiKey;
-    if (apiKey.value) {
-        rememberMe.value = true;
-    }
+	apiKeyStore.loadApiKey();
+	apiKey.value = apiKeyStore.apiKey;
+	if (apiKey.value) {
+		rememberMe.value = true;
+	}
 });
 
 function setApiKey() {
-    apiKeyStore.setApiKey(apiKey.value, rememberMe.value);
+	apiKeyStore.setApiKey(apiKey.value, rememberMe.value);
 }
 
 function clearApiKey() {
-    apiKey.value = "";
-    rememberMe.value = false;
-    apiKeyStore.clearApiKey();
+	apiKey.value = "";
+	rememberMe.value = false;
+	apiKeyStore.clearApiKey();
 }
 
 async function generateBounty() {
-    try {
-        isLoading.value = true;
-        const response = await fetch(
-            "https://api.openai.com/v1/chat/completions",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${apiKey.value}`,
-                },
-                body: JSON.stringify({
-                    model: "gpt-4o-mini",
-                    messages: [
-                        {
-                            role: "system",
-                            content:
-                                "You are an expert in the Traveller Mongoose 2ed universe and a skilled bounty hunter contract creator.",
-                        },
-                        {
-                            role: "user",
-                            content: `Generate a bounty hunter contract in the Traveller universe with priority ${priority.value} and required reputation ${reputation.value}. For each contract, provide the following details in the specified format:
+	try {
+		isLoading.value = true;
+		const response = await fetch("https://api.openai.com/v1/chat/completions", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${apiKey.value}`,
+			},
+			body: JSON.stringify({
+				model: "gpt-4o-mini",
+				messages: [
+					{
+						role: "system",
+						content: "You are an expert in the Traveller Mongoose 2ed universe and a skilled bounty hunter contract creator.",
+					},
+					{
+						role: "user",
+						content: `Generate a bounty hunter contract in the Traveller universe with priority ${priority.value} and required reputation ${reputation.value}. For each contract, provide the following details in the specified format:
 
 ## Title: Wait until the end to give it a title, and make it a catchy one that gives a hint of the mark and the crime. \n
 **Mark:** The name of the target [Generate a unique futuristic name, using a combination of unusual syllables or symbols. Like from Star Wars and Star Trek.] \n
@@ -276,25 +240,23 @@ Here is an example of a real contract:
 6) Two hired thugs are seeking out Dipa, after he sold expired medication to their boss.
 
 Now, generate a similar bounty hunter contract in the Traveller universe with the specified priority and reputation. Return it in a markdown format.`,
-                        },
-                    ],
-                    max_tokens: 2000,
-                }),
-            },
-        );
+					},
+				],
+				max_tokens: 2000,
+			}),
+		});
 
-        const data = await response.json();
-        bounty.value = data.choices[0].message.content;
-        isLoading.value = false;
-        setApiKey(); // Only store API key if remember me is checked
-    } catch (error) {
-        console.error("Error generating bounty:", error);
-        bounty.value =
-            "An error occurred while generating the bounty. Please try again.";
-    }
+		const data = await response.json();
+		bounty.value = data.choices[0].message.content;
+		isLoading.value = false;
+		setApiKey(); // Only store API key if remember me is checked
+	} catch (error) {
+		console.error("Error generating bounty:", error);
+		bounty.value = "An error occurred while generating the bounty. Please try again.";
+	}
 }
 
 function renderMarkdown(markdown: string) {
-    return marked(markdown);
+	return marked(markdown);
 }
 </script>
