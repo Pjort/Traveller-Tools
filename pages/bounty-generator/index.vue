@@ -2,36 +2,7 @@
 	<div class="container mx-auto p-4">
 		<h1 class="text-2xl font-bold mb-4">Bounty Generator</h1>
 
-		<div class="mb-4">
-			<label for="apiKey" class="block text-sm font-medium text-gray-700">OpenAI API Key</label>
-			<p class="text-xs text-gray-500 mt-1">
-				Your API key is only stored in your browser's local cookies and is not sent or stored anywhere else. It's used client-side to make
-				requests to OpenAI's API.
-			</p>
-			<div class="flex mt-1">
-				<input
-					@input="setApiKey"
-					type="password"
-					id="apiKey"
-					v-model="apiKey"
-					class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 px-3 py-2"
-					placeholder="Enter your OpenAI API key"
-				/>
-				<button
-					@click="clearApiKey"
-					class="bg-red-500 w-60 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-200 ml-2"
-				>
-					Clear API Key
-				</button>
-			</div>
-		</div>
-
-		<div class="mb-4">
-			<label class="inline-flex items-center">
-				<input type="checkbox" v-model="rememberMe" class="form-checkbox" @change="setApiKey" />
-				<span class="ml-2">Remember API Key</span>
-			</label>
-		</div>
+		<ApiKeyInput />
 
 		<div class="mb-4">
 			<label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
@@ -63,10 +34,10 @@
 				@click="generateBounty"
 				class="px-4 py-2 rounded mb-4 mr-2 transition-colors duration-200"
 				:class="{
-					'bg-blue-500 text-white hover:bg-blue-600': apiKey && !isLoading,
-					'bg-gray-300 text-gray-500 cursor-not-allowed': !apiKey || isLoading,
+					'bg-blue-500 text-white hover:bg-blue-600': apiKeyStore.apiKey && !isLoading,
+					'bg-gray-300 text-gray-500 cursor-not-allowed': !apiKeyStore.apiKey || isLoading,
 				}"
-				:disabled="!apiKey || isLoading"
+				:disabled="!apiKeyStore.apiKey || isLoading"
 			>
 				{{ bounty ? "Generate new bounty" : "Generate Bounty" }}
 			</button>
@@ -119,9 +90,7 @@ import { ref, onMounted } from "vue";
 import { useApiKeyStore } from "#imports";
 
 const apiKeyStore = useApiKeyStore();
-const apiKey = ref("");
 const bounty = ref("");
-const rememberMe = ref(false);
 const isLoading = ref(false);
 const priority = ref("(★) Low");
 const reputation = ref(0);
@@ -140,21 +109,7 @@ function copyToClipboard() {
 
 onMounted(() => {
 	apiKeyStore.loadApiKey();
-	apiKey.value = apiKeyStore.apiKey;
-	if (apiKey.value) {
-		rememberMe.value = true;
-	}
 });
-
-function setApiKey() {
-	apiKeyStore.setApiKey(apiKey.value, rememberMe.value);
-}
-
-function clearApiKey() {
-	apiKey.value = "";
-	rememberMe.value = false;
-	apiKeyStore.clearApiKey();
-}
 
 async function generateBounty() {
 	try {
@@ -163,7 +118,7 @@ async function generateBounty() {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: `Bearer ${apiKey.value}`,
+				Authorization: `Bearer ${apiKeyStore.apiKey}`,
 			},
 			body: JSON.stringify({
 				model: "gpt-4o-mini",
@@ -252,7 +207,6 @@ Now, generate a similar bounty hunter contract in the Traveller universe with th
 		const data = await response.json();
 		bounty.value = data.choices[0].message.content;
 		isLoading.value = false;
-		setApiKey(); // Only store API key if remember me is checked
 	} catch (error) {
 		console.error("Error generating bounty:", error);
 		bounty.value = "An error occurred while generating the bounty. Please try again.";
