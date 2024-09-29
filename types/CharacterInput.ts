@@ -1,6 +1,6 @@
 export class CharacterInput {
 	Name: string;
-	Race: number;
+	RaceId: number;
 	HomeWorld?: string;
 	CharacteristicsString?: string;
 	BackgroundSkillsString?: string;
@@ -8,14 +8,14 @@ export class CharacterInput {
 
 	constructor(
 		name: string = "",
-		race: number = 0,
+		raceId: number = 0,
 		homeWorld?: string,
 		characteristicsString?: string,
 		backgroundSkillsString?: string,
-		termsString?: string
+		termsString?: string,
 	) {
 		this.Name = name;
-		this.Race = race;
+		this.RaceId = raceId;
 		this.HomeWorld = homeWorld;
 		this.CharacteristicsString = characteristicsString;
 		this.BackgroundSkillsString = backgroundSkillsString;

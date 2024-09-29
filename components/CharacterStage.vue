@@ -20,9 +20,9 @@
 			<div class="flex items-center">
 				<label for="race" class="w-28">Race:</label>
 				<select id="race" v-model="race" class="bg-slate-200 px-2 py-1 rounded">
-					<option value="0">Human</option>
-					<option value="1">Aslan</option>
-					<option value="2">Vargr</option>
+					<option value="1">Human</option>
+					<option value="2">Aslan</option>
+					<option value="3">Vargr</option>
 				</select>
 			</div>
 		</div>
@@ -43,7 +43,7 @@ const homeWorld = computed({
 });
 
 const race = computed({
-	get: () => characterStore.characterInput.Race,
+	get: () => characterStore.characterInput.RaceId,
 	set: (value) => characterStore.updateRace(value),
 });
 

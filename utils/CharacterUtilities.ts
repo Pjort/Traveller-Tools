@@ -21,10 +21,14 @@ import {
 
 export class CharacterUtilities {
 	public static ParseCharacter(input: CharacterInput): Character {
-		const character = new Character(input.Name, input.Race, input.HomeWorld, 18);
+		const character = new Character(input.Name, input.RaceId, input.HomeWorld, 18);
 
 		this.AddLifePath(character, "### Term 0 (0 - 18 years)");
 		if (input.HomeWorld) this.AddLifePath(character, "Grew up on " + input.HomeWorld);
+
+		character.Race.Traits.forEach((raceTrait) => {
+			this.AddLifePath(character, "**" + character.Race.Name + " trait:** " + raceTrait);
+		});
 
 		character.currentStageId = 2; // Characteristics roll
 
@@ -53,23 +57,18 @@ export class CharacterUtilities {
 			this.AddLifePath(character, "**Initial characteristics rolls:** " + (characteristics?.ToString() ?? "No characteristics rolled"));
 
 			// Alter characteristics by race
-			if (character.Race == Race.Aslan) {
-				character.Characteristics.Strength += 2;
-				character.Characteristics.Dexterity -= 2;
-				this.AddLifePath(character, "Aslan racial characteristics: +2 Strength, -2 Dexterity");
-				character.Traits.push("**Dewclaws:** 1D+2 damage - Melee (Natural)");
-				character.Traits.push("**Heightened Senses:** +1 DM to any Recon and Survival checks");
-				this.AddLifePath(character, "Aslan traits: Dewclaws, Heightened Senses");
-			}
-			if (character.Race == Race.Vargr) {
-				character.Characteristics.Strength -= 1;
-				character.Characteristics.Dexterity += 1;
-				character.Characteristics.Endurance -= 1;
-				this.AddLifePath(character, "Vargr racial characteristics: -1 Strength, +1 Dexterity, -1 Endurance");
-				character.Traits.push("**Bite:** 1D+1 damage - Melee (Natural)");
-				character.Traits.push("**Heightened Senses:** +1 DM to any Recon and Survival checks, but -1 DM in darkness");
-				this.AddLifePath(character, "Vargr traits: Bite, Heightened Senses");
-			}
+			// TODO - Add racial characteristics
+
+			// if (character.Race.Id == 2) {
+			// 	this.AddLifePath(character, "Aslan racial characteristics: +2 Strength, -2 Dexterity");
+
+			// 	this.AddLifePath(character, "Aslan traits: Dewclaws, Heightened Senses");
+			// }
+			// if (character.Race.Id == 3) {
+			// 	this.AddLifePath(character, "Vargr racial characteristics: -1 Strength, +1 Dexterity, -1 Endurance");
+
+			// 	this.AddLifePath(character, "Vargr traits: Bite, Heightened Senses");
+			// }
 		}
 
 		character.currentStageId = 3; // Background skills

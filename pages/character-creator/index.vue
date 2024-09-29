@@ -60,7 +60,7 @@ const renderMarkdown = (markdown: string) => {
 const updateURL = () => {
 	const url = new URL(window.location.href);
 	if (characterInput.value.Name != "") url.searchParams.set("name", characterInput.value.Name);
-	if (characterInput.value.Race != 0) url.searchParams.set("race", characterInput.value.Race.toString());
+	if (characterInput.value.RaceId != 1) url.searchParams.set("race", characterInput.value.RaceId.toString());
 	if (characterInput.value.HomeWorld != null && characterInput.value.HomeWorld != "")
 		url.searchParams.set("homeWorld", characterInput.value.HomeWorld);
 	if (characterInput.value.CharacteristicsString != null && characterInput.value.CharacteristicsString != "")

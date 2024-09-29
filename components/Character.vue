@@ -32,7 +32,7 @@
 
 		<div class="mb-4">
 			<p class="text-gray-700"><span class="font-semibold">Age:</span> {{ character.Age }}</p>
-			<p class="text-gray-700"><span class="font-semibold">Race:</span> {{ Race[character.Race] }}</p>
+			<p class="text-gray-700"><span class="font-semibold">Race:</span> {{ character.Race.Name }}</p>
 			<p class="text-gray-700" v-if="character.HomeWorld"><span class="font-semibold">Home World:</span> {{ character.HomeWorld }}</p>
 		</div>
 		<div class="mb-4" v-if="character.Characteristics">
@@ -83,9 +83,9 @@
 				</li>
 			</ul>
 		</div>
-		<div class="mb-4" v-if="character.Traits.length > 0">
+		<div class="mb-4" v-if="character.Race.Traits.length > 0">
 			<h3 class="text-xl font-semibold mb-2">Traits</h3>
-			<div class="text-gray-600 my-1" v-for="trait in character.Traits" :key="trait" v-html="renderMarkdown(trait)"></div>
+			<div class="text-gray-600 my-1" v-for="trait in character.Race.Traits" :key="trait" v-html="renderMarkdown(trait)"></div>
 		</div>
 		<div class="mb-4" v-if="character.Skills.length > 0">
 			<h3 class="text-xl font-semibold mb-2">Skills</h3>
@@ -139,6 +139,7 @@
 
 <script lang="ts" setup>
 import { marked } from "marked";
+
 const characterStore = useCharacterStore();
 const character = computed(() => characterStore.character);
 const renderMarkdown = (markdown: string) => {

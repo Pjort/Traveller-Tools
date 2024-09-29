@@ -1,15 +1,14 @@
 // stores/characterInputStore.ts
 import { defineStore } from "pinia";
-import { Character, CharacterInput, Skill, Term, Characteristics, Race, Item, Relation } from "#imports";
+import { Character, CharacterInput, Skill, Term, Characteristics, Race, Item, Relation, RacesDb } from "#imports";
 
 export const useCharacterStore = defineStore("character", {
 	state: () => ({
 		character: {
 			Name: "",
-			Race: Race.Human,
+			Race: new Object() as Race,
 			HomeWorld: "",
 			Age: 0,
-			Traits: new Array<string>(),
 			Characteristics: new Object() as Characteristics,
 			LifePath: new Array<string>(),
 			Skills: new Array<Skill>(),
@@ -23,7 +22,7 @@ export const useCharacterStore = defineStore("character", {
 		} as Character,
 		characterInput: {
 			Name: "",
-			Race: Race.Human,
+			RaceId: 1,
 			HomeWorld: "",
 			CharacteristicsString: "",
 			BackgroundSkillsString: "",
@@ -36,10 +35,9 @@ export const useCharacterStore = defineStore("character", {
 			this.$patch((state) => {
 				state.character = {
 					Name: "",
-					Race: Race.Human,
+					Race: {} as Race,
 					HomeWorld: "",
 					Age: 0,
-					Traits: [],
 					Characteristics: {} as Characteristics,
 					LifePath: [],
 					Skills: [],
@@ -53,7 +51,7 @@ export const useCharacterStore = defineStore("character", {
 				};
 				state.characterInput = {
 					Name: "",
-					Race: Race.Human,
+					RaceId: 1,
 					HomeWorld: "",
 					CharacteristicsString: "",
 					BackgroundSkillsString: "",
@@ -67,7 +65,7 @@ export const useCharacterStore = defineStore("character", {
 		},
 		updateCharacterInput(
 			name: string,
-			race: number,
+			raceId: number,
 			homeWorld: string,
 			characteristicsString: string,
 			backgroundSkillsString: string,
@@ -75,7 +73,7 @@ export const useCharacterStore = defineStore("character", {
 		) {
 			this.characterInput = {
 				Name: name,
-				Race: race,
+				RaceId: raceId,
 				HomeWorld: homeWorld,
 				CharacteristicsString: characteristicsString,
 				BackgroundSkillsString: backgroundSkillsString,
@@ -88,8 +86,10 @@ export const useCharacterStore = defineStore("character", {
 		updateName(name: string) {
 			this.characterInput.Name = name;
 		},
-		updateRace(race: number) {
-			this.characterInput.Race = race;
+		updateRace(raceId: number) {
+			// Parse raceId into a integer
+			raceId = parseInt(raceId.toString());
+			this.characterInput.RaceId = raceId;
 		},
 		updateCharacteristicsString(characteristicsString: string) {
 			this.characterInput.CharacteristicsString = characteristicsString;

@@ -6,7 +6,7 @@ export class CharacterSheetConverter {
 
 		// Basic Information
 		markdown += `## ${character.Name}\n\n`;
-		markdown += `**Race:** ${Race[character.Race]}\n`;
+		markdown += `**Race:** ${character.Race.Name}\n`;
 		if (character.HomeWorld) markdown += `**Home World:** ${character.HomeWorld || "N/A"}\n`;
 		markdown += `**Age:** ${character.Age}\n\n`;
 
@@ -22,9 +22,9 @@ export class CharacterSheetConverter {
 		markdown += "\n";
 
 		// Traits
-		if (character.Traits && character.Traits.length > 0) {
+		if (character.Race.Traits && character.Race.Traits.length > 0) {
 			markdown += "## Traits\n";
-			for (const trait of character.Traits) {
+			for (const trait of character.Race.Traits) {
 				markdown += `- ${trait}\n`;
 			}
 			markdown += "\n";

@@ -1,17 +1,10 @@
-import { Characteristics, Item, Skill, Term, Relation } from "#imports";
-
-export enum Race {
-	Human,
-	Aslan,
-	Vargr,
-}
+import { Characteristics, Item, Skill, Term, Relation, Race, RacesDb } from "#imports";
 
 export class Character {
 	Name: string;
-	Race: Race = Race.Human;
+	Race: Race = RacesDb.GetRaceById(1)!; // Default to Human (ID 1)
 	HomeWorld?: string;
 	Age: number;
-	Traits: string[] = [];
 	Characteristics?: Characteristics;
 	LifePath: string[] = [];
 	Skills: Skill[] = [];
@@ -22,13 +15,11 @@ export class Character {
 	Cash: number = 0;
 	Items: Item[] = [];
 	Relations: Relation[] = [];
-
 	constructor(
 		name: string,
-		race: Race = Race.Human,
+		raceId: number,
 		homeWorld?: string,
 		age: number = 0,
-		traits: string[] = [],
 		characteristics?: Characteristics,
 		lifePath: string[] = [],
 		skills: Skill[] = [],
@@ -38,10 +29,9 @@ export class Character {
 		relations: Relation[] = []
 	) {
 		this.Name = name;
-		this.Race = race;
+		this.Race = RacesDb.GetRaceById(raceId) !== undefined ? RacesDb.GetRaceById(raceId)! : this.Race;
 		this.HomeWorld = homeWorld;
 		this.Age = age;
-		this.Traits = traits;
 		this.Characteristics = characteristics;
 		this.LifePath = lifePath;
 		this.Skills = skills;
