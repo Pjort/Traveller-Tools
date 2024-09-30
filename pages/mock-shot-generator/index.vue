@@ -1,7 +1,8 @@
 <template>
 	<div>
 		<h2 class="text-xl font-semibold mb-4">Generate Mock Shot</h2>
-		<div class="mb-4">
+		<ApiKeyInput />
+		<div class="mb-4 mt-8">
 			<label for="prompt" class="block text-sm font-medium text-gray-700">Shot Description</label>
 			<textarea
 				v-model="prompt"
