@@ -18,6 +18,7 @@ import {
 	SkillsDb,
 	CareersDb,
 } from "#imports";
+import type { forEachChild } from "typescript";
 
 export class CharacterUtilities {
 	public static ParseCharacter(input: CharacterInput): Character {
@@ -57,18 +58,72 @@ export class CharacterUtilities {
 			this.AddLifePath(character, "**Initial characteristics rolls:** " + (characteristics?.ToString() ?? "No characteristics rolled"));
 
 			// Alter characteristics by race
-			// TODO - Add racial characteristics
-
-			// if (character.Race.Id == 2) {
-			// 	this.AddLifePath(character, "Aslan racial characteristics: +2 Strength, -2 Dexterity");
-
-			// 	this.AddLifePath(character, "Aslan traits: Dewclaws, Heightened Senses");
-			// }
-			// if (character.Race.Id == 3) {
-			// 	this.AddLifePath(character, "Vargr racial characteristics: -1 Strength, +1 Dexterity, -1 Endurance");
-
-			// 	this.AddLifePath(character, "Vargr traits: Bite, Heightened Senses");
-			// }
+			if (character.Race.CharacteristicModifiers.Strength != 0) {
+				characteristics.Strength += character.Race.CharacteristicModifiers.Strength;
+				this.AddLifePath(
+					character,
+					"**" +
+						character.Race.Name +
+						" racial Strength:** " +
+						(character.Race.CharacteristicModifiers.Strength > 0 ? "+" : "") +
+						character.Race.CharacteristicModifiers.Strength,
+				);
+			}
+			if (character.Race.CharacteristicModifiers.Dexterity != 0) {
+				characteristics.Dexterity += character.Race.CharacteristicModifiers.Dexterity;
+				this.AddLifePath(
+					character,
+					"**" +
+						character.Race.Name +
+						" racial Dexterity:** " +
+						(character.Race.CharacteristicModifiers.Dexterity > 0 ? "+" : "") +
+						character.Race.CharacteristicModifiers.Dexterity,
+				);
+			}
+			if (character.Race.CharacteristicModifiers.Endurance != 0) {
+				characteristics.Endurance += character.Race.CharacteristicModifiers.Endurance;
+				this.AddLifePath(
+					character,
+					"**" +
+						character.Race.Name +
+						" racial Endurance:** " +
+						(character.Race.CharacteristicModifiers.Endurance > 0 ? "+" : "") +
+						character.Race.CharacteristicModifiers.Endurance,
+				);
+			}
+			if (character.Race.CharacteristicModifiers.Intellect != 0) {
+				characteristics.Intellect += character.Race.CharacteristicModifiers.Intellect;
+				this.AddLifePath(
+					character,
+					"**" +
+						character.Race.Name +
+						" racial Intellect:** " +
+						(character.Race.CharacteristicModifiers.Intellect > 0 ? "+" : "") +
+						character.Race.CharacteristicModifiers.Intellect,
+				);
+			}
+			if (character.Race.CharacteristicModifiers.Education != 0) {
+				characteristics.Education += character.Race.CharacteristicModifiers.Education;
+				this.AddLifePath(
+					character,
+					"**" +
+						character.Race.Name +
+						" racial Education:** " +
+						(character.Race.CharacteristicModifiers.Education > 0 ? "+" : "") +
+						character.Race.CharacteristicModifiers.Education,
+				);
+			}
+			if (character.Race.CharacteristicModifiers.SocialStanding != 0) {
+				characteristics.SocialStanding += character.Race.CharacteristicModifiers.SocialStanding;
+				this.AddLifePath(
+					character,
+					"**" +
+						character.Race.Name +
+						" racial Social Standing:** " +
+						(character.Race.CharacteristicModifiers.SocialStanding > 0 ? "+" : "") +
+						character.Race.CharacteristicModifiers.SocialStanding,
+				);
+			}
 		}
 
 		character.currentStageId = 3; // Background skills
@@ -528,7 +583,7 @@ export class CharacterUtilities {
 			character,
 			`Survival roll (${assignment.SurvivalCheck?.CharacteristicsType} ${
 				assignment.SurvivalCheck?.TargetValue
-			}+): ${survivalRoll}(roll) + ${survivalModifier}(DM) = ${survivalRoll + survivalModifier}`
+			}+): ${survivalRoll}(roll) + ${survivalModifier}(DM) = ${survivalRoll + survivalModifier}`,
 		);
 
 		if (survivalRoll + survivalModifier >= assignment?.SurvivalCheck?.TargetValue) {
@@ -619,7 +674,7 @@ export class CharacterUtilities {
 			character,
 			`Advancement roll (${assignment.AdvancementCheck?.CharacteristicsType} ${
 				assignment.AdvancementCheck?.TargetValue
-			}+): ${advancementRoll}(roll) + ${advancementModifier}(DM) = ${advancementRoll + advancementModifier}`
+			}+): ${advancementRoll}(roll) + ${advancementModifier}(DM) = ${advancementRoll + advancementModifier}`,
 		);
 
 		let currentRank: number = character.Terms[character.Terms.length - 1].Rank?.Id ?? 0;
@@ -874,7 +929,7 @@ export class CharacterUtilities {
 					", -1 " +
 					secondHighestPhysicalCharacteristic +
 					", -1 " +
-					lowestPhysicalCharacteristic
+					lowestPhysicalCharacteristic,
 			);
 			return;
 		}
@@ -916,7 +971,7 @@ export class CharacterUtilities {
 					", -2 " +
 					secondHighestPhysicalCharacteristic +
 					", -1 " +
-					lowestPhysicalCharacteristic
+					lowestPhysicalCharacteristic,
 			);
 			return;
 		}
@@ -1106,7 +1161,7 @@ export class CharacterUtilities {
 				} else {
 					this.AddLifePath(
 						character,
-						"**Gained skill:** " + reward.Description + ": " + existingSkill.Level + " (already known " + existingSkill.Level + ")"
+						"**Gained skill:** " + reward.Description + ": " + existingSkill.Level + " (already known " + existingSkill.Level + ")",
 					);
 				}
 			} else {
@@ -1124,7 +1179,7 @@ export class CharacterUtilities {
 				if (isLevelZeroOnly) {
 					this.AddLifePath(
 						character,
-						"**Gained skill:** " + reward.Description + ": " + existingSkill.Level + " (already known " + existingSkill.Level + ")"
+						"**Gained skill:** " + reward.Description + ": " + existingSkill.Level + " (already known " + existingSkill.Level + ")",
 					);
 				} else {
 					this.AddSkillToCharacter(character, new Skill(skillDbRecord.Name, existingSkill.Level + 1));
