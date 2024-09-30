@@ -20,9 +20,7 @@
 			<div class="flex items-center">
 				<label for="race" class="w-28">Race:</label>
 				<select id="race" v-model="race" class="bg-slate-200 px-2 py-1 rounded">
-					<option value="1">Human</option>
-					<option value="2">Aslan</option>
-					<option value="3">Vargr</option>
+					<option v-for="r in races" :key="r.Id" :value="r.Id">{{ r.Name }}</option>
 				</select>
 			</div>
 		</div>
@@ -32,6 +30,9 @@
 
 <script lang="ts" setup>
 const characterStore = useCharacterStore();
+
+import { RacesDb } from "#imports";
+
 const name = computed({
 	get: () => characterStore.characterInput.Name,
 	set: (value) => characterStore.updateName(value),
@@ -46,6 +47,8 @@ const race = computed({
 	get: () => characterStore.characterInput.RaceId,
 	set: (value) => characterStore.updateRace(value),
 });
+
+const races = computed(() => RacesDb.GetRaces());
 
 const ApplyInput = () => {
 	if (!name.value) return;
