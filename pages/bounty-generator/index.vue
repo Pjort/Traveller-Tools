@@ -29,6 +29,16 @@
 				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 px-3 py-2"
 			/>
 		</div>
+		<div class="mb-4">
+			<label for="backgroundInfo" class="block text-sm font-medium text-gray-700">Background Information (Optional)</label>
+			<textarea
+				v-model="backgroundInfo"
+				id="backgroundInfo"
+				rows="3"
+				placeholder="Add any additional context about the bounty (e.g., location, involved parties, etc.)"
+				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 px-3 py-2"
+			></textarea>
+		</div>
 		<div class="flex">
 			<button
 				@click="generateBounty"
@@ -94,6 +104,9 @@ const bounty = ref("");
 const isLoading = ref(false);
 const priority = ref("(★) Low");
 const reputation = ref(0);
+
+const backgroundInfo = ref("");
+
 const copied = ref(false);
 
 function copyToClipboard() {
@@ -129,7 +142,7 @@ async function generateBounty() {
 					},
 					{
 						role: "user",
-						content: `Generate a bounty hunter contract in the Traveller universe with priority ${priority.value} and required reputation ${reputation.value}. For each contract, provide the following details in the specified format:
+						content: `Generate a bounty hunter contract in the Traveller universe with priority ${priority.value} and required reputation ${reputation.value}${backgroundInfo.value ? `. Additional context: ${backgroundInfo.value}` : ""}. For each contract, provide the following details in the specified format:
 
 ## Title: Wait until the end to give it a title, and make it a catchy one that gives a hint of the mark and the crime. \n
 **Mark:** The name of the target [Generate a unique futuristic name, using a combination of unusual syllables or symbols. Like from Star Wars and Star Trek.] \n
