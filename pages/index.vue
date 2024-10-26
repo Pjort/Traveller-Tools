@@ -14,11 +14,11 @@
 		</NuxtLink>
 	</div>
 
-	<h2 class="text-2xl font-semibold mt-28 mb-4">OpenAI-Powered Tools</h2>
-	<p class="text-gray-600 mb-4">These tools require an OpenAI API key to function.</p>
+	<h2 class="text-2xl font-semibold mt-28 mb-4">AI-Powered Tools</h2>
+	<p class="text-gray-600 mb-4">These tools require an OpenAI API key to function or creates a prompt for use in ChatGPT etc.</p>
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 		<NuxtLink
-			v-for="page in openAIPages"
+			v-for="page in AIPages"
 			:key="page.path"
 			:to="page.path"
 			class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow duration-200"
@@ -43,16 +43,16 @@ const standardPages = [
 	},
 ];
 
-const openAIPages = [
+const AIPages = [
 	{
 		title: "Bounty Generator",
 		path: "/bounty-generator",
-		description: "Generate random bounty contracts for your Traveller adventures using OpenAI.",
+		description: "Generate random bounty contracts for your Traveller adventures using AI.",
 	},
 	{
 		title: "Mock Shot Generator",
 		path: "/mock-shot-generator",
-		description: "Generate mock shots for your Traveller adventures using OpenAI.",
+		description: "Generate mock shots for your Traveller adventures using AI.",
 	},
 ];
 </script>
