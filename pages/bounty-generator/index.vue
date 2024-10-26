@@ -30,6 +30,16 @@
 			/>
 		</div>
 		<div class="mb-4">
+			<label for="markName" class="block text-sm font-medium text-gray-700">Mark's Name (Optional)</label>
+			<input
+				v-model="markName"
+				type="text"
+				id="markName"
+				placeholder="Specify a name for the target"
+				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 px-3 py-2"
+			/>
+		</div>
+		<div class="mb-4">
 			<label for="backgroundInfo" class="block text-sm font-medium text-gray-700">Background Information (Optional)</label>
 			<textarea
 				v-model="backgroundInfo"
@@ -39,6 +49,7 @@
 				class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 px-3 py-2"
 			></textarea>
 		</div>
+
 		<div class="flex">
 			<button
 				@click="generateBounty"
@@ -118,6 +129,8 @@ const reputation = ref(0);
 
 const backgroundInfo = ref("");
 
+const markName = ref("");
+
 const copied = ref(false);
 
 const promptCopied = ref(false);
@@ -126,7 +139,7 @@ function getPromptText() {
 	return `Generate a bounty hunter contract in the Traveller universe with priority ${priority.value} and required reputation ${reputation.value}${backgroundInfo.value ? `. Additional context: ${backgroundInfo.value}` : ""}. For each contract, provide the following details in the specified format:
 
 ## Title: Wait until the end to give it a title, and make it a catchy one that gives a hint of the mark and the crime. \n
-**Mark:** The name of the target [Generate a unique futuristic name, using a combination of unusual syllables or symbols. Like from Star Wars and Star Trek.] \n
+**Mark:** ${markName.value ? `${markName.value}` : "Generate a unique futuristic name for the target, using a combination of unusual syllables or symbols similar to names from Star Wars or Star Trek"} \n
 **Wanted for:** Why the target is hunted \n
 **Priority:** ${priority.value} \n
 **Status:** Alive (usual for low and mid priority), Dead or Alive (usual for high priority), or Dead (usual for critical priority), there are expections to this if it fits the plot. \n
