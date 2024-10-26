@@ -53,6 +53,19 @@
 			</button>
 
 			<button
+				@click="copyPromptToClipboard"
+				class="px-4 py-2 rounded mb-4 ml-2 transition-colors duration-200 bg-green-500 text-white hover:bg-green-600 flex items-center"
+			>
+				<svg class="mr-2 fill-white" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24">
+					<path
+						d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-3 12H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1z"
+					/>
+				</svg>
+				Copy Prompt
+				<p v-if="promptCopied" class="text-green-500 bg-black rounded-md p-2 mt-16 absolute">Copied!</p>
+			</button>
+
+			<button
 				@click="copyToClipboard"
 				class="px-4 py-2 rounded mb-4 ml-6 mr-2 transition-colors duration-200 bg-blue-500 text-white hover:bg-blue-600 flex items-center"
 				v-if="bounty"
@@ -89,8 +102,6 @@
 		<div v-else-if="bounty" class="bg-white shadow-md rounded-lg overflow-hidden p-5 w-full">
 			<div class="prose max-w-none" v-html="renderMarkdown(bounty)"></div>
 		</div>
-
-		<p v-else class="text-gray-600 italic">Click the button above to generate a bounty.</p>
 	</div>
 </template>
 
@@ -109,40 +120,10 @@ const backgroundInfo = ref("");
 
 const copied = ref(false);
 
-function copyToClipboard() {
-	if (bounty.value) {
-		navigator.clipboard.writeText(bounty.value).then(() => {
-			copied.value = true;
-			setTimeout(() => {
-				copied.value = false;
-			}, 1000);
-		});
-	}
-}
+const promptCopied = ref(false);
 
-onMounted(() => {
-	apiKeyStore.loadApiKey();
-});
-
-async function generateBounty() {
-	try {
-		isLoading.value = true;
-		const response = await fetch("https://api.openai.com/v1/chat/completions", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${apiKeyStore.apiKey}`,
-			},
-			body: JSON.stringify({
-				model: "gpt-4o-mini",
-				messages: [
-					{
-						role: "system",
-						content: "You are an expert in the Traveller Mongoose 2ed universe and a skilled bounty hunter contract creator.",
-					},
-					{
-						role: "user",
-						content: `Generate a bounty hunter contract in the Traveller universe with priority ${priority.value} and required reputation ${reputation.value}${backgroundInfo.value ? `. Additional context: ${backgroundInfo.value}` : ""}. For each contract, provide the following details in the specified format:
+function getPromptText() {
+	return `Generate a bounty hunter contract in the Traveller universe with priority ${priority.value} and required reputation ${reputation.value}${backgroundInfo.value ? `. Additional context: ${backgroundInfo.value}` : ""}. For each contract, provide the following details in the specified format:
 
 ## Title: Wait until the end to give it a title, and make it a catchy one that gives a hint of the mark and the crime. \n
 **Mark:** The name of the target [Generate a unique futuristic name, using a combination of unusual syllables or symbols. Like from Star Wars and Star Trek.] \n
@@ -210,7 +191,52 @@ Here is an example of a real contract:
 5) As in 3 but an opposing corporation has also sent a team of field operatives to recover Dipa. They are lobbying for the ability to sell out of date medicines to poorer systems.
 6) Two hired thugs are seeking out Dipa, after he sold expired medication to their boss.
 
-Now, generate a similar bounty hunter contract in the Traveller universe with the specified priority and reputation. Return it in a markdown format.`,
+Now, generate a similar bounty hunter contract in the Traveller universe with the specified priority and reputation. Return it in a markdown format.`;
+}
+
+function copyPromptToClipboard() {
+	navigator.clipboard.writeText(getPromptText()).then(() => {
+		promptCopied.value = true;
+		setTimeout(() => {
+			promptCopied.value = false;
+		}, 1000);
+	});
+}
+
+function copyToClipboard() {
+	if (bounty.value) {
+		navigator.clipboard.writeText(bounty.value).then(() => {
+			copied.value = true;
+			setTimeout(() => {
+				copied.value = false;
+			}, 1000);
+		});
+	}
+}
+
+onMounted(() => {
+	apiKeyStore.loadApiKey();
+});
+
+async function generateBounty() {
+	try {
+		isLoading.value = true;
+		const response = await fetch("https://api.openai.com/v1/chat/completions", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${apiKeyStore.apiKey}`,
+			},
+			body: JSON.stringify({
+				model: "gpt-4o-mini",
+				messages: [
+					{
+						role: "system",
+						content: "You are an expert in the Traveller Mongoose 2ed universe and a skilled bounty hunter contract creator.",
+					},
+					{
+						role: "user",
+						content: getPromptText(),
 					},
 				],
 				max_tokens: 2000,
