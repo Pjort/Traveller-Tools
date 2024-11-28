@@ -41,6 +41,11 @@ const standardPages = [
 		path: "/name-generator",
 		description: "Generate random names for your characters.",
 	},
+	{
+		title: "Trading Tool",
+		path: "/trading-tool",
+		description: "Based on UWP codes find the possible passengers, cargo, and trade goods available.",
+	},
 ];
 
 const AIPages = [

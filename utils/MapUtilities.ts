@@ -48,6 +48,37 @@ export class MapUtilities {
 		}
 	}
 
+	public static async getWorldByName(worldName: string): Promise<World | null> {
+		try {
+			const searchResponse = await $fetch<SearchResponse>(this.API_URL + "search?q=" + encodeURIComponent(worldName));
+
+			if (!searchResponse?.Results?.Items?.length) {
+				return null;
+			}
+			// If count is 1, we can return the only result
+			if (searchResponse.Results.Count === 1) {
+				return searchResponse.Results.Items[0].World;
+			}
+
+			// Return if there is only one world with the exact name match, check for exact match not case sensitive
+			const exactMatch = searchResponse.Results.Items.find(
+				(item) => item.World.Name.toLowerCase() === worldName.toLowerCase() && item.World.SectorTags.includes("Official OTU"),
+			);
+			if (exactMatch) {
+				return exactMatch.World;
+			}
+
+			// First try to find a world with "Official OTU" tag
+			const officialWorld = searchResponse.Results.Items.find((item) => item.World.SectorTags.includes("Official OTU"));
+
+			// If we found an official world, return it, otherwise return the first result
+			return officialWorld?.World || searchResponse.Results.Items[0].World;
+		} catch (error) {
+			console.error(`Failed to fetch world data for ${worldName}:`, error);
+			throw new Error(`Failed to fetch world data for ${worldName}`);
+		}
+	}
+
 	private static parseTabDelimitedData(rawData: string): SubSector[] {
 		const lines = rawData.trim().split("\n");
 
@@ -115,4 +146,26 @@ interface SubSector {
 	Nobility: string | null; // Nobility codes (optional)
 	W: number; // World size
 	RU: number; // Resource units
+}
+
+interface SearchResponse {
+	Results: {
+		Count: number;
+		Items: SearchItem[];
+	};
+}
+
+interface SearchItem {
+	World: World;
+}
+
+interface World {
+	HexX: number;
+	HexY: number;
+	Sector: string;
+	Uwp: string;
+	SectorX: number;
+	SectorY: number;
+	Name: string;
+	SectorTags: string;
 }
