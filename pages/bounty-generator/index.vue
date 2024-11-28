@@ -145,7 +145,7 @@ function getPromptText() {
 **Status:** Alive (usual for low and mid priority), Dead or Alive (usual for high priority), or Dead (usual for critical priority), there are expections to this if it fits the plot. \n
 *Bounty:** The reward. For low priority: Cr4,000-30,000. For mid priority: Cr20,000-100,000. For high priority: Cr40,000-1,500,000. For critical priority: Cr1,000,000 to 5,000,000. \n
 **Issuer:** Who is the contractor  \n
-**Known associates:** Could be friends or family  \n
+**Known associates:** List of 0-5 associates, criminal connections, family members or friends. \n
 
 ___
 ### Referee's information:
@@ -158,6 +158,8 @@ ___
 ### Locations: List of 6 location, Each could have leads or information that are either proper leads or red herrings.
 
 ### Complications: List of 6 complications, things that can give a plot twist. The first one is always "Everything is as presented." but in some cases the second and third is as well.
+
+### Referee's end Notes: Provide a conclusion to the contract, detailing how the bounty hunter can successfully complete the mission. Include any final challenges, moral dilemmas, or unexpected twists that could arise during the hunt. Offer suggestions for how the players can resolve the contract and collect their reward. Mention any potential follow-up adventures or consequences that could result from the contract's completion. \n
 
 Here is an example of a real contract:
 
@@ -204,6 +206,9 @@ Here is an example of a real contract:
 4) The corporation Dipa worked for has sent a team of field operatives after the man.
 5) As in 3 but an opposing corporation has also sent a team of field operatives to recover Dipa. They are lobbying for the ability to sell out of date medicines to poorer systems.
 6) Two hired thugs are seeking out Dipa, after he sold expired medication to their boss.
+
+## Referee's end Notes:
+Once the wildlife and the booby-traps are overcome and the cabin finally found, Dipa will readily give himself up to the Travellers, not wanting to frighten or endanger his daughter who has thus far thought of this as an impromptu adventure. The Travellers can turn himin to the bail bondsmen with little fuss to receive their well-earned reward.
 
 Now, generate a similar bounty hunter contract in the Traveller universe with the specified priority and reputation. Return it in a markdown format.`;
 }
