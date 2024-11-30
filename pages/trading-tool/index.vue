@@ -113,6 +113,7 @@ const highPassengerTrafix = computed(() => {
 		brokerLevel.value,
 		parsecs.value,
 		fromUwpCode.value,
+		toUwpCode.value,
 		true,
 		false,
 	);
@@ -125,6 +126,7 @@ const middlePassengerTrafix = computed(() => {
 		brokerLevel.value,
 		parsecs.value,
 		fromUwpCode.value,
+		toUwpCode.value,
 		false,
 		false,
 	);
@@ -137,6 +139,7 @@ const basicPassengerTrafix = computed(() => {
 		brokerLevel.value,
 		parsecs.value,
 		fromUwpCode.value,
+		toUwpCode.value,
 		false,
 		false,
 	);
@@ -149,6 +152,7 @@ const lowPassengerTrafix = computed(() => {
 		brokerLevel.value,
 		parsecs.value,
 		fromUwpCode.value,
+		toUwpCode.value,
 		false,
 		true,
 	);

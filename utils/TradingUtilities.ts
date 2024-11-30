@@ -56,7 +56,8 @@ export class TradingUtilities {
 		stewardLevel: number,
 		brokerLevel: number,
 		parsecs: number,
-		uwp: string,
+		fromUwp: string,
+		toUwp: string,
 		highPassage: boolean,
 		lowPassage: boolean,
 	): number {
@@ -67,8 +68,10 @@ export class TradingUtilities {
 		effect -= parsecs;
 		if (highPassage) effect -= 4;
 		if (lowPassage) effect += 1;
-		effect += this.PassengerPopulationDM(uwp);
-		effect += this.PassengerStartportDM(uwp);
+		effect += this.PassengerPopulationDM(fromUwp);
+		effect += this.PassengerStartportDM(fromUwp);
+		effect += this.PassengerPopulationDM(toUwp);
+		effect += this.PassengerStartportDM(toUwp);
 		effect -= 8; // Avarage roll
 		return this.PassengerTraffic(effect);
 	}
