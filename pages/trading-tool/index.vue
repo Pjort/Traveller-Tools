@@ -7,7 +7,7 @@
 		<LocationSection title="To" v-model:uwpCode="toUwpCode" v-model:worldName="toWorldName" @findUWP="findToUWP" />
 
 		<div class="mb-4 max-w-md">
-			<label class="block text-sm font-medium text-gray-700">Steward Level (Only helps with Passengers)</label>
+			<label class="block text-sm font-semibold text-gray-700">Steward Level (Only helps with Passengers)</label>
 			<input
 				type="number"
 				v-model="stewardLevel"
@@ -19,7 +19,7 @@
 		</div>
 
 		<div class="mb-4 max-w-md">
-			<label class="block text-sm font-medium text-gray-700">Broker, Carouse or Streetwise Level + DM (from stats)</label>
+			<label class="block text-sm font-semibold text-gray-700">Broker, Carouse or Streetwise Level + DM (INT or SOC)</label>
 			<input
 				type="number"
 				v-model="brokerLevel"
@@ -31,7 +31,7 @@
 		</div>
 
 		<div class="mb-4 max-w-md">
-			<label class="block text-sm font-medium text-gray-700">Number of Parsecs</label>
+			<label class="block text-sm font-semibold text-gray-700">Number of Parsecs</label>
 			<input
 				type="number"
 				v-model="parsecs"
@@ -43,7 +43,7 @@
 		</div>
 
 		<div class="mb-4 max-w-md">
-			<label class="block text-sm font-medium text-gray-700">Scout Rank + SOC DM (Only for mail)</label>
+			<label class="block se text-sm font-semibold text-gray-700">Scout Rank + SOC DM (Only for mail)</label>
 			<input
 				type="number"
 				v-model="scoutRank"
@@ -56,95 +56,65 @@
 
 		<div class="mt-8">
 			<h2 class="text-xl font-semibold mb-4">Passenger Traffic Results</h2>
-
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-				<div class="mb-4">
-					<label class="block text-sm font-medium text-gray-700">High Passage</label>
-					<LightDiceInput v-model="highPassageRoll" :numDice="2" />
-				</div>
-
-				<div class="mb-4">
-					<label class="block text-sm font-medium text-gray-700">Middle Passage</label>
-					<LightDiceInput v-model="middlePassageRoll" :numDice="2" />
-				</div>
-
-				<div class="mb-4">
-					<label class="block text-sm font-medium text-gray-700">Basic Passage</label>
-					<LightDiceInput v-model="basicPassageRoll" :numDice="2" />
-				</div>
-
-				<div class="mb-4">
-					<label class="block text-sm font-medium text-gray-700">Low Passage</label>
-					<LightDiceInput v-model="lowPassageRoll" :numDice="2" />
-				</div>
-			</div>
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 				<div class="bg-white p-4 rounded-lg shadow">
 					<h3 class="text-lg font-medium text-gray-800">High Passage</h3>
+					<DiceInput v-model="highPassageRoll" :numDice="2" class="mb-2" />
 					<div class="flex justify-between items-center mt-2">
-						<span class="text-2xl font-bold text-blue-600">{{ highPassengerTrafix }}D</span>
-						<span class="text-sm text-gray-600">@ Cr{{ TradingUtilities.HighPassagePricePerParsec(parsecs).toLocaleString() }}</span>
+						<span class="text-xl font-bold text-blue-600">{{ highPassengerTrafix }}D Passengers</span>
+						<span class="text-sm font-semibold text-gray-600"
+							>@ Cr{{ TradingUtilities.HighPassagePricePerParsec(parsecs).toLocaleString() }}</span
+						>
 					</div>
 				</div>
 
 				<div class="bg-white p-4 rounded-lg shadow">
 					<h3 class="text-lg font-medium text-gray-800">Middle Passage</h3>
+					<DiceInput v-model="middlePassageRoll" :numDice="2" class="mb-2" />
 					<div class="flex justify-between items-center mt-2">
-						<span class="text-2xl font-bold text-green-600">{{ middlePassengerTrafix }}D</span>
-						<span class="text-sm text-gray-600">@ Cr{{ TradingUtilities.MiddlePassagePricePerParsec(parsecs).toLocaleString() }}</span>
+						<span class="text-xl font-bold text-green-600">{{ middlePassengerTrafix }}D Passengers</span>
+						<span class="text-sm font-semibold text-gray-600"
+							>@ Cr{{ TradingUtilities.MiddlePassagePricePerParsec(parsecs).toLocaleString() }}</span
+						>
 					</div>
 				</div>
 
 				<div class="bg-white p-4 rounded-lg shadow">
 					<h3 class="text-lg font-medium text-gray-800">Basic Passage</h3>
+					<DiceInput v-model="basicPassageRoll" :numDice="2" class="mb-2" />
 					<div class="flex justify-between items-center mt-2">
-						<span class="text-2xl font-bold text-yellow-600">{{ basicPassengerTrafix }}D</span>
-						<span class="text-sm text-gray-600">@ Cr{{ TradingUtilities.BasicPassagePricePerParsec(parsecs).toLocaleString() }}</span>
+						<span class="text-xl font-bold text-yellow-600">{{ basicPassengerTrafix }}D Passengers</span>
+						<span class="text-sm font-semibold text-gray-600"
+							>@ Cr{{ TradingUtilities.BasicPassagePricePerParsec(parsecs).toLocaleString() }}</span
+						>
 					</div>
 				</div>
 
 				<div class="bg-white p-4 rounded-lg shadow">
 					<h3 class="text-lg font-medium text-gray-800">Low Passage</h3>
+					<DiceInput v-model="lowPassageRoll" :numDice="2" class="mb-2" />
 					<div class="flex justify-between items-center mt-2">
-						<span class="text-2xl font-bold text-red-600">{{ lowPassengerTrafix }}D</span>
-						<span class="text-sm text-gray-600">@ Cr{{ TradingUtilities.LowPassagePricePerParsec(parsecs).toLocaleString() }}</span>
+						<span class="text-xl font-bold text-red-600">{{ lowPassengerTrafix }}D Passengers</span>
+						<span class="text-sm font-semibold text-gray-600"
+							>@ Cr{{ TradingUtilities.LowPassagePricePerParsec(parsecs).toLocaleString() }}</span
+						>
 					</div>
 				</div>
 			</div>
 		</div>
+
 		<div class="mt-8">
 			<h2 class="text-xl font-semibold mb-4">Freight Traffic Results</h2>
-
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-				<div class="mb-4">
-					<label class="block text-sm font-medium text-gray-700">Major Cargo</label>
-					<LightDiceInput v-model="majorCargoRoll" :numDice="2" />
-				</div>
-
-				<div class="mb-4">
-					<label class="block text-sm font-medium text-gray-700">Minor Cargo</label>
-					<LightDiceInput v-model="minorCargoRoll" :numDice="2" />
-				</div>
-
-				<div class="mb-4">
-					<label class="block text-sm font-medium text-gray-700">Incidental Cargo</label>
-					<LightDiceInput v-model="incidentalCargoRoll" :numDice="2" />
-				</div>
-
-				<div class="mb-4">
-					<label class="block text-sm font-medium text-gray-700">Mail</label>
-					<LightDiceInput v-model="mailRoll" :numDice="2" />
-				</div>
-			</div>
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 				<div class="bg-white p-4 rounded-lg shadow">
 					<h3 class="text-lg font-medium text-gray-800">Major Cargo</h3>
+					<DiceInput v-model="majorCargoRoll" :numDice="2" class="mb-2" />
 					<div class="flex justify-between items-center mt-2">
-						<span class="text-2xl font-bold text-blue-600"
-							>{{ TradingUtilities.SeekingFreight(majorCargoRoll, brokerLevel, parsecs, fromUwpCode, toUwpCode, true, false) }}D x
-							10tons</span
-						>
-						<span class="text-sm text-gray-600"
+						<span class="text-xl font-bold text-blue-600">
+							{{ TradingUtilities.SeekingFreight(majorCargoRoll, brokerLevel, parsecs, fromUwpCode, toUwpCode, true, false) }}D x 10
+							tons
+						</span>
+						<span class="text-sm font-semibold text-gray-600"
 							>@ Cr{{ TradingUtilities.FreightPricePerTonPerParsect(parsecs).toLocaleString() }}/ton</span
 						>
 					</div>
@@ -152,12 +122,13 @@
 
 				<div class="bg-white p-4 rounded-lg shadow">
 					<h3 class="text-lg font-medium text-gray-800">Minor Cargo</h3>
+					<DiceInput v-model="minorCargoRoll" :numDice="2" class="mb-2" />
 					<div class="flex justify-between items-center mt-2">
-						<span class="text-2xl font-bold text-green-600"
-							>{{ TradingUtilities.SeekingFreight(minorCargoRoll, brokerLevel, parsecs, fromUwpCode, toUwpCode, false, false) }}D x
-							5tons</span
-						>
-						<span class="text-sm text-gray-600"
+						<span class="text-xl font-bold text-green-600">
+							{{ TradingUtilities.SeekingFreight(minorCargoRoll, brokerLevel, parsecs, fromUwpCode, toUwpCode, false, false) }}D x 5
+							tons
+						</span>
+						<span class="text-sm font-semibold text-gray-600"
 							>@ Cr{{ TradingUtilities.FreightPricePerTonPerParsect(parsecs).toLocaleString() }}/ton</span
 						>
 					</div>
@@ -165,12 +136,13 @@
 
 				<div class="bg-white p-4 rounded-lg shadow">
 					<h3 class="text-lg font-medium text-gray-800">Incidental Cargo</h3>
+					<DiceInput v-model="incidentalCargoRoll" :numDice="2" class="mb-2" />
 					<div class="flex justify-between items-center mt-2">
-						<span class="text-2xl font-bold text-yellow-600"
-							>{{ TradingUtilities.SeekingFreight(incidentalCargoRoll, brokerLevel, parsecs, fromUwpCode, toUwpCode, false, true) }}D x
-							1tons</span
-						>
-						<span class="text-sm text-gray-600"
+						<span class="text-xl font-bold text-yellow-600">
+							{{ TradingUtilities.SeekingFreight(incidentalCargoRoll, brokerLevel, parsecs, fromUwpCode, toUwpCode, false, true) }}D x 1
+							tons
+						</span>
+						<span class="text-sm font-semibold text-gray-600"
 							>@ Cr{{ TradingUtilities.FreightPricePerTonPerParsect(parsecs).toLocaleString() }}/ton</span
 						>
 					</div>
@@ -178,11 +150,12 @@
 
 				<div class="bg-white p-4 rounded-lg shadow">
 					<h3 class="text-lg font-medium text-gray-800">Mail (Must take all)</h3>
+					<DiceInput v-model="mailRoll" :numDice="2" class="mb-2" />
 					<div class="flex justify-between items-center mt-2">
-						<span class="text-2xl font-bold text-red-600"
-							>{{ TradingUtilities.seekingMail(mailRoll, brokerLevel + scoutRank, parsecs, fromUwpCode, toUwpCode) }}D x 5tons</span
-						>
-						<span class="text-sm text-gray-600">Cr25000 flat rate</span>
+						<span class="text-xl font-bold text-red-600">
+							{{ TradingUtilities.seekingMail(mailRoll, brokerLevel + scoutRank, parsecs, fromUwpCode, toUwpCode) }}D x 5 tons
+						</span>
+						<span class="text-sm font-semibold text-gray-600">Cr25000 flat rate</span>
 					</div>
 				</div>
 			</div>
